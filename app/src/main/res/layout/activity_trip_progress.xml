@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true" >
+
+    <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+        <fragment
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:id="@+id/map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/customerView"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            app:cardBackgroundColor="@color/view_background_purple"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:contentPadding="10dp"
+            card_view:cardCornerRadius="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal">
+
+                <ImageView
+                    android:id="@+id/customerThumbnail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/user_thumbnail" />
+
+                <TextView
+                    android:id="@+id/customerName"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="ADITYA BHARDWAJ"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/text_medium"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_toRightOf="@id/customerThumbnail"/>
+
+                <TextView
+                    android:id="@+id/acceptanceStatus"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="PENDING"
+                    android:textColor="#765267"
+                    android:textSize="@dimen/text_medium"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_toRightOf="@id/customerName"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/addressView"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            app:cardBackgroundColor="@color/view_background_white"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/customerView"
+            app:contentPadding="10dp"
+            card_view:cardCornerRadius="0dp"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/navigate"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Navigate"
+                    android:textColor="#303030"
+                    android:textSize="@dimen/text_regular"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:drawableTop="@drawable/navigate"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical" />
+
+                <View
+                    android:id="@+id/separator"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:background="#E5E5E5"
+                    android:layout_toRightOf="@id/navigate"/>
+
+                <TextView
+                    android:id="@+id/fromAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:text="ABC Company, 36B, Vardhan House,"
+                    android:textColor="#303030"
+                    android:textSize="@dimen/text_medium"
+                    android:gravity="center"
+                    android:layout_toRightOf="@id/separator"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/startLoadingView"
+            android:layout_gravity="bottom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/view_background_purple"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:contentPadding="10dp"
+            android:visibility="gone"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/arrivedAtOriginTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="ARRIVED AT LOCATION"
+                    android:textColor="#765267"
+                    android:textSize="@dimen/text_large"
+                    android:layout_centerHorizontal="true" />
+
+                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                    android:id="@+id/startLoadingBtn"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:buttonBackgroundColor="#6D445C"
+                    app:slideBackgroundColor="#765267"
+                    app:slideText="START LOADING"
+                    app:slideTextColor="#FFFFFF"
+                    app:slideTextSize="20sp"
+                    app:animateSlideText="true"
+                    app:reverseSlide="false"
+
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+
+                    android:gravity="center_vertical"
+                    android:layout_below="@+id/arrivedAtOriginTxt" />
+
+                <TextView
+                    android:id="@+id/startLoadingTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="40dp"
+                    android:text="Slide to start loading"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/text_regular"
+                    android:layout_below="@id/startLoadingBtn"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/startTripView"
+            android:layout_gravity="bottom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/view_background_purple"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:contentPadding="10dp"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                    android:id="@+id/startTripBtn"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:buttonBackgroundColor="#FF960B"
+                    app:slideBackgroundColor="#FFB900"
+                    app:slideText="START TRIP"
+                    app:slideTextColor="#FFFFFF"
+                    app:slideTextSize="20sp"
+                    app:animateSlideText="true"
+                    app:reverseSlide="false"
+
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:id="@+id/startTripTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="40dp"
+                    android:text="Slide to End Trip"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/text_regular"
+                    android:layout_below="@id/startTripBtn"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/startUnloadingView"
+            android:layout_gravity="bottom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/view_background_purple"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:contentPadding="10dp"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/arrivedAtDestinationTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="ARRIVED AT DROPPING POINT"
+                    android:textColor="#765267"
+                    android:textSize="@dimen/text_large"
+                    android:layout_centerHorizontal="true" />
+
+                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                    android:id="@+id/startUnloadingBtn"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:buttonBackgroundColor="#6D445C"
+                    app:slideBackgroundColor="#765267"
+                    app:slideText="UNLOAD"
+                    app:slideTextColor="#FFFFFF"
+                    app:slideTextSize="20sp"
+                    app:animateSlideText="true"
+                    app:reverseSlide="false"
+
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+
+                    android:gravity="center_vertical"
+                    android:layout_below="@+id/arrivedAtDestinationTxt" />
+
+                <TextView
+                    android:id="@+id/startUnloadingTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="40dp"
+                    android:text="Slide to Start Unloading"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/text_regular"
+                    android:layout_below="@id/startUnloadingBtn"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/endTripView"
+            android:layout_gravity="bottom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/view_background_purple"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:contentPadding="10dp"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                    android:id="@+id/endTripBtn"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:buttonBackgroundColor="#FF960B"
+                    app:slideBackgroundColor="#FFB900"
+                    app:slideText="END TRIP"
+                    app:slideTextColor="#FFFFFF"
+                    app:slideTextSize="20sp"
+                    app:animateSlideText="true"
+                    app:reverseSlide="false"
+
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:id="@+id/endTripTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="40dp"
+                    android:text="Slide to End Trip"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/text_regular"
+                    android:layout_below="@id/endTripBtn"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/fareSummaryView"
+            android:layout_gravity="bottom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/view_background_purple"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:contentPadding="10dp"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/fareSummaryTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="40dp"
+                    android:text="FARE SUMMARY"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/text_medium"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:id="@+id/paidByTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="45dp"
+                    android:layout_marginLeft="40dp"
+                    android:text="Paid By"
+                    android:textColor="#765267"
+                    android:textSize="@dimen/text_regular"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/fareSummaryTxt" />
+
+                <TextView
+                    android:id="@+id/fareTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="40dp"
+                    android:text="650"
+                    android:textColor="#765267"
+                    android:textSize="54sp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/paidByTxt" />
+
+                <TextView
+                    android:id="@+id/rateCustomerTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="45dp"
+                    android:layout_marginLeft="40dp"
+                    android:text="Rate Aditya Bhardwaj"
+                    android:textColor="#765267"
+                    android:textSize="@dimen/text_regular"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/fareTxt" />
+
+                <RatingBar
+                    android:id="@+id/rateCustomer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/rateCustomerTxt"
+                    android:theme="@style/RatingBar" />
+
+                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                    android:id="@+id/goOnlineBtn"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:buttonBackgroundColor="#FF960B"
+                    app:slideBackgroundColor="#FFB900"
+                    app:slideText="GO ONLINE"
+                    app:slideTextColor="#FFFFFF"
+                    app:slideTextSize="20sp"
+                    app:animateSlideText="true"
+                    app:reverseSlide="false"
+
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+
+                    android:gravity="center_vertical"
+                    android:layout_below="@id/rateCustomer"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <!-- The navigation drawer -->
+    <include layout="@layout/left_side_menu" />
+
+    <!--&lt;!&ndash; The navigation drawer &ndash;&gt;-->
+    <!--<ListView android:id="@+id/right_drawer"-->
+    <!--android:layout_width="260dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="end"-->
+    <!--android:choiceMode="singleChoice"-->
+    <!--android:divider="@android:color/transparent"-->
+    <!--android:dividerHeight="0dp"-->
+    <!--android:background="#111"/>-->
+
+</android.support.v4.widget.DrawerLayout>

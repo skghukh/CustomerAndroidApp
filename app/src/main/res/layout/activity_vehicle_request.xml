@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true" >
+
+    <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_height="wrap_content"
+            android:layout_width="344dp"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            tools:layout_editor_absoluteY="50dp"
+            tools:layout_editor_absoluteX="8dp" />
+
+
+        <fragment
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:id="@+id/map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/requestView"
+            android:layout_gravity="bottom"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:cardBackgroundColor="@color/view_background_purple"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:contentPadding="10dp"
+            android:visibility="gone"
+            card_view:cardCornerRadius="7dp">
+
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/reject"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:text="X Reject"
+                        android:textSize="@dimen/text_medium"
+                        android:textColor="@color/colorPrimary"
+                        android:onClick="onRejectBtnClick"/>
+
+                    <ImageView
+                        android:id="@+id/customerThumbnail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/user_thumbnail" />
+
+                    <TextView
+                        android:id="@+id/customerName"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="ADITYA BHARDWAJ"
+                        android:textColor="#FFFFFF"
+                        android:textSize="@dimen/text_medium"
+                        android:layout_marginBottom="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_toRightOf="@id/customerThumbnail"/>
+
+                    <ImageView
+                        android:id="@+id/markerGreenImage"
+                        android:layout_width="21dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/marker_green"
+                        android:layout_below="@+id/customerThumbnail" />
+
+                    <TextView
+                        android:id="@+id/fromAddress"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="ABC Company, 36B, Vardhan House,"
+                        android:textColor="#FFFFFF"
+                        android:textSize="@dimen/text_regular"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="25dp"
+                        android:layout_below="@id/customerThumbnail"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@+id/markerRedImage"/>
+
+                    <ImageView
+                        android:id="@+id/markerRedImage"
+                        android:layout_width="21dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/marker_red"
+                        android:layout_below="@+id/fromAddress" />
+
+                    <TextView
+                        android:id="@+id/toAddress"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="25dp"
+                        android:text="ABC Company, 36B, Vardhan House,"
+                        android:textColor="#FFFFFF"
+                        android:textSize="@dimen/text_regular"
+                        android:gravity="center_vertical"
+                        android:layout_below="@+id/fromAddress"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@+id/markerRedImage"/>
+
+                    <TextView
+                        android:id="@+id/distance"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="10dp"
+                        android:text="4.6Km"
+                        android:textColor="#765267"
+                        android:textSize="40sp"
+                        android:layout_below="@id/toAddress" />
+
+                    <TextView
+                        android:id="@+id/loadingUnloadingTxt"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="25dp"
+                        android:text="Loading / Unloading"
+                        android:textColor="#765267"
+                        android:textSize="@dimen/text_regular"
+                        android:gravity="center_vertical"
+                        android:drawableLeft="@drawable/tick_green"
+                        android:drawablePadding="15dp"
+                        android:layout_below="@+id/distance"/>
+
+                    <com.rodafleets.rodadriver.custom.slideview.SlideView
+                        android:id="@+id/makeOfferBtn"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        app:buttonBackgroundColor="#6D445C"
+                        app:slideBackgroundColor="#765267"
+                        app:slideText="Slide to make Offer"
+                        app:slideTextColor="#FFFFFF"
+                        app:slideTextSize="20sp"
+                        app:animateSlideText="true"
+                        app:reverseSlide="false"
+
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+
+                        android:gravity="center_vertical"
+                        android:layout_below="@+id/loadingUnloadingTxt" />
+
+                    <TextView
+                        android:id="@+id/makeOfferTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="40dp"
+                        android:text="Slide to make an offer"
+                        android:textColor="#FFFFFF"
+                        android:textSize="@dimen/text_regular"
+                        android:layout_below="@id/makeOfferBtn"/>
+
+                    <Button
+                        android:id="@+id/callCustomerBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:padding="15dp"
+                        android:text="Call Customer"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:background="@drawable/btn_background_green"
+                        android:onClick="onCallCustomerBtnClick"
+                        android:drawableLeft="@drawable/call"
+                        android:drawablePadding="5dp"
+                        android:layout_below="@id/makeOfferTxt"
+                        android:layout_centerHorizontal="true"/>
+
+                    <TextView
+                        android:id="@+id/callAdmin"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="Call Admin"
+                        android:textColor="#FFFFFF"
+                        android:textSize="@dimen/text_regular"
+                        android:layout_below="@+id/callCustomerBtn"
+                        android:layout_centerHorizontal="true" />
+
+                </RelativeLayout>
+
+            </ScrollView>
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <!-- The navigation drawer -->
+    <include layout="@layout/left_side_menu" />
+
+    <!--&lt;!&ndash; The navigation drawer &ndash;&gt;-->
+    <!--<ListView android:id="@+id/right_drawer"-->
+    <!--android:layout_width="260dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="end"-->
+    <!--android:choiceMode="singleChoice"-->
+    <!--android:divider="@android:color/transparent"-->
+    <!--android:dividerHeight="0dp"-->
+    <!--android:background="#111"/>-->
+
+</android.support.v4.widget.DrawerLayout>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:background="@color/view_background_white"
+    android:descendantFocusability="blocksDescendants">
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/vehicle_request_map"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        map:liteMode="true"
+        map:mapType="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/vehicle_request_customer_name"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Aditya Bhardwaj"
+        android:textColor="#303030"
+        android:textSize="@dimen/text_regular"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vehicle_request_map"
+        android:layout_marginStart="10dp"/>
+
+    <TextView
+        android:id="@+id/vehicle_request_amount"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="ADITYA BHARDWAJ"
+        android:textColor="#303030"
+        android:textSize="@dimen/text_regular"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vehicle_request_map"
+        android:layout_marginEnd="10dp"/>
+
+    <TextView
+        android:id="@+id/vehicle_request_date"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="22-06-17,  7:07 PM"
+        android:textColor="#303030"
+        android:textSize="@dimen/text_regular"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vehicle_request_customer_name"
+        android:layout_marginStart="10dp"/>
+
+    <TextView
+        android:id="@+id/vehicle_request_distance"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="ADITYA BHARDWAJ"
+        android:textColor="#303030"
+        android:textSize="@dimen/text_regular"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vehicle_request_amount"
+        android:layout_marginEnd="10dp"/>
+
+    <TextView
+        android:id="@+id/vehicle_request_status"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="PENDING"
+        android:textColor="#303030"
+        android:textSize="@dimen/text_regular"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vehicle_request_distance" />
+
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#E5E5E5"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vehicle_request_status" />
+
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,97 @@
+<resources>
+    <string name="app_name">Roda Driver</string>
+
+    <!-- Default -->
+    <string name="loading">Loading...</string>
+    <string name="default_error">Something went wrong. Please try again!</string>
+    <string name="internet_error">Check your internet connectivity and try again!</string>
+
+    <!-- Activity Splash -->
+    <string name="welcome_text">रोड़ा में आपका स्वागत है</string>
+    <string name="select_language">Select Language</string>
+
+    <string-array name="language_dropdown">
+        <item>Select Language</item>
+        <item>English</item>
+        <item>हिंदी</item>
+    </string-array>
+
+    <string name="english">English</string>
+    <string name="hindi">Hindi</string>
+
+    <!-- Activity Welcome -->
+    <string name="sign_up">साइन अप करें</string>
+    <string name="sign_in">मौजूदा चालक? साइन इन करें </string>
+
+    <!-- Activity Sign In -->
+    <!--<string name="login_phone_number">Vehicle Number / Phone Number</string>-->
+    <string name="login_phone_number">Phone Number</string>
+    <string name="login_password">Password</string>
+    <string name="forgot_password"><u>Forgot Password</u></string>
+
+
+    <string name="login_sign_in">SIGN IN</string>
+    <string name="login_new_driver">New Driver? SIGN UP</string>
+
+    <!-- Activity Sign Up 1 -->
+    <string name="sign_up_first_name">First Name</string>
+    <string name="sign_up_last_name">Last Name</string>
+    <string name="sign_up_male">Male</string>
+    <string name="sign_up_female">Female</string>
+    <string name="sign_up_phone_number">+91 Mobile Number</string>
+    <string name="sign_up_password">Password</string>
+    <string name="sign_up_existing_driver">Existing Driver? SIGN IN</string>
+    <string name="sign_up_next">Next</string>
+    <string name="sign_up_saving">"Saving driver info..."</string>
+
+    <string name="sign_up_phone_number_required_error">Phone number is required</string>
+    <string name="sign_up_first_name_required_error">Firstname is required</string>
+    <string name="sign_up_last_name_required_error">Lastname is required</string>
+    <string name="sign_up_password_required_error">Password is required</string>
+    <string name="sign_up_otp_required_error">OTP is required</string>
+    <string name="sign_up_default_error">Something went wrong. Please try again!</string>
+    <string name="sign_up_phone_number_exists_error">"Phone Number is already registered with us!"</string>
+    <string name="sign_up_sending_otp_error">Sending OTP failed. Please check the phone number entered</string>
+
+    <!-- Activity Sign Up 2 -->
+    <string name="sign_up_otp">One Time Password (OTP)</string>
+    <string name="sign_up_otp_message">OTP is sent to your mobile number.</string>
+    <string name="sign_up_vehicle_details">VEHICLE DETAILS</string>
+    <string name="sign_up_saving_vehicle_info">"Saving vehicle info..."</string>
+
+    <string name="sign_up_invalid_otp_error">Invalid OTP</string>
+    <string name="sign_up_session_id_required_error">Session ID is required to verify OTP</string>
+
+    <!-- Activity Sign Up 3 -->
+    <string name="sign_up_vehicle_number">Vehicle Number</string>
+    <string name="sign_up_vehicle_type">Vehicle Type</string>
+    <string name="sign_up_manufacturer">Manufacturer</string>
+    <string name="sign_up_model">Model</string>
+    <string name="sign_up_is_owner">Are you the Owner?</string>
+    <string name="sign_up_owner_details">OWNER\'S DETAILS</string>
+    <string name="sign_up_owner_first_name">First Name</string>
+    <string name="sign_up_owner_last_name">Last Name</string>
+    <string name="sign_up_owner_phone_number">Phone Number</string>
+    <string name="sign_up_final_step">FINAL STEP (SUBMIT DOCUMENTS)</string>
+
+    <string name="sign_up_vehicle_number_required_error">Vehicle number is required</string>
+    <string name="sign_up_owner_phone_number_required_error">Phone number is required</string>
+    <string name="sign_up_owner_first_name_required_error">Firstname is required</string>
+    <string name="sign_up_owner_last_name_required_error">Lastname is required</string>
+    <string name="sign_up_vehicle_number_already_added_error">Vehicle number is already registered with us!</string>
+
+
+    <!-- Activity Sign Up 4 -->
+    <string name="sign_up_document_to_upload1">Doc 1</string>
+    <string name="sign_up_document_to_upload2">Doc 2</string>
+    <string name="sign_up_document_to_upload3">Doc 3</string>
+    <string name="sign_up_submit_documents">SUBMIT DOCUMENTS</string>
+    <string name="sign_up_final">SIGN UP</string>
+    <string name="title_activity_sign_up_verification">SignUpVerification</string>
+    <string name="sign_up_successful_message">You have successfully signed up. Please use your registered phone number and password to login.</string>
+
+    <string name="sign_up_document_name_required_error">Document name required before uploading</string>
+    <string name="sign_up_document_required_error">Atleast one document is required</string>
+
+
+</resources>

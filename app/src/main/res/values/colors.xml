@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFB900</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#765267</color>
+    <color name="colorTextLine">#E5E5E5</color>
+    <color name="colorTextHint">#A7A7A7</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="background">#FFB900</color>
+
+    <color name="view_background_yellow">#FF960B</color>
+    <color name="view_background_purple">#1C0113</color>
+    <color name="view_background_white">#FFFFFF</color>
+
+    <color name="actionBarPurple">#6D445C</color>
+
+    <color name="slider_color_default">#3F51B5</color>
+    <color name="button_color_default">#FFFFFF</color>
+    <color name="stroke_color_default">#FFFFFF</color>
+
+    <color name="rating_bar">#FFFFFF</color>
+    <color name="rating_bar_selected">#FF960B</color>
+</resources>
