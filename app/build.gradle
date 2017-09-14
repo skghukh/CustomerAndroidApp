@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "25.0.0"
     defaultConfig {
-        applicationId "com.rodafleets.rodadriver"
+        applicationId "com.rodafleets.rodacustomer"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1

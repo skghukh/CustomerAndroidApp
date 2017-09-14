@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_orange"
-    tools:context="com.rodafleets.rodadriver.SplashScreenActivity">
+    tools:context="com.rodafleets.rodacustomer.SplashScreenActivity">
 
     <ImageView
         android:id="@+id/imageView"

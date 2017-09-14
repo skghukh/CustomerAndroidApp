@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.rodafleets.rodadriver.custom.slideview.Slider
+    <com.rodafleets.rodacustomer.custom.slideview.Slider
         android:id="@+id/slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

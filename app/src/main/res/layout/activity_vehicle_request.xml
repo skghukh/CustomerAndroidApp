@@ -158,7 +158,7 @@
                         android:drawablePadding="15dp"
                         android:layout_below="@+id/distance"/>
 
-                    <com.rodafleets.rodadriver.custom.slideview.SlideView
+                    <com.rodafleets.rodacustomer.custom.slideview.SlideView
                         android:id="@+id/makeOfferBtn"
 
                         android:layout_width="match_parent"

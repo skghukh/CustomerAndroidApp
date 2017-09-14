@@ -164,7 +164,7 @@
                     android:textSize="@dimen/text_large"
                     android:layout_centerHorizontal="true" />
 
-                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                <com.rodafleets.rodacustomer.custom.slideview.SlideView
                     android:id="@+id/startLoadingBtn"
 
                     android:layout_width="match_parent"
@@ -216,7 +216,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                <com.rodafleets.rodacustomer.custom.slideview.SlideView
                     android:id="@+id/startTripBtn"
 
                     android:layout_width="match_parent"
@@ -277,7 +277,7 @@
                     android:textSize="@dimen/text_large"
                     android:layout_centerHorizontal="true" />
 
-                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                <com.rodafleets.rodacustomer.custom.slideview.SlideView
                     android:id="@+id/startUnloadingBtn"
 
                     android:layout_width="match_parent"
@@ -329,7 +329,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                <com.rodafleets.rodacustomer.custom.slideview.SlideView
                     android:id="@+id/endTripBtn"
 
                     android:layout_width="match_parent"
@@ -437,7 +437,7 @@
                     android:layout_below="@id/rateCustomerTxt"
                     android:theme="@style/RatingBar" />
 
-                <com.rodafleets.rodadriver.custom.slideview.SlideView
+                <com.rodafleets.rodacustomer.custom.slideview.SlideView
                     android:id="@+id/goOnlineBtn"
 
                     android:layout_width="match_parent"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.rodafleets.rodadriver">
+    package="com.rodafleets.rodacustomer">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,34 +15,34 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashScreenActivity">
+        <activity android:name="com.rodafleets.rodacustomer.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WelcomeActivity" />
-        <activity android:name=".SignInActivity" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".SignUpVerificationActivity" />
-        <activity android:name=".VehicleDetailsActivity" />
-        <activity android:name=".DriverDocs" />
-        <activity android:name=".VehicleRequestListActivity" />
-        <activity android:name=".VehicleRequestActivity" />
-        <activity android:name=".TripProgressActivity" />
-        <activity android:name=".RequestHistoryListActivity" />
+        <activity android:name="com.rodafleets.rodacustomer.WelcomeActivity" />
+        <activity android:name="com.rodafleets.rodacustomer.SignInActivity" />
+        <activity android:name="com.rodafleets.rodacustomer.SignUpActivity" />
+        <activity android:name="com.rodafleets.rodacustomer.SignUpVerificationActivity" />
+        <activity android:name="com.rodafleets.rodacustomer.VehicleDetailsActivity" />
+        <activity android:name="com.rodafleets.rodacustomer.DriverDocs" />
+        <activity android:name="com.rodafleets.rodacustomer.VehicleRequestListActivity" />
+        <activity android:name="com.rodafleets.rodacustomer.VehicleRequestActivity" />
+        <activity android:name="com.rodafleets.rodacustomer.TripProgressActivity" />
+        <activity android:name="com.rodafleets.rodacustomer.RequestHistoryListActivity" />
 
 
         <service
-            android:name=".services.InstanceIdService">
+            android:name="com.rodafleets.rodacustomer.services.InstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name=".services.NotificationService">
+            android:name="com.rodafleets.rodacustomer.services.NotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
