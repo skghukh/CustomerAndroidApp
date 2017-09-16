@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.custom.OtpTextWatcher;
+import com.rodafleets.rodacustomer.model.Customer;
 import com.rodafleets.rodacustomer.model.Driver;
 import com.rodafleets.rodacustomer.rest.ResponseCode;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
@@ -107,9 +108,9 @@ public class SignUpVerificationActivity extends AppCompatActivity {
 
         try {
             JSONObject jsonObject = new JSONObject(ApplicationSettings.getDriver(SignUpVerificationActivity.this));
-            Driver driver = new Driver(jsonObject);
-            firstName.setText(driver.getFirstname());
-            lastName.setText(driver.getLastname());
+            Customer driver = new Customer(jsonObject);
+            firstName.setText(driver.getFirstName());
+            lastName.setText(driver.getLastName());
             phoneNumber.setText(driver.getPhoneNumber());
 
             String gender = driver.getGender();
@@ -148,7 +149,8 @@ public class SignUpVerificationActivity extends AppCompatActivity {
     }
 
     private void startNextActivity(){
-        this.startActivity(new Intent(this, VehicleDetailsActivity.class));
+       // this.startActivity(new Intent(this, VehicleDetailsActivity.class));
+        this.startActivity(new Intent(this, SignInActivity.class));
         finish();
     }
 

@@ -95,7 +95,7 @@ public class RodaRestClient {
         params.put("password", password);
         params.put("otp", otp);
         params.put("session_id", sessionId);
-        RodaRestClient.POST("/drivers/" + driverId, params, responseHandler);
+        RodaRestClient.POST("/customers/" + driverId, params, responseHandler);
     }
 
     public static void getVehicleTypes(JsonHttpResponseHandler responseHandler) {
@@ -129,7 +129,7 @@ public class RodaRestClient {
         params.put("phonenumber", phoneNumber);
         params.put("password", password);
         params.put("android_registrationid", token);
-        RodaRestClient.POST("/drivers/login", params, responseHandler);
+        RodaRestClient.POST("/customers/login", params, responseHandler);
     }
 
     public static void rejectRequest(int requestId, int driverId,  JsonHttpResponseHandler responseHandler) {
