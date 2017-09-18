@@ -13,8 +13,15 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import com.rodafleets.rodacustomer.custom.slideview.SlideView;
@@ -46,6 +53,12 @@ public class VehicleRequestActivity extends MapActivity {
     private SlideView makeOfferBtn;
 
     private VehicleRequest vehicleRequest;
+    private EditText searchSrc;
+    private EditText searchDst;
+    int PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    int PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE = 2;
+    LatLng sourceLatLang;
+    LatLng destLatLang;
 
 
     @Override
@@ -54,6 +67,7 @@ public class VehicleRequestActivity extends MapActivity {
         setContentView(R.layout.activity_vehicle_request);
         initComponents();
     }
+
 
     protected void initComponents() {
         super.initComponents();
@@ -69,6 +83,8 @@ public class VehicleRequestActivity extends MapActivity {
         callCustomerBtn = (Button) findViewById(R.id.callCustomerBtn);
         callAdmin = (TextView) findViewById(R.id.callAdmin);
         makeOfferBtn = (SlideView) findViewById(R.id.makeOfferBtn);
+        searchSrc = (EditText) findViewById(R.id.search_src);
+        searchDst = (EditText) findViewById(R.id.search_dst);
 
         initMap();
         setFonts();
@@ -77,10 +93,66 @@ public class VehicleRequestActivity extends MapActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Vehicle_Requested"));
 
         boolean fromNotification = getIntent().getBooleanExtra("FROM_NOTIFICATION", false);
-        if(fromNotification) {
+        if (fromNotification) {
             Log.i(TAG, "opened from notification");
             showVehicleRequest();
         }
+
+        View.OnClickListener srcSearchListener = clickListener(PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE);
+        searchSrc.setOnClickListener(srcSearchListener);
+        View.OnClickListener dstSearchListener = clickListener(PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE);
+        searchDst.setOnClickListener(dstSearchListener);
+    }
+
+    private View.OnClickListener clickListener(final int requestCode) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try {
+                    Intent intent =
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                                    .build(VehicleRequestActivity.this);
+                    startActivityForResult(intent, requestCode);
+                } catch (GooglePlayServicesRepairableException e) {
+                    // TODO: Handle the error.
+                    System.out.println("OOPS Error" + e);
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    // TODO: Handle the error.
+                    System.out.println("OOPS Error" + e);
+                }
+
+            }
+        };
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE || requestCode == PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                if (requestCode == PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE) {
+                    sourceLatLang = place.getLatLng();
+                    searchSrc.setText(place.getAddress());
+                    resetPickupPointMarker();
+                    resetCurrentMarkers();
+                    addMarkerOnMap(0,sourceLatLang,markerSrc);
+                } else if (requestCode == PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE) {
+                    destLatLang = place.getLatLng();
+                    searchDst.setText(place.getAddress());
+                    resetDropPointMarker();
+                    addMarkerOnMap(1,destLatLang,markerDst);
+                }
+                Log.i(TAG, "Place: " + place.getName());
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
+
     }
 
     private void setFonts() {
@@ -171,7 +243,7 @@ public class VehicleRequestActivity extends MapActivity {
             toAddress.setText(vehicleRequest.getDestinationAddress());
             distance.setText(vehicleRequest.getDistance());
 
-            long fare = vehicleRequest.getApproxFareInCents()/100;
+            long fare = vehicleRequest.getApproxFareInCents() / 100;
 
             makeOfferBtn.setText("₹" + fare);
             requestView.setVisibility(View.VISIBLE);

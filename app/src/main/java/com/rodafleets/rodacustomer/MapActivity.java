@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,6 +19,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -27,11 +29,22 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.rodafleets.rodacustomer.model.NearByDrivers;
 import com.rodafleets.rodacustomer.model.VehicleRequest;
+import com.rodafleets.rodacustomer.rest.RodaRestClient;
 import com.rodafleets.rodacustomer.utils.AppConstants;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 public class MapActivity extends ParentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -51,10 +64,15 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
     private Bitmap redIcon;
     private Bitmap greenIcon;
     private Bitmap carIcon;
+    Bitmap markerSrc;
+    Bitmap markerDst;
+    private List<LatLng> nearByDrivers;
+    private boolean firstTime = true;
 
     @Override
     public void onPause() {
         super.onPause();
+        firstTime = true;
 //        //stop location updates when Activity is no longer active
 //        if (mGoogleApiClient != null) {
 //            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
@@ -72,7 +90,8 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap=googleMap;
+
+        mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         //Initialize Google Play Services
@@ -94,6 +113,7 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
         }
 
         initMarkerBitmaps();
+        RodaRestClient.getNearByDriverLocations(10.1, 10.8, getNearByDriverLocationResponseHandler);
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -119,27 +139,52 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
     }
 
     @Override
-    public void onConnectionSuspended(int i) {}
+    public void onConnectionSuspended(int i) {
+    }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {}
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+    }
 
-    private void initMarkerBitmaps(){
+    private void initMarkerBitmaps() {
 
-        int marker_height = 45;
-        int marker_width = 32;
+        int marker_height = 90;
+        int marker_width = 60;
 
-        int car_height = 30;
-        int car_width = 37;
+        int car_height = 18;
+        int car_width = 33;
 
         greenIcon = BitmapFactory.decodeResource(getResources(), R.drawable.marker_green);
         redIcon = BitmapFactory.decodeResource(getResources(), R.drawable.marker_red);
         carIcon = BitmapFactory.decodeResource(getResources(), R.drawable.car_icon);
+        markerDst = BitmapFactory.decodeResource(getResources(), R.drawable.marker_dest);
+        markerSrc = BitmapFactory.decodeResource(getResources(), R.drawable.marker_src);
+
 
         greenIcon = Bitmap.createScaledBitmap(greenIcon, marker_width, marker_height, false);
         redIcon = Bitmap.createScaledBitmap(redIcon, marker_width, marker_height, false);
         carIcon = Bitmap.createScaledBitmap(carIcon, car_width, car_height, false);
+        markerDst = Bitmap.createScaledBitmap(markerDst, 125, 200, false);
+        markerSrc = Bitmap.createScaledBitmap(markerSrc, 150, 200, false);
+    }
 
+
+    protected void resetCurrentMarkers() {
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+    }
+
+    protected void resetPickupPointMarker() {
+        if (pickupPointMarker != null) {
+            pickupPointMarker.remove();
+        }
+    }
+
+    protected void resetDropPointMarker() {
+        if (dropPointMarker != null) {
+            dropPointMarker.remove();
+        }
     }
 
     @Override
@@ -149,18 +194,26 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
             mCurrLocationMarker.remove();
         }
 
-        //Place current location marker
+        for (LatLng pos : nearByDrivers) {
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(pos);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(carIcon));
+            Marker driverPosition = mGoogleMap.addMarker(markerOptions);
+            mGoogleMap.addMarker(markerOptions);
+        }
+
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        if (pickupPointMarker == null && dropPointMarker == null) {
+            //Place current location marker
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
 
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(greenIcon));
 
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(carIcon));
+            mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
-        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-
-
-        if(!ApplicationSettings.getVehicleRequest(this).equals("")) {
+        }
+        if (!ApplicationSettings.getVehicleRequest(this).equals("")) {
 
             VehicleRequest vehicleRequest;
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -201,12 +254,51 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
             LatLngBounds bounds = builder.build();
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
         } else {
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
+            if (firstTime) {
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f));
+                firstTime = false;
+            }
         }
 
         mGoogleMap.setMyLocationEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+
     }
+
+    protected void addMarkerOnMap(int source, LatLng pos, Bitmap icon) {
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(pos);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+        Marker driverPosition = mGoogleMap.addMarker(markerOptions);
+        if (source == 0) {
+            pickupPointMarker = mGoogleMap.addMarker(markerOptions);
+        } else {
+            driverPosition = mGoogleMap.addMarker(markerOptions);
+        }
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16f));
+    }
+
+    private JsonHttpResponseHandler getNearByDriverLocationResponseHandler = new JsonHttpResponseHandler() {
+        public void onSuccess(int statusCode, Header[] headers, JSONObject jsonResponseObject) {
+            System.out.println(jsonResponseObject);
+            nearByDrivers = new ArrayList<>();
+            //JSONObject nearBys = jsonResponseObject.getJSONObject("nearBys");
+
+            Gson gson = new GsonBuilder().create();
+            NearByDrivers nearByDriversLocList = gson.fromJson(jsonResponseObject.toString(), NearByDrivers.class);
+
+            for (Pair pair : nearByDriversLocList.getNearBys()) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                LatLng driverPositon = new LatLng((Double) pair.first, (Double) pair.second);
+                nearByDrivers.add(driverPositon);
+            }
+
+        }
+
+        public final void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            System.out.println(errorResponse);
+        }
+    };
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
@@ -230,7 +322,7 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
                                 //Prompt the user once explanation has been shown
                                 ActivityCompat.requestPermissions(MapActivity.this,
                                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION );
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
                             }
                         })
                         .create()
@@ -241,7 +333,7 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION );
+                        MY_PERMISSIONS_REQUEST_LOCATION);
             }
         }
     }

@@ -144,4 +144,12 @@ public class RodaRestClient {
         params.put("bid_amount_in_cents", fareInCents);
         RodaRestClient.POST("/requests/" + requestId + "/bids", params, responseHandler);
     }
+
+    public static void getNearByDriverLocations(Double lat, Double lan,JsonHttpResponseHandler responseHandler){
+        RequestParams params = new RequestParams();
+        params.put("lat",lat);
+        params.put("lan",lan);
+        RodaRestClient.GET("/customers/nearybys", params, responseHandler);
+
+    }
 }
