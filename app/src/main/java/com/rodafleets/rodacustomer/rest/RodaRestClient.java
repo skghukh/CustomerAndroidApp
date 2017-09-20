@@ -152,4 +152,16 @@ public class RodaRestClient {
         RodaRestClient.GET("/customers/nearybys", params, responseHandler);
 
     }
+
+    public static void requestVehicle(int custId, int vehicleTypeId, Double sourceLat, Double sourceLan, Double destLat, Double destLan, JsonHttpResponseHandler responseHandler){
+        RequestParams params = new RequestParams();
+        params.put("customer_id",custId);
+        params.put("vehicletype_id",vehicleTypeId);
+        params.put("origin_lat",sourceLat);
+        params.put("origin_lng",sourceLan);
+        params.put("destination_lat",destLat);
+        params.put("destination_lng",destLan);
+        params.put("approx_fare_in_cents",3000);
+        RodaRestClient.POST("/requests", params, responseHandler);
+    }
 }

@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -38,19 +39,8 @@ public class VehicleRequestActivity extends MapActivity {
 
     public static final String TAG = AppConstants.APP_NAME;
 
-    private CardView requestView;
+    private CardView receiverDetailsView;
 
-    private TextView customerName;
-    private TextView fromAddress;
-    private TextView toAddress;
-    private TextView distance;
-    private TextView loadingUnloadingTxt;
-    private TextView makeOfferTxt;
-    private TextView callAdmin;
-
-    private Button callCustomerBtn;
-
-    private SlideView makeOfferBtn;
 
     private VehicleRequest vehicleRequest;
     private EditText searchSrc;
@@ -71,37 +61,30 @@ public class VehicleRequestActivity extends MapActivity {
 
     protected void initComponents() {
         super.initComponents();
-        requestView = (CardView) findViewById(R.id.requestView);
-
-        customerName = (TextView) findViewById(R.id.customerName);
-        fromAddress = (TextView) findViewById(R.id.fromAddress);
-        toAddress = (TextView) findViewById(R.id.toAddress);
-        distance = (TextView) findViewById(R.id.distance);
-        loadingUnloadingTxt = (TextView) findViewById(R.id.loadingUnloadingTxt);
-        makeOfferTxt = (TextView) findViewById(R.id.makeOfferTxt);
-
-        callCustomerBtn = (Button) findViewById(R.id.callCustomerBtn);
-        callAdmin = (TextView) findViewById(R.id.callAdmin);
-        makeOfferBtn = (SlideView) findViewById(R.id.makeOfferBtn);
         searchSrc = (EditText) findViewById(R.id.search_src);
         searchDst = (EditText) findViewById(R.id.search_dst);
-
+        receiverDetailsView =(CardView) findViewById(R.id.receiverDetailsCardView);
+        /*if(receiverDetailsView !=null){
+            receiverDetailsView.setVisibility(View.INVISIBLE);
+        }*/
         initMap();
         setFonts();
-        initMakeOfferBtn();
-
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Vehicle_Requested"));
-
         boolean fromNotification = getIntent().getBooleanExtra("FROM_NOTIFICATION", false);
         if (fromNotification) {
             Log.i(TAG, "opened from notification");
             showVehicleRequest();
         }
 
-        View.OnClickListener srcSearchListener = clickListener(PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE);
-        searchSrc.setOnClickListener(srcSearchListener);
-        View.OnClickListener dstSearchListener = clickListener(PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE);
-        searchDst.setOnClickListener(dstSearchListener);
+        if(searchSrc!=null) {
+            View.OnClickListener srcSearchListener = clickListener(PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE);
+            searchSrc.setOnClickListener(srcSearchListener);
+        }
+        if(searchDst!=null) {
+            View.OnClickListener dstSearchListener = clickListener(PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE);
+            searchDst.setOnClickListener(dstSearchListener);
+        }
+
     }
 
     private View.OnClickListener clickListener(final int requestCode) {
@@ -142,7 +125,10 @@ public class VehicleRequestActivity extends MapActivity {
                     searchDst.setText(place.getAddress());
                     resetDropPointMarker();
                     addMarkerOnMap(1,destLatLang,markerDst);
+
+                   // receiverDetailsView.invalidate();
                 }
+                checkIfSourceDestinationAvailable();
                 Log.i(TAG, "Place: " + place.getName());
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
@@ -155,53 +141,50 @@ public class VehicleRequestActivity extends MapActivity {
 
     }
 
+    private void checkIfSourceDestinationAvailable() {
+        if (null != sourceLatLang && null != destLatLang)
+            receiverDetailsView.setVisibility(View.VISIBLE);
+    }
+
     private void setFonts() {
         loadFonts();
-        customerName.setTypeface(poppinsMedium);
-        fromAddress.setTypeface(poppinsRegular);
-        toAddress.setTypeface(poppinsRegular);
-        distance.setTypeface(poppinsLight);
-        loadingUnloadingTxt.setTypeface(poppinsSemiBold);
 //        makeOfferBtn.setTypeface(poppinsSemiBold);
-        makeOfferTxt.setTypeface(poppinsRegular);
-        callCustomerBtn.setTypeface(poppinsMedium);
-        callAdmin.setTypeface(poppinsRegular);
     }
 
-    private void initMakeOfferBtn() {
-        makeOfferBtn.getSlider().setOnTouchListener(new AppCompatSeekBar.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                int action = event.getAction();
-
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Disallow ScrollView to intercept touch events.
-                        v.getParent().requestDisallowInterceptTouchEvent(true);
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        // Allow ScrollView to intercept touch events.
-                        v.getParent().requestDisallowInterceptTouchEvent(false);
-                        break;
-                }
-
-                v.onTouchEvent(event);
-
-                makeOfferBtn.getSlider().onTouchEvent(event);
-
-                return false;
-            }
-        });
-
-        makeOfferBtn.setOnSlideCompleteListener(new SlideView.OnSlideCompleteListener() {
-            @Override
-            public void onSlideComplete(SlideView slideView) {
-                bidRequest();
-            }
-        });
-    }
+//    private void initMakeOfferBtn() {
+//        makeOfferBtn.getSlider().setOnTouchListener(new AppCompatSeekBar.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                int action = event.getAction();
+//
+//                switch (action) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        // Disallow ScrollView to intercept touch events.
+//                        v.getParent().requestDisallowInterceptTouchEvent(true);
+//                        break;
+//
+//                    case MotionEvent.ACTION_UP:
+//                        // Allow ScrollView to intercept touch events.
+//                        v.getParent().requestDisallowInterceptTouchEvent(false);
+//                        break;
+//                }
+//
+//                v.onTouchEvent(event);
+//
+//                makeOfferBtn.getSlider().onTouchEvent(event);
+//
+//                return false;
+//            }
+//        });
+//
+//        makeOfferBtn.setOnSlideCompleteListener(new SlideView.OnSlideCompleteListener() {
+//            @Override
+//            public void onSlideComplete(SlideView slideView) {
+//                bidRequest();
+//            }
+//        });
+//    }
 
     private void bidRequest() {
         int driverId = ApplicationSettings.getDriverId(VehicleRequestActivity.this);
@@ -238,15 +221,12 @@ public class VehicleRequestActivity extends MapActivity {
 
             RodaDriverApplication.vehicleRequests.add(vehicleRequest);
 
-            customerName.setText(vehicleRequest.getCustomerName().toUpperCase());
-            fromAddress.setText(vehicleRequest.getOriginAddress());
-            toAddress.setText(vehicleRequest.getDestinationAddress());
-            distance.setText(vehicleRequest.getDistance());
+
 
             long fare = vehicleRequest.getApproxFareInCents() / 100;
 
-            makeOfferBtn.setText("₹" + fare);
-            requestView.setVisibility(View.VISIBLE);
+
+           // requestView.setVisibility(View.VISIBLE);
 
         } catch (Exception e) {
             //handle error
@@ -276,7 +256,7 @@ public class VehicleRequestActivity extends MapActivity {
             Log.i(AppConstants.APP_NAME, "response = " + jsonResponseObject.toString());
             ApplicationSettings.setVehicleRequest(VehicleRequestActivity.this, null);
             clearMap();
-            requestView.setVisibility(View.GONE);
+           // requestView.setVisibility(View.GONE);
         }
 
         public final void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
@@ -285,6 +265,24 @@ public class VehicleRequestActivity extends MapActivity {
 //            } else {
 //                sb = Snackbar.make(constraintLayout, getString(R.string.default_error), Snackbar.LENGTH_LONG);
 //            }
+        }
+    };
+
+    public void makeVehicleRequest(View view) {
+        if(sourceLatLang !=null && destLatLang !=null)
+        RodaRestClient.requestVehicle(1,1,sourceLatLang.latitude,sourceLatLang.longitude,destLatLang.latitude,destLatLang.longitude,vehicleReqestHandler);
+    }
+
+    private JsonHttpResponseHandler vehicleReqestHandler = new JsonHttpResponseHandler(){
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            System.out.println("Response code is "+statusCode+" Response is "+response);
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            super.onFailure(statusCode, headers, throwable, errorResponse);
+            System.out.println("Oops ! "+errorResponse);
         }
     };
 }
