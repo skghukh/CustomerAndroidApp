@@ -34,9 +34,8 @@ public class VehicleRequestActivity extends MapActivity {
 
     public static final String TAG = AppConstants.APP_NAME;
 
-    private CardView receiverDetailsView;
-
-
+    private CardView receiverDetailsCardView;
+    private   RelativeLayout selectedVehicle;
     private VehicleRequest vehicleRequest;
     private EditText searchSrc;
     private EditText searchDst;
@@ -45,7 +44,7 @@ public class VehicleRequestActivity extends MapActivity {
     int viewType = 1;
     LatLng sourceLatLang;
     LatLng destLatLang;
-    RelativeLayout selectedVehicle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,7 @@ public class VehicleRequestActivity extends MapActivity {
         super.initComponents();
         searchSrc = (EditText) findViewById(R.id.search_src);
         searchDst = (EditText) findViewById(R.id.search_dst);
-        receiverDetailsView = (CardView) findViewById(R.id.receiverDetailsCardView);
+        receiverDetailsCardView = (CardView) findViewById(R.id.receiverDetailsCardView);
         /*if(receiverDetailsView !=null){
             receiverDetailsView.setVisibility(View.INVISIBLE);
         }*/
@@ -139,7 +138,7 @@ public class VehicleRequestActivity extends MapActivity {
 
     private void checkIfSourceDestinationAvailable() {
         if (null != sourceLatLang && null != destLatLang)
-            receiverDetailsView.setVisibility(View.VISIBLE);
+            receiverDetailsCardView.setVisibility(View.VISIBLE);
     }
 
     private void setFonts() {
@@ -147,40 +146,6 @@ public class VehicleRequestActivity extends MapActivity {
 //        makeOfferBtn.setTypeface(poppinsSemiBold);
     }
 
-//    private void initMakeOfferBtn() {
-//        makeOfferBtn.getSlider().setOnTouchListener(new AppCompatSeekBar.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                int action = event.getAction();
-//
-//                switch (action) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        // Disallow ScrollView to intercept touch events.
-//                        v.getParent().requestDisallowInterceptTouchEvent(true);
-//                        break;
-//
-//                    case MotionEvent.ACTION_UP:
-//                        // Allow ScrollView to intercept touch events.
-//                        v.getParent().requestDisallowInterceptTouchEvent(false);
-//                        break;
-//                }
-//
-//                v.onTouchEvent(event);
-//
-//                makeOfferBtn.getSlider().onTouchEvent(event);
-//
-//                return false;
-//            }
-//        });
-//
-//        makeOfferBtn.setOnSlideCompleteListener(new SlideView.OnSlideCompleteListener() {
-//            @Override
-//            public void onSlideComplete(SlideView slideView) {
-//                bidRequest();
-//            }
-//        });
-//    }
 
     private void bidRequest() {
         int driverId = ApplicationSettings.getCustomerId(VehicleRequestActivity.this);
@@ -267,19 +232,19 @@ public class VehicleRequestActivity extends MapActivity {
         RelativeLayout receiverDetails = (RelativeLayout) findViewById(R.id.receiverDetailsView);
         RelativeLayout selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
         if (null != receiverDetails && null != selectVehicleType) {
-            receiverDetails.setVisibility(View.INVISIBLE);
+            receiverDetails.setVisibility(View.GONE);
             selectVehicleType.setVisibility(View.VISIBLE);
         }
     }
 
     private void resetSelected(View view) {
         if (null != selectedVehicle) {
-            selectedVehicle.setBackground(view.getBackground());
+            selectedVehicle.setBackground(getResources().getDrawable(R.drawable.vehicle_request_list_item_unselect_background));
         }
     }
     private void setSelected(View view){
         selectedVehicle = (RelativeLayout) view;
-        selectedVehicle.setBackgroundColor(getResources().getColor(R.color.selected_vehicle_bg));
+        selectedVehicle.setBackground(getResources().getDrawable(R.drawable.vehicle_request_list_item_selected_background));
     }
 
     public void selectVehicleType(View view) {

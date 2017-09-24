@@ -136,40 +136,6 @@
             </RelativeLayout>
 
 
-            <!-- <RelativeLayout
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:gravity="center_horizontal">
-
-                 <ImageView
-                     android:id="@+id/customerThumbnail"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     app:srcCompat="@drawable/user_thumbnail" />
-
-                 <TextView
-                     android:id="@+id/customerName"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_marginLeft="20dp"
-                     android:layout_marginTop="15dp"
-                     android:layout_toRightOf="@id/customerThumbnail"
-                     android:text="ADITYA BHARDWAJ"
-                     android:textColor="#FFFFFF"
-                     android:textSize="@dimen/text_medium" />
-
-                 <TextView
-                     android:id="@+id/acceptanceStatus"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_marginLeft="20dp"
-                     android:layout_marginTop="15dp"
-                     android:layout_toRightOf="@id/customerName"
-                     android:text="PENDING"
-                     android:textColor="#765267"
-                     android:textSize="@dimen/text_medium" />
-
-             </RelativeLayout>-->
 
         </android.support.v7.widget.CardView>
 

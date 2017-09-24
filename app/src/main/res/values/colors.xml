@@ -26,4 +26,5 @@
     <color name="Source_dest_font">#303030</color>
 
     <color name="selected_vehicle_bg">#5eaf00</color>
+    <color name="reqeust_pickup_button_bg">#ff960b</color>
 </resources>
