@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.model.Customer;
-import com.rodafleets.rodacustomer.model.Driver;
 import com.rodafleets.rodacustomer.rest.ResponseCode;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
 import com.rodafleets.rodacustomer.utils.AppConstants;
@@ -144,7 +143,7 @@ public class SignUpActivity extends AppCompatActivity {
             try {
                 Log.i(AppConstants.APP_NAME, "response = " + jsonResponseObject.toString());
                 Customer newDriver = new Customer(jsonResponseObject.getJSONObject("customer"));
-                ApplicationSettings.setDriverId(SignUpActivity.this, newDriver.getId());
+                ApplicationSettings.setCustomerId(SignUpActivity.this, newDriver.getId());
                 ApplicationSettings.setOtpSessionId(SignUpActivity.this, jsonResponseObject.getString("sessionId"));
                 ApplicationSettings.setDriver(SignUpActivity.this, jsonResponseObject.getJSONObject("customer"));
                 progressDialog.dismiss();

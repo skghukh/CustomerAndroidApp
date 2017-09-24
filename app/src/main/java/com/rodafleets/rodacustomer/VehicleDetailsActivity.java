@@ -166,7 +166,7 @@ public class VehicleDetailsActivity extends AppCompatActivity {
         if (validated) {
             progressBar.setIndeterminate(true);
             progressBar.setVisibility(View.VISIBLE);
-            int driverId = ApplicationSettings.getDriverId(VehicleDetailsActivity.this);
+            int driverId = ApplicationSettings.getCustomerId(VehicleDetailsActivity.this);
             if(isOwner.isChecked()) {
                 RodaRestClient.saveVehicleInfo(driverId, vNumber, selectedVehicleTypeId, saveVehicleInfoResponseHandler);
             } else{

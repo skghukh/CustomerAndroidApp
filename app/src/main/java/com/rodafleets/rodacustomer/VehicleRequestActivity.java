@@ -7,15 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -25,7 +21,6 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import com.rodafleets.rodacustomer.custom.slideview.SlideView;
 import com.rodafleets.rodacustomer.model.VehicleRequest;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
 import com.rodafleets.rodacustomer.utils.AppConstants;
@@ -47,6 +42,7 @@ public class VehicleRequestActivity extends MapActivity {
     private EditText searchDst;
     int PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE = 1;
     int PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE = 2;
+    int viewType = 1;
     LatLng sourceLatLang;
     LatLng destLatLang;
 
@@ -187,12 +183,12 @@ public class VehicleRequestActivity extends MapActivity {
 //    }
 
     private void bidRequest() {
-        int driverId = ApplicationSettings.getDriverId(VehicleRequestActivity.this);
+        int driverId = ApplicationSettings.getCustomerId(VehicleRequestActivity.this);
         RodaRestClient.bidRequest(vehicleRequest.getId(), driverId, vehicleRequest.getApproxFareInCents(), bidRequestResponseHandler);
     }
 
     public void onRejectBtnClick(View view) {
-        int driverId = ApplicationSettings.getDriverId(VehicleRequestActivity.this);
+        int driverId = ApplicationSettings.getCustomerId(VehicleRequestActivity.this);
         RodaRestClient.rejectRequest(vehicleRequest.getId(), driverId, rejectRequestResponseHandler);
     }
 
@@ -201,7 +197,7 @@ public class VehicleRequestActivity extends MapActivity {
     }
 
     private void startNextActivity() {
-        this.startActivity(new Intent(this, TripProgressActivity.class));
+        this.startActivity(new Intent(this, RequestConfirmationDetails.class));
         finish();
     }
 
@@ -268,15 +264,38 @@ public class VehicleRequestActivity extends MapActivity {
         }
     };
 
+    public void showVehicleTypes(View view){
+        RelativeLayout receiverDetails = (RelativeLayout) findViewById(R.id.receiverDetailsView);
+        RelativeLayout selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
+        if(null != receiverDetails && null!=selectVehicleType){
+            receiverDetails.setVisibility(View.INVISIBLE);
+            selectVehicleType.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void selectVehicleType(View view){
+        if(null!=view){
+            if(view.getId()==R.id.imageViewSmall){
+                viewType = 1;
+            }else if(view.getId() == R.id.imageViewMedium){
+                viewType = 2;
+            }else if(view.getId() == R.id.imageViewMedium){
+                viewType = 3;
+            }
+            viewType = 1;
+        }
+    }
+
     public void makeVehicleRequest(View view) {
         if(sourceLatLang !=null && destLatLang !=null)
-        RodaRestClient.requestVehicle(1,1,sourceLatLang.latitude,sourceLatLang.longitude,destLatLang.latitude,destLatLang.longitude,vehicleReqestHandler);
+        RodaRestClient.requestVehicle(ApplicationSettings.getCustomerId(VehicleRequestActivity.this),1,sourceLatLang.latitude,sourceLatLang.longitude,destLatLang.latitude,destLatLang.longitude,vehicleReqestHandler);
     }
 
     private JsonHttpResponseHandler vehicleReqestHandler = new JsonHttpResponseHandler(){
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             System.out.println("Response code is "+statusCode+" Response is "+response);
+            startNextActivity();
         }
 
         @Override

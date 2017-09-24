@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.model.Customer;
-import com.rodafleets.rodacustomer.model.Driver;
 import com.rodafleets.rodacustomer.rest.ResponseCode;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
 import com.rodafleets.rodacustomer.utils.AppConstants;
@@ -130,7 +129,7 @@ public class SignInActivity extends AppCompatActivity {
                 Log.i(AppConstants.APP_NAME, "response = " + jsonResponseObject.toString());
                 JSONObject driverJson = jsonResponseObject.getJSONObject("customer");
                 Customer driver = new Customer(driverJson);
-                ApplicationSettings.setDriverId(SignInActivity.this, driver.getId());
+                ApplicationSettings.setCustomerId(SignInActivity.this, driver.getId());
                 ApplicationSettings.setDriver(SignInActivity.this, driverJson);
                 ApplicationSettings.setLoggedIn(SignInActivity.this, true);
                 startNextActivity();

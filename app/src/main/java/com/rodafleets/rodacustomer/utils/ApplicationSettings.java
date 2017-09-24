@@ -42,13 +42,13 @@ public final class ApplicationSettings {
         return getSharedPreferences(context).getString(APP_LANGUAGE, "");
     }
 
-    public static void setDriverId(Context context, int driverId) {
+    public static void setCustomerId(Context context, int driverId) {
         SharedPreferences.Editor editor = getEditor(context);
         editor.putInt(DRIVER_ID, driverId);
         editor.commit();
     }
 
-    public static int getDriverId(Context context) {
+    public static int getCustomerId(Context context) {
         return getSharedPreferences(context).getInt(DRIVER_ID, 0);
     }
 

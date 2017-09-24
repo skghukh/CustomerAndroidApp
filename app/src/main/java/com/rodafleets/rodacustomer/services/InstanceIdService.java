@@ -22,7 +22,7 @@ public class InstanceIdService extends FirebaseInstanceIdService {
         Log.i(AppConstants.APP_NAME, "Refreshed token: " + refreshedToken);
         ApplicationSettings.setRegistrationId(this, refreshedToken);
 
-        int driverId = ApplicationSettings.getDriverId(this);
+        int driverId = ApplicationSettings.getCustomerId(this);
         if(driverId != 0) {
             RodaRestClient.updateDeviceRegistrationId(driverId, refreshedToken, responseHandler);
         }

@@ -80,6 +80,10 @@ public class NotificationService extends FirebaseMessagingService {
             ApplicationSettings.setVehicleRequest(this, vehicleRequest);
         } else if(notificationTitle.equals("Accept")) {
             intent = new Intent("Bid_Accepted");
+        }else if(notificationTitle.equals("Request_Accepted")){
+            //This is for customer side
+            System.out.println("Vehicle request has been accepted!");
+            intent = new Intent("Request_Accepted");
         }
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);

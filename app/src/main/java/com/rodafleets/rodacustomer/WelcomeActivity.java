@@ -44,7 +44,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     public void signUp(View view){
 
-        int driverId = ApplicationSettings.getDriverId(WelcomeActivity.this);
+        int driverId = ApplicationSettings.getCustomerId(WelcomeActivity.this);
         Boolean verified = ApplicationSettings.getVerified(WelcomeActivity.this);
         Boolean vehicleInfoSaved = ApplicationSettings.getVehicleInfoSaved(WelcomeActivity.this);
 

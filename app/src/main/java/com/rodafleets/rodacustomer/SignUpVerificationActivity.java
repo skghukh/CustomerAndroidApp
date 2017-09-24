@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.custom.OtpTextWatcher;
 import com.rodafleets.rodacustomer.model.Customer;
-import com.rodafleets.rodacustomer.model.Driver;
 import com.rodafleets.rodacustomer.rest.ResponseCode;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
 import com.rodafleets.rodacustomer.utils.AppConstants;
@@ -149,7 +148,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
     }
 
     private void startNextActivity(){
-       // this.startActivity(new Intent(this, VehicleDetailsActivity.class));
+        //this.startActivity(new Intent(this, VehicleDetailsActivity.class));
         this.startActivity(new Intent(this, SignInActivity.class));
         finish();
     }
@@ -179,7 +178,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setMessage(getString(R.string.sign_up_saving));
             progressDialog.show();
-            int driverId = ApplicationSettings.getDriverId(SignUpVerificationActivity.this);
+            int driverId = ApplicationSettings.getCustomerId(SignUpVerificationActivity.this);
             String sessionId = ApplicationSettings.getOtpSessionId(SignUpVerificationActivity.this);
             RodaRestClient.saveDriver(driverId, pwd, otp, sessionId, responseHandler);
         }
