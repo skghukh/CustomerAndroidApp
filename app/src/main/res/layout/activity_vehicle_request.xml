@@ -74,7 +74,7 @@
             android:id="@+id/receiverDetailsCardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:cardBackgroundColor="@android:color/white"
             app:contentPadding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -88,6 +88,7 @@
                 android:layout_height="200dp"
                 android:gravity="bottom"
                 android:paddingTop="50px"
+                android:visibility="gone"
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="8dp">
 
@@ -139,106 +140,106 @@
             <RelativeLayout
                 android:id="@+id/selectVehicleType"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
+                android:layout_gravity="bottom"
                 android:gravity="bottom"
-                android:paddingTop="20px"
-                android:visibility="invisible"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="8dp">
-
-                <HorizontalScrollView
-                    android:id="@+id/vehicle_types_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="bottom"
-                        android:weightSum="3"
-                        android:layout_marginBottom="20dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="bottom"
-                            android:layout_marginRight="20dp"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/imageViewSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/vehicle_small"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:text="Small Load"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="bottom"
-                            android:layout_marginRight="20dp"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/imageViewMedium"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/vehicle_medium" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:text="Medium Load" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="bottom"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/imageViewLarge"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/vehicle_large" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:text="Heavy Load" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </HorizontalScrollView>
+                android:visibility="visible">
 
                 <Button
                     android:id="@+id/nextButton2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/vehicle_types_view"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15px"
                     android:layout_marginRight="15px"
-                    android:layout_marginTop="10dp"
-                    android:hint="Phone Number"
                     android:onClick="makeVehicleRequest"
                     android:text="Next" />
+
+                <LinearLayout
+                    android:id="@+id/vehicle_lists_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@id/nextButton2"
+                    android:weightSum="3">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:onClick="selectVehicleType"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <ImageView
+                            android:id="@+id/imageViewSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="fill_parent"
+                            app:srcCompat="@drawable/vehicle_small" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/imageViewSmall"
+                            android:layout_marginTop="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:text="Small Load" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:onClick="selectVehicleType"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <ImageView
+                            android:id="@+id/imageViewMedium"
+                            android:layout_width="match_parent"
+                            android:layout_height="fill_parent"
+                            app:srcCompat="@drawable/vehicle_small" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/imageViewMedium"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="20dp"
+                            android:text="Medium Load" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:onClick="selectVehicleType"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <ImageView
+                            android:id="@+id/imageViewLarge"
+                            android:layout_width="match_parent"
+                            android:layout_height="fill_parent"
+                            app:srcCompat="@drawable/vehicle_medium" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/imageViewLarge"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="20dp"
+                            android:text="Large Load" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>

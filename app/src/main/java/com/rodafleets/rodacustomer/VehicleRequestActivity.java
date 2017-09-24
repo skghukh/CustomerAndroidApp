@@ -2,15 +2,16 @@ package com.rodafleets.rodacustomer;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -20,7 +21,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.JsonHttpResponseHandler;
-
 import com.rodafleets.rodacustomer.model.VehicleRequest;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
 import com.rodafleets.rodacustomer.utils.AppConstants;
@@ -45,7 +45,7 @@ public class VehicleRequestActivity extends MapActivity {
     int viewType = 1;
     LatLng sourceLatLang;
     LatLng destLatLang;
-
+    RelativeLayout selectedVehicle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class VehicleRequestActivity extends MapActivity {
         super.initComponents();
         searchSrc = (EditText) findViewById(R.id.search_src);
         searchDst = (EditText) findViewById(R.id.search_dst);
-        receiverDetailsView =(CardView) findViewById(R.id.receiverDetailsCardView);
+        receiverDetailsView = (CardView) findViewById(R.id.receiverDetailsCardView);
         /*if(receiverDetailsView !=null){
             receiverDetailsView.setVisibility(View.INVISIBLE);
         }*/
@@ -72,11 +72,11 @@ public class VehicleRequestActivity extends MapActivity {
             showVehicleRequest();
         }
 
-        if(searchSrc!=null) {
+        if (searchSrc != null) {
             View.OnClickListener srcSearchListener = clickListener(PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE);
             searchSrc.setOnClickListener(srcSearchListener);
         }
-        if(searchDst!=null) {
+        if (searchDst != null) {
             View.OnClickListener dstSearchListener = clickListener(PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE);
             searchDst.setOnClickListener(dstSearchListener);
         }
@@ -115,14 +115,14 @@ public class VehicleRequestActivity extends MapActivity {
                     searchSrc.setText(place.getAddress());
                     resetPickupPointMarker();
                     resetCurrentMarkers();
-                    addMarkerOnMap(0,sourceLatLang,markerSrc);
+                    addMarkerOnMap(0, sourceLatLang, markerSrc);
                 } else if (requestCode == PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE) {
                     destLatLang = place.getLatLng();
                     searchDst.setText(place.getAddress());
                     resetDropPointMarker();
-                    addMarkerOnMap(1,destLatLang,markerDst);
+                    addMarkerOnMap(1, destLatLang, markerDst);
 
-                   // receiverDetailsView.invalidate();
+                    // receiverDetailsView.invalidate();
                 }
                 checkIfSourceDestinationAvailable();
                 Log.i(TAG, "Place: " + place.getName());
@@ -197,8 +197,8 @@ public class VehicleRequestActivity extends MapActivity {
     }
 
     private void startNextActivity() {
-        this.startActivity(new Intent(this, RequestConfirmationDetails.class));
-        finish();
+        // this.startActivity(new Intent(this, RequestConfirmationDetails.class));
+        // finish();
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -218,11 +218,10 @@ public class VehicleRequestActivity extends MapActivity {
             RodaDriverApplication.vehicleRequests.add(vehicleRequest);
 
 
-
             long fare = vehicleRequest.getApproxFareInCents() / 100;
 
 
-           // requestView.setVisibility(View.VISIBLE);
+            // requestView.setVisibility(View.VISIBLE);
 
         } catch (Exception e) {
             //handle error
@@ -252,7 +251,7 @@ public class VehicleRequestActivity extends MapActivity {
             Log.i(AppConstants.APP_NAME, "response = " + jsonResponseObject.toString());
             ApplicationSettings.setVehicleRequest(VehicleRequestActivity.this, null);
             clearMap();
-           // requestView.setVisibility(View.GONE);
+            // requestView.setVisibility(View.GONE);
         }
 
         public final void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
@@ -264,44 +263,49 @@ public class VehicleRequestActivity extends MapActivity {
         }
     };
 
-    public void showVehicleTypes(View view){
+    public void showVehicleTypes(View view) {
         RelativeLayout receiverDetails = (RelativeLayout) findViewById(R.id.receiverDetailsView);
         RelativeLayout selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
-        if(null != receiverDetails && null!=selectVehicleType){
+        if (null != receiverDetails && null != selectVehicleType) {
             receiverDetails.setVisibility(View.INVISIBLE);
             selectVehicleType.setVisibility(View.VISIBLE);
         }
     }
 
-    public void selectVehicleType(View view){
-        if(null!=view){
-            if(view.getId()==R.id.imageViewSmall){
-                viewType = 1;
-            }else if(view.getId() == R.id.imageViewMedium){
-                viewType = 2;
-            }else if(view.getId() == R.id.imageViewMedium){
-                viewType = 3;
-            }
+    private void resetSelected(View view) {
+        if (null != selectedVehicle) {
+            selectedVehicle.setBackground(view.getBackground());
+        }
+    }
+    private void setSelected(View view){
+        selectedVehicle = (RelativeLayout) view;
+        selectedVehicle.setBackgroundColor(getResources().getColor(R.color.selected_vehicle_bg));
+    }
+
+    public void selectVehicleType(View view) {
+        if (null != view) {
+            resetSelected(view);
+            setSelected(view);
             viewType = 1;
         }
     }
 
     public void makeVehicleRequest(View view) {
-        if(sourceLatLang !=null && destLatLang !=null)
-        RodaRestClient.requestVehicle(ApplicationSettings.getCustomerId(VehicleRequestActivity.this),1,sourceLatLang.latitude,sourceLatLang.longitude,destLatLang.latitude,destLatLang.longitude,vehicleReqestHandler);
+        if (sourceLatLang != null && destLatLang != null)
+            RodaRestClient.requestVehicle(ApplicationSettings.getCustomerId(VehicleRequestActivity.this), 1, sourceLatLang.latitude, sourceLatLang.longitude, destLatLang.latitude, destLatLang.longitude, vehicleReqestHandler);
     }
 
-    private JsonHttpResponseHandler vehicleReqestHandler = new JsonHttpResponseHandler(){
+    private JsonHttpResponseHandler vehicleReqestHandler = new JsonHttpResponseHandler() {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            System.out.println("Response code is "+statusCode+" Response is "+response);
+            System.out.println("Response code is " + statusCode + " Response is " + response);
             startNextActivity();
         }
 
         @Override
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
             super.onFailure(statusCode, headers, throwable, errorResponse);
-            System.out.println("Oops ! "+errorResponse);
+            System.out.println("Oops ! " + errorResponse);
         }
     };
 }

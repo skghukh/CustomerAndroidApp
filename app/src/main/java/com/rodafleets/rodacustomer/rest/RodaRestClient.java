@@ -12,14 +12,14 @@ public class RodaRestClient {
 
     private static final String API_VERSION = "0.1";
 
-//    private static final String API_BASE_URL = "https://api.rodafleets.com/" + API_VERSION;
+    //    private static final String API_BASE_URL = "https://api.rodafleets.com/" + API_VERSION;
     private static final String API_BASE_URL = "http://192.168.0.12:8080/" + API_VERSION;
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 
     public static void GET(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        if(params != null) {
+        if (params != null) {
             Log.i(AppConstants.APP_NAME, "Api params = " + params.toString());
         }
         client.setMaxRetriesAndTimeout(AppConstants.HTTP_CONNECTION_RETRIES, AsyncHttpClient.DEFAULT_RETRY_SLEEP_TIME_MILLIS);
@@ -28,7 +28,7 @@ public class RodaRestClient {
 
     public static void POST(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.setMaxRetriesAndTimeout(AppConstants.HTTP_CONNECTION_RETRIES, AsyncHttpClient.DEFAULT_RETRY_SLEEP_TIME_MILLIS);
-        client.setTimeout(20*1000);
+        client.setTimeout(20 * 1000);
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }
 
@@ -94,6 +94,7 @@ public class RodaRestClient {
         RequestParams params = new RequestParams();
         params.put("password", password);
         params.put("otp", otp);
+        params.put("otp", otp);
         params.put("session_id", sessionId);
         RodaRestClient.POST("/customers/" + driverId, params, responseHandler);
     }
@@ -106,7 +107,7 @@ public class RodaRestClient {
         RequestParams params = new RequestParams();
         params.put("number", vehicleNumber);
         params.put("vehicletype_id", vehicleTypeId);
-        RodaRestClient.POST("/drivers/" + driverId +"/vehicles", params, responseHandler);
+        RodaRestClient.POST("/drivers/" + driverId + "/vehicles", params, responseHandler);
     }
 
     public static void saveVehicleInfo(int driverId, String vehicleNumber, int vehicleTypeId, String ownerFirstName, String ownerLastName, String ownerPhoneNumber, JsonHttpResponseHandler responseHandler) {
@@ -117,11 +118,11 @@ public class RodaRestClient {
         params.put("owner_lastname", ownerLastName);
         params.put("owner_phonenumber", ownerPhoneNumber);
 
-        RodaRestClient.POST("/drivers/" + driverId +"/vehicles", params, responseHandler);
+        RodaRestClient.POST("/drivers/" + driverId + "/vehicles", params, responseHandler);
     }
 
     public static void uploadDriverDocuments(int driverId, RequestParams params, JsonHttpResponseHandler responseHandler) {
-        RodaRestClient.POST("/drivers/" + driverId +"/uploaddocuments", params, responseHandler);
+        RodaRestClient.POST("/drivers/" + driverId + "/uploaddocuments", params, responseHandler);
     }
 
     public static void login(String phoneNumber, String password, String token, JsonHttpResponseHandler responseHandler) {
@@ -132,7 +133,7 @@ public class RodaRestClient {
         RodaRestClient.POST("/customers/login", params, responseHandler);
     }
 
-    public static void rejectRequest(int requestId, int driverId,  JsonHttpResponseHandler responseHandler) {
+    public static void rejectRequest(int requestId, int driverId, JsonHttpResponseHandler responseHandler) {
         RequestParams params = new RequestParams();
         params.put("driver_id", driverId);
         RodaRestClient.POST("/requests/" + requestId + "/reject", params, responseHandler);
@@ -145,23 +146,23 @@ public class RodaRestClient {
         RodaRestClient.POST("/requests/" + requestId + "/bids", params, responseHandler);
     }
 
-    public static void getNearByDriverLocations(Double lat, Double lan,JsonHttpResponseHandler responseHandler){
+    public static void getNearByDriverLocations(Double lat, Double lan, JsonHttpResponseHandler responseHandler) {
         RequestParams params = new RequestParams();
-        params.put("lat",lat);
-        params.put("lan",lan);
+        params.put("lat", lat);
+        params.put("lan", lan);
         RodaRestClient.GET("/customers/nearybys", params, responseHandler);
 
     }
 
-    public static void requestVehicle(int custId, int vehicleTypeId, Double sourceLat, Double sourceLan, Double destLat, Double destLan, JsonHttpResponseHandler responseHandler){
+    public static void requestVehicle(int custId, int vehicleTypeId, Double sourceLat, Double sourceLan, Double destLat, Double destLan, JsonHttpResponseHandler responseHandler) {
         RequestParams params = new RequestParams();
-        params.put("customer_id",custId);
-        params.put("vehicletype_id",vehicleTypeId);
-        params.put("origin_lat",sourceLat);
-        params.put("origin_lng",sourceLan);
-        params.put("destination_lat",destLat);
-        params.put("destination_lng",destLan);
-        params.put("approx_fare_in_cents",3000);
+        params.put("customer_id", custId);
+        params.put("vehicletype_id", vehicleTypeId);
+        params.put("origin_lat", sourceLat);
+        params.put("origin_lng", sourceLan);
+        params.put("destination_lat", destLat);
+        params.put("destination_lng", destLan);
+        params.put("approx_fare_in_cents", 3000);
         RodaRestClient.POST("/requests", params, responseHandler);
     }
 }
