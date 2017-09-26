@@ -162,7 +162,7 @@ public class VehicleRequestActivity extends MapActivity {
     }
 
     private void startNextActivity() {
-        // this.startActivity(new Intent(this, RequestConfirmationDetails.class));
+         this.startActivity(new Intent(this, RequestConfirmationDetails.class));
         // finish();
     }
 
