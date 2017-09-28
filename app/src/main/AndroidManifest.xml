@@ -30,7 +30,7 @@
         <activity android:name=".VehicleRequestActivity" />
         <activity android:name=".TripProgressActivity" />
         <activity android:name=".RequestHistoryListActivity" />
-        <activity android:name=".RequestConfirmationDetails" />
+        <activity android:name=".RequestConfirmationDetails" android:launchMode="singleTask"/>
 
         <service android:name=".services.InstanceIdService">
             <intent-filter>
