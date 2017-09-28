@@ -7,11 +7,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class RequestConfirmationDetails extends AppCompatActivity {
+public class RequestConfirmationDetails extends ParentActivity {
 
     private TextView timer;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +22,10 @@ public class RequestConfirmationDetails extends AppCompatActivity {
         initComponents();
     }
 
-    private void initComponents() {
+    protected void initComponents() {
+        super.initComponents();
         timer = (TextView) findViewById(R.id.timer);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         if (null != timer) {
             addCountdownToTimer();
         }
@@ -29,10 +33,11 @@ public class RequestConfirmationDetails extends AppCompatActivity {
     }
 
     private void addCountdownToTimer() {
-        new CountDownTimer(30000, 1000) {
+        new CountDownTimer(45000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 timer.setText("" + millisUntilFinished / 1000);
+                progressBar.setProgress(45- (int)(millisUntilFinished / 1000));
             }
 
             public void onFinish() {
