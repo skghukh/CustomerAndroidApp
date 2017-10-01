@@ -21,6 +21,7 @@ public class RequestConfirmationDetails extends ParentActivity {
     private TextView timer;
     private ProgressBar progressBar;
     private ImageView bookingConfirmationImage;
+    private CountDownTimer progressBarTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,10 @@ public class RequestConfirmationDetails extends ParentActivity {
     };
 
     private void showDriverDetails() {
+        if (null != progressBarTimer) {
+            progressBarTimer.cancel();
+            timer.setVisibility(View.INVISIBLE);
+        }
         progressBar.setProgress(45);
         bookingConfirmationImage.setVisibility(View.VISIBLE);
     }
@@ -53,7 +58,7 @@ public class RequestConfirmationDetails extends ParentActivity {
     }
 
     private void addCountdownToTimer() {
-        new CountDownTimer(45000, 1000) {
+        progressBarTimer = new CountDownTimer(45000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 timer.setText("" + millisUntilFinished / 1000);
@@ -61,7 +66,7 @@ public class RequestConfirmationDetails extends ParentActivity {
             }
 
             public void onFinish() {
-                timer.setText("done!");
+                timer.setText("Oops! No Response");
             }
         }.start();
 
