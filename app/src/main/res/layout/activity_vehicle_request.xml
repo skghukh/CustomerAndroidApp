@@ -66,7 +66,6 @@
                 android:textColor="@color/Source_dest_font"
                 android:textColorHint="@android:color/holo_orange_light"
                 android:textSize="12sp"></EditText>
-
         </RelativeLayout>
 
 
@@ -232,21 +231,71 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15px"
                     android:layout_marginRight="15px"
-                    android:onClick="makeVehicleRequest"
                     android:background="@color/reqeust_pickup_button_bg"
+                    android:onClick="makeVehicleRequest"
                     android:text="REQUEST PICKUP"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
+
                 <CheckBox
                     android:id="@+id/loadingHelpCheckBox"
-                    android:layout_marginTop="10dp"
-                    android:layout_alignParentLeft="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:layout_below="@id/vehicle_lists_view"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:text="Unloading/Unloading help needed" />
 
             </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/driverDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/vehicle_request_list_item_unselect_background"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/driverThumbnail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/reqeust_pickup_button_bg"
+                    app:srcCompat="@drawable/user_thumbnail" />
+
+                <TextView
+                    android:id="@+id/driverName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:maxLength="18"
+                    android:text="Jai Mata di"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/driverContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@id/driverName"
+                    android:layout_below="@id/driverName"
+                    android:autoLink="phone"
+                    android:text="9986291127"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/vehicleNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@id/driverContact"
+                    android:layout_below="@id/driverContact"
+                    android:text="HR51BE3767"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+
 
         </android.support.v7.widget.CardView>
 
@@ -255,15 +304,5 @@
     <!-- The navigation drawer -->
 
     <include layout="@layout/left_side_menu" />
-
-    <!--&lt;!&ndash; The navigation drawer &ndash;&gt;-->
-    <!--<ListView android:id="@+id/right_drawer"-->
-    <!--android:layout_width="260dp"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_gravity="end"-->
-    <!--android:choiceMode="singleChoice"-->
-    <!--android:divider="@android:color/transparent"-->
-    <!--android:dividerHeight="0dp"-->
-    <!--android:background="#111"/>-->
 
 </android.support.v4.widget.DrawerLayout>

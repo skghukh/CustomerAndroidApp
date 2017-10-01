@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -18,6 +20,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.vision.text.Text;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.model.VehicleRequest;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
@@ -33,15 +36,24 @@ public class VehicleRequestActivity extends MapActivity {
     public static final String TAG = AppConstants.APP_NAME;
 
     private CardView receiverDetailsCardView;
-    private   RelativeLayout selectedVehicle;
+    private RelativeLayout selectedVehicle;
     private VehicleRequest vehicleRequest;
+    private RelativeLayout vehicleSelectView;
+    private RelativeLayout driverDetailsView;
     private EditText searchSrc;
     private EditText searchDst;
+    private TextView driverName;
+    private TextView driverContact;
+    private long bidId;
+    private long requestId;
+    private long amount;
     int PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE = 1;
     int PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE = 2;
     int viewType = 1;
     LatLng sourceLatLang;
     LatLng destLatLang;
+    private Handler handler;
+
 
 
     @Override
@@ -57,9 +69,10 @@ public class VehicleRequestActivity extends MapActivity {
         searchSrc = (EditText) findViewById(R.id.search_src);
         searchDst = (EditText) findViewById(R.id.search_dst);
         receiverDetailsCardView = (CardView) findViewById(R.id.receiverDetailsCardView);
-        /*if(receiverDetailsView !=null){
-            receiverDetailsView.setVisibility(View.INVISIBLE);
-        }*/
+        vehicleSelectView = (RelativeLayout) findViewById(R.id.selectVehicleType);
+        driverDetailsView = (RelativeLayout) findViewById(R.id.driverDetails);
+        driverName = (TextView) findViewById(R.id.driverName);
+        driverContact = (TextView) findViewById(R.id.driverContact);
         initMap();
         setFonts();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Vehicle_Requested"));
@@ -77,7 +90,7 @@ public class VehicleRequestActivity extends MapActivity {
             View.OnClickListener dstSearchListener = clickListener(PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE);
             searchDst.setOnClickListener(dstSearchListener);
         }
-
+        handler = new Handler();
     }
 
     private View.OnClickListener clickListener(final int requestCode) {
@@ -118,8 +131,6 @@ public class VehicleRequestActivity extends MapActivity {
                     searchDst.setText(place.getAddress());
                     resetDropPointMarker();
                     addMarkerOnMap(1, destLatLang, markerDst);
-
-                    // receiverDetailsView.invalidate();
                 }
                 checkIfSourceDestinationAvailable();
                 Log.i(TAG, "Place: " + place.getName());
@@ -130,9 +141,22 @@ public class VehicleRequestActivity extends MapActivity {
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
+        } else if (requestCode == 11 && resultCode == RESULT_OK) {
+            if (null != vehicleSelectView) {
+                vehicleSelectView.setVisibility(View.GONE);
+            }
+            if (null != driverDetailsView) {
+                final String driverName = data.getStringExtra("driverName");
+                final String requestId = data.getStringExtra("requestId");
+                final String bid = data.getStringExtra("bid");
+                final String amount = data.getStringExtra("amount");
+                RodaRestClient.acceptBid(requestCode,Long.parseLong(bid),ApplicationSettings.getCustomerId(VehicleRequestActivity.this) ,acceptBidResponseHandler);
+                this.driverName.setText(driverName);
+                driverDetailsView.setVisibility(View.VISIBLE);
+            }
         }
-
     }
+
 
     private void checkIfSourceDestinationAvailable() {
         if (null != sourceLatLang && null != destLatLang)
@@ -160,9 +184,12 @@ public class VehicleRequestActivity extends MapActivity {
     }
 
     private void startNextActivity() {
-         this.startActivity(new Intent(this, RequestConfirmationDetails.class));
-        // finish();
+        //this.startActivity(new Intent(this, RequestConfirmationDetails.class));
+        Intent intent = new Intent(this, RequestConfirmationDetails.class);
+        startActivityForResult(intent, 11);
+        // startActivityForResult(intent, requestCode);
     }
+
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -208,6 +235,17 @@ public class VehicleRequestActivity extends MapActivity {
         }
     };
 
+
+    private JsonHttpResponseHandler acceptBidResponseHandler = new JsonHttpResponseHandler() {
+        public void onSuccess(int statusCode, Header[] headers, JSONObject jsonResponseObject) {
+            System.out.println("Bid accept conveyed successfully");
+        }
+
+        public final void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            System.out.println("Bid accept not able to convey");
+        }
+    };
+
     private JsonHttpResponseHandler rejectRequestResponseHandler = new JsonHttpResponseHandler() {
 
         public void onSuccess(int statusCode, Header[] headers, JSONObject jsonResponseObject) {
@@ -240,7 +278,8 @@ public class VehicleRequestActivity extends MapActivity {
             selectedVehicle.setBackground(getResources().getDrawable(R.drawable.vehicle_request_list_item_unselect_background));
         }
     }
-    private void setSelected(View view){
+
+    private void setSelected(View view) {
         selectedVehicle = (RelativeLayout) view;
         selectedVehicle.setBackground(getResources().getDrawable(R.drawable.vehicle_request_list_item_selected_background));
     }
@@ -271,4 +310,8 @@ public class VehicleRequestActivity extends MapActivity {
             System.out.println("Oops ! " + errorResponse);
         }
     };
+
+    private void shoDriverDetails() {
+
+    }
 }

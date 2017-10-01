@@ -4,13 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -33,17 +31,35 @@ public class RequestConfirmationDetails extends ParentActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            showDriverDetails();
+
+            showDriverDetails(intent);
         }
     };
 
-    private void showDriverDetails() {
+    private void showDriverDetails(Intent intent) {
+        final String driverName = intent.getStringExtra("driverName");
+        final String requestId = intent.getStringExtra("requestId");
+        final String bid = intent.getStringExtra("bid");
+        final String amount = intent.getStringExtra("Amount");
         if (null != progressBarTimer) {
             progressBarTimer.cancel();
             timer.setVisibility(View.INVISIBLE);
         }
         progressBar.setProgress(45);
         bookingConfirmationImage.setVisibility(View.VISIBLE);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent data = new Intent();
+                data.putExtra("driverName", driverName);
+                data.putExtra("requestId", requestId);
+                data.putExtra("bid", bid);
+                data.putExtra("amount", amount);
+                setResult(RESULT_OK, data);
+                finish();
+            }
+        }, 100);
     }
 
     protected void initComponents() {

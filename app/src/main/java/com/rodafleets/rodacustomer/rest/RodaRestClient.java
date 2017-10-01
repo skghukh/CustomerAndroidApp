@@ -165,4 +165,11 @@ public class RodaRestClient {
         params.put("approx_fare_in_cents", 3000);
         RodaRestClient.POST("/requests", params, responseHandler);
     }
+
+    public static void acceptBid(long requestId, long bidId, int custId, JsonHttpResponseHandler responseHandler) {
+        String url = "/requests/" + requestId + "/bids/" + bidId + "/accept";
+        RequestParams params = new RequestParams();
+        params.put("customer_id", custId);
+        RodaRestClient.POST(url, params, responseHandler);
+    }
 }
