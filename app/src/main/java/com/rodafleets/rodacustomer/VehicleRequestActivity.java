@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -159,8 +160,7 @@ public class VehicleRequestActivity extends MapActivity {
 
 
     private void checkIfSourceDestinationAvailable() {
-        if (null != sourceLatLang && null != destLatLang)
-            receiverDetailsCardView.setVisibility(View.VISIBLE);
+        showReceiversDetails();
     }
 
     private void setFonts() {
@@ -264,15 +264,6 @@ public class VehicleRequestActivity extends MapActivity {
         }
     };
 
-    public void showVehicleTypes(View view) {
-        RelativeLayout receiverDetails = (RelativeLayout) findViewById(R.id.receiverDetailsView);
-        RelativeLayout selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
-        if (null != receiverDetails && null != selectVehicleType) {
-            receiverDetails.setVisibility(View.GONE);
-            selectVehicleType.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void resetSelected(View view) {
         if (null != selectedVehicle) {
             selectedVehicle.setBackground(getResources().getDrawable(R.drawable.vehicle_request_list_item_unselect_background));
@@ -311,7 +302,36 @@ public class VehicleRequestActivity extends MapActivity {
         }
     };
 
-    private void shoDriverDetails() {
+    public void showVehicleTypes(View view) {
+        RelativeLayout receiverDetails = (RelativeLayout) findViewById(R.id.receiverDetailsView);
+        RelativeLayout selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
+        if (null != receiverDetails && null != selectVehicleType) {
+            startGoneAnimation(receiverDetailsCardView);
+            receiverDetails.setVisibility(View.GONE);
+            selectVehicleType.setVisibility(View.VISIBLE);
+            startInAnimation(receiverDetailsCardView,750);
+        }
+    }
 
+    private void startInAnimation(View v, int position){
+        Display mDisplay = this.getWindowManager().getDefaultDisplay();
+        final int height = mDisplay.getHeight();
+        final float yPosition = v.getY();
+        v.setY(height);
+        v.setVisibility(View.VISIBLE);
+        v.animate().y(position>0?position:yPosition).setDuration(500).start();
+    }
+
+    private void startGoneAnimation(View v){
+        Display mDisplay = this.getWindowManager().getDefaultDisplay();
+        final int height = mDisplay.getHeight();
+        v.animate().y(height).setDuration(500).start();
+        v.setVisibility(View.GONE);
+    }
+
+    private void showReceiversDetails(){
+        if (null != sourceLatLang && null != destLatLang){
+           this.startInAnimation(receiverDetailsCardView, 0);
+        }
     }
 }

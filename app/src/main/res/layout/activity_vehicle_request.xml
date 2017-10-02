@@ -128,7 +128,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            card_view:cardCornerRadius="0dp">
+            card_view:cardCornerRadius="0dp"
+            android:background="@drawable/src_dst_border">
 
             <RelativeLayout
                 android:id="@+id/receiverDetailsView"
@@ -144,6 +145,7 @@
                     android:layout_marginLeft="20px"
                     android:layout_marginRight="20px"
                     android:text="Receiver's Details"
+                    android:textColor="#1c0113"
                     android:textSize="16sp" />
 
                 <EditText
@@ -307,7 +309,6 @@
                 android:layout_gravity="bottom"
                 android:background="@drawable/vehicle_request_list_item_unselect_background"
                 android:visibility="gone">
-
                 <ImageView
                     android:id="@+id/driverThumbnail"
                     android:layout_width="wrap_content"
@@ -317,7 +318,6 @@
                     android:layout_marginTop="5dp"
                     android:background="@color/reqeust_pickup_button_bg"
                     app:srcCompat="@drawable/user_thumbnail" />
-
                 <TextView
                     android:id="@+id/driverName"
                     android:layout_width="wrap_content"
@@ -327,7 +327,6 @@
                     android:maxLength="18"
                     android:text="Jai Mata di"
                     android:textSize="20sp" />
-
                 <TextView
                     android:id="@+id/driverContact"
                     android:layout_width="wrap_content"
@@ -337,7 +336,6 @@
                     android:autoLink="phone"
                     android:text="9986291127"
                     android:textSize="20sp" />
-
                 <TextView
                     android:id="@+id/vehicleNumber"
                     android:layout_width="wrap_content"
@@ -347,8 +345,6 @@
                     android:text="HR51BE3767"
                     android:textSize="20sp" />
             </RelativeLayout>
-
-
         </android.support.v7.widget.CardView>
 
     </android.support.constraint.ConstraintLayout>
