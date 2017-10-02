@@ -17,12 +17,13 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
+            layout_constraintTop_toTopOf="parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="175dp" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -43,29 +44,77 @@
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="8dp" />
 
-            <EditText
-                android:id="@+id/search_src"
+            <RelativeLayout
+                android:id="@+id/search_src_box"
                 android:layout_width="match_parent"
-                android:layout_height="34dp"
+                android:layout_height="50dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:background="@color/source_dest_bg"
-                android:hint="Pickup Location"
-                android:textColor="@color/Source_dest_font"
-                android:textColorHint="@android:color/holo_orange_light"
-                android:textSize="12sp"></EditText>
+                android:background="@drawable/src_dst_border"
+                android:gravity="bottom">
 
-            <EditText
-                android:id="@+id/search_dst"
+                <ImageView
+                    android:id="@+id/imageButtonSrc"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    app:srcCompat="@drawable/source_img"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentBottom="true" />
+
+                <EditText
+                    android:id="@+id/search_src"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/imageButtonSrc"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:hint="Pickup Location"
+                    android:textColor="@color/Source_dest_font"
+                    android:textColorHint="@android:color/holo_orange_light"
+                    android:textSize="12sp"
+                    android:inputType="textNoSuggestions"
+                    android:backgroundTint="@android:color/transparent"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/search_dst_box"
                 android:layout_width="match_parent"
-                android:layout_height="34dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/search_src_box"
+                android:background="@drawable/src_dst_border"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@id/search_src"
-                android:background="@color/source_dest_bg"
-                android:hint="Enter Drop Location"
-                android:textColor="@color/Source_dest_font"
-                android:textColorHint="@android:color/holo_orange_light"
-                android:textSize="12sp"></EditText>
+                android:layout_alignParentRight="true"
+                android:gravity="bottom">
+
+                <ImageView
+                    android:id="@+id/imageButtonDst"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    app:srcCompat="@drawable/dest_img"
+                    android:drawablePadding="5dp"
+                    android:gravity="top"
+                    android:layout_alignParentTop="true"
+                    />
+
+                <EditText
+                    android:id="@+id/search_dst"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Enter Drop Location"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/imageButtonDst"
+                    android:textColor="@color/Source_dest_font"
+                    android:textColorHint="@android:color/holo_orange_light"
+                    android:textSize="12sp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:inputType="textNoSuggestions"
+                    android:backgroundTint="@android:color/transparent"/>
+            </RelativeLayout>
+
+
         </RelativeLayout>
 
 
@@ -140,20 +189,22 @@
                 android:layout_gravity="bottom"
                 android:gravity="bottom"
                 android:visibility="gone">
+
                 <LinearLayout
                     android:id="@+id/vehicle_lists_view"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
-                    android:weightSum="3"
-                    android:layout_alignParentTop="true">
+                    android:layout_alignParentTop="true"
+                    android:weightSum="3">
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:background="@drawable/vehicle_request_list_item_unselect_background"
                         android:gravity="bottom"
                         android:onClick="selectVehicleType"
                         android:orientation="vertical"
-                        android:background="@drawable/vehicle_request_list_item_unselect_background"
                         android:padding="10dp">
 
                         <ImageView
@@ -166,8 +217,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignBottom="@id/imageViewSmall"
-                            android:layout_marginTop="20dp"
                             android:layout_centerHorizontal="true"
+                            android:layout_marginTop="20dp"
                             android:text="Small Load" />
 
                     </RelativeLayout>
@@ -223,6 +274,7 @@
 
                     </RelativeLayout>
                 </LinearLayout>
+
                 <Button
                     android:id="@+id/requestPickUp"
                     android:layout_width="match_parent"

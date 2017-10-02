@@ -27,4 +27,7 @@
 
     <color name="selected_vehicle_bg">#5eaf00</color>
     <color name="reqeust_pickup_button_bg">#ff960b</color>
+
+    <color name="src_dst_border_color">#ff960b</color>
+    <color name="src_dst_background_color">#f5f5f5</color>
 </resources>

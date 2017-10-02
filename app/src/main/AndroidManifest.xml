@@ -20,17 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WelcomeActivity" />
-        <activity android:name=".SignInActivity" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".SignUpVerificationActivity" />
-        <activity android:name=".VehicleDetailsActivity" />
-        <activity android:name=".DriverDocs" />
-        <activity android:name=".VehicleRequestListActivity" />
-        <activity android:name=".VehicleRequestActivity" />
-        <activity android:name=".TripProgressActivity" />
-        <activity android:name=".RequestHistoryListActivity" />
-        <activity android:name=".RequestConfirmationDetails" android:launchMode="singleTask"/>
+        <activity android:name=".WelcomeActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".SignInActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".SignUpActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".SignUpVerificationActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".VehicleDetailsActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".DriverDocs" android:screenOrientation="portrait"/>
+        <activity android:name=".VehicleRequestListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".VehicleRequestActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".TripProgressActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".RequestHistoryListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".RequestConfirmationDetails" android:launchMode="singleTask" android:screenOrientation="portrait"/>
 
         <service android:name=".services.InstanceIdService">
             <intent-filter>
