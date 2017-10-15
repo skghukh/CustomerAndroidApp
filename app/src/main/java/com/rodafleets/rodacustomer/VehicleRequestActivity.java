@@ -21,7 +21,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.vision.text.Text;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.model.VehicleRequest;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
@@ -54,7 +53,6 @@ public class VehicleRequestActivity extends MapActivity {
     LatLng sourceLatLang;
     LatLng destLatLang;
     private Handler handler;
-
 
 
     @Override
@@ -151,7 +149,7 @@ public class VehicleRequestActivity extends MapActivity {
                 final String requestId = data.getStringExtra("requestId");
                 final String bid = data.getStringExtra("bid");
                 final String amount = data.getStringExtra("amount");
-                RodaRestClient.acceptBid(requestCode,Long.parseLong(bid),ApplicationSettings.getCustomerId(VehicleRequestActivity.this) ,acceptBidResponseHandler);
+                RodaRestClient.acceptBid(requestCode, Long.parseLong(bid), ApplicationSettings.getCustomerId(VehicleRequestActivity.this), acceptBidResponseHandler);
                 this.driverName.setText(driverName);
                 driverDetailsView.setVisibility(View.VISIBLE);
             }
@@ -185,7 +183,8 @@ public class VehicleRequestActivity extends MapActivity {
 
     private void startNextActivity() {
         //this.startActivity(new Intent(this, RequestConfirmationDetails.class));
-        Intent intent = new Intent(this, RequestConfirmationDetails.class);
+        //Intent intent = new Intent(this, RequestConfirmationDetails.class);
+        Intent intent = new Intent(this, DriversResponseActivity.class);
         startActivityForResult(intent, 11);
         // startActivityForResult(intent, requestCode);
     }
@@ -309,29 +308,29 @@ public class VehicleRequestActivity extends MapActivity {
             startGoneAnimation(receiverDetailsCardView);
             receiverDetails.setVisibility(View.GONE);
             selectVehicleType.setVisibility(View.VISIBLE);
-            startInAnimation(receiverDetailsCardView,750);
+            startInAnimation(receiverDetailsCardView, 750);
         }
     }
 
-    private void startInAnimation(View v, int position){
+    private void startInAnimation(View v, int position) {
         Display mDisplay = this.getWindowManager().getDefaultDisplay();
         final int height = mDisplay.getHeight();
         final float yPosition = v.getY();
         v.setY(height);
         v.setVisibility(View.VISIBLE);
-        v.animate().y(position>0?position:yPosition).setDuration(500).start();
+        v.animate().y(position > 0 ? position : yPosition).setDuration(500).start();
     }
 
-    private void startGoneAnimation(View v){
+    private void startGoneAnimation(View v) {
         Display mDisplay = this.getWindowManager().getDefaultDisplay();
         final int height = mDisplay.getHeight();
         v.animate().y(height).setDuration(500).start();
         v.setVisibility(View.GONE);
     }
 
-    private void showReceiversDetails(){
-        if (null != sourceLatLang && null != destLatLang){
-           this.startInAnimation(receiverDetailsCardView, 0);
+    private void showReceiversDetails() {
+        if (null != sourceLatLang && null != destLatLang) {
+            this.startInAnimation(receiverDetailsCardView, 0);
         }
     }
 }

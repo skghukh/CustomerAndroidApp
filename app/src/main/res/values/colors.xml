@@ -30,4 +30,7 @@
 
     <color name="src_dst_border_color">#ff960b</color>
     <color name="src_dst_background_color">#f5f5f5</color>
+
+    <color name = "pickup_button_disabled_background">#dddddd</color>
+    <color name = "pickup_button_enabled_background">#765267</color>
 </resources>

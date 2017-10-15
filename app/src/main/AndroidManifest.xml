@@ -20,17 +20,40 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WelcomeActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".SignInActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".SignUpActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".SignUpVerificationActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".VehicleDetailsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".DriverDocs" android:screenOrientation="portrait"/>
-        <activity android:name=".VehicleRequestListActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".VehicleRequestActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".TripProgressActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".RequestHistoryListActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".RequestConfirmationDetails" android:launchMode="singleTask" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".WelcomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SignInActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SignUpVerificationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VehicleDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DriverDocs"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VehicleRequestListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VehicleRequestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TripProgressActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RequestHistoryListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RequestConfirmationDetails"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
 
         <service android:name=".services.InstanceIdService">
             <intent-filter>
@@ -47,6 +70,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDDEi-HZe7_UvLsgZgT8uuyLtQVOBRVaOo" />
 
+        <activity
+            android:name=".DriversResponseActivity"
+            android:label="@string/title_activity_drivers_response"
+            android:parentActivityName=".MapActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.rodafleets.rodacustomer.MapActivity" />
+        </activity>
     </application>
 
 </manifest>

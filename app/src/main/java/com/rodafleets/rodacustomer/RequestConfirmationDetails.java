@@ -12,6 +12,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class RequestConfirmationDetails extends ParentActivity {
@@ -20,6 +21,7 @@ public class RequestConfirmationDetails extends ParentActivity {
     private ProgressBar progressBar;
     private ImageView bookingConfirmationImage;
     private CountDownTimer progressBarTimer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

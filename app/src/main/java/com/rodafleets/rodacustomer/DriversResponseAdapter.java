@@ -1,0 +1,71 @@
+package com.rodafleets.rodacustomer;
+
+import android.content.Context;
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.util.List;
+
+import static android.R.attr.data;
+
+/**
+ * Created by sverma4 on 14/10/17.
+ */
+
+public class DriversResponseAdapter extends BaseAdapter {
+    Context context;
+    List<VehicleRequestResponse> driverResponseList;
+    RadioGroup radioGroup;
+    private static LayoutInflater inflater = null;
+
+    public DriversResponseAdapter(Context context, List<VehicleRequestResponse> data) {
+        this.context = context;
+        this.driverResponseList = data;
+        inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getCount() {
+        return driverResponseList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return driverResponseList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View vi = convertView;
+        if (vi == null)
+            vi = inflater.inflate(R.layout.list_item, null);
+        TextView driverName = (TextView) vi.findViewById(R.id.driverName);
+        TextView driverRating = (TextView) vi.findViewById(R.id.driverRating);
+        TextView distance = (TextView) vi.findViewById(R.id.distance);
+        TextView fare = (TextView) vi.findViewById(R.id.fare);
+        RadioButton radioButton = (RadioButton) vi.findViewById(R.id.radioButton);
+        VehicleRequestResponse vehicleRequestResponse = driverResponseList.get(position);
+        distance.setText("4.6 KM");
+        fare.setText("INR 230");
+        driverName.setText(vehicleRequestResponse.getName());
+        driverRating.setText(vehicleRequestResponse.getRating());
+        distance.setText(vehicleRequestResponse.getDistance());
+        fare.setText(vehicleRequestResponse.getFareEstimate());
+        radioButton.setTag(position);
+        return vi;
+    }
+}

@@ -103,6 +103,7 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="title_activity_request_confirmation_details">RequestConfirmationDetails</string>
+    <string name="title_activity_drivers_response">DriversResponseActivity</string>
 
 
     <!-- Map Activity -->
