@@ -7,11 +7,14 @@ package com.rodafleets.rodacustomer;
 public class VehicleRequestResponse {
 
     private String name;
-    private String rating;
+    private String driverRating;
+    private String driverContact;
+    private String vehicleRegId;
     private String distance;
     private String fareEstimate;
     private String requestId;
     private String bidId;
+
 
     public String getName() {
         return name;
@@ -21,12 +24,12 @@ public class VehicleRequestResponse {
         this.name = name;
     }
 
-    public String getRating() {
-        return rating;
+    public String getDriverRating() {
+        return driverRating;
     }
 
-    public void setRating(String rating) {
-        this.rating = rating;
+    public void setDriverRating(String driverRating) {
+        this.driverRating = driverRating;
     }
 
     public String getDistance() {
@@ -59,5 +62,21 @@ public class VehicleRequestResponse {
 
     public void setBidId(String bidId) {
         this.bidId = bidId;
+    }
+
+    public String getDriverContact() {
+        return driverContact;
+    }
+
+    public void setDriverContact(String driverContact) {
+        this.driverContact = driverContact;
+    }
+
+    public String getVehicleRegId() {
+        return vehicleRegId;
+    }
+
+    public void setVehicleRegId(String vehicleRegId) {
+        this.vehicleRegId = vehicleRegId;
     }
 }

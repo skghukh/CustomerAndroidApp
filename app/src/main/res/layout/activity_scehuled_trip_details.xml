@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            layout_constraintTop_toTopOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="8dp" />
+
+        </RelativeLayout>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/receiverDetailsCardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/src_dst_border"
+            android:visibility="visible"
+            app:cardBackgroundColor="@android:color/white"
+            app:contentPadding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            card_view:cardCornerRadius="0dp">
+
+            <RelativeLayout
+                android:id="@+id/receiverDetailsView"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <RelativeLayout
+                    android:id="@+id/locationDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/locationImageView"
+                        android:layout_width="20dp"
+                        android:layout_height="31dp"
+                        app:srcCompat="@drawable/marker_green" />
+
+                    <TextView
+                        android:id="@+id/pickupLocationKey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_toRightOf="@id/locationImageView"
+                        android:text="PICKUP LOCATION" />
+
+                    <TextView
+                        android:id="@+id/pickupLocationValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@id/pickupLocationKey"
+                        android:layout_below="@id/pickupLocationKey"
+                        android:layout_marginTop="5dp"
+                        android:text="location"
+                        android:singleLine="true"
+                        android:ellipsize="end"/>
+
+                </RelativeLayout>
+                <android.support.v4.widget.Space
+                    android:layout_height="1dp"
+                    android:background="@color/reqeust_pickup_button_bg"
+                    android:layout_width="match_parent"
+                    android:layout_below="@id/locationDetails"
+                    />
+                <RelativeLayout
+                    android:id="@+id/driverDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="74dp"
+                    android:layout_below="@id/locationDetails"
+                    android:gravity="center_vertical"
+                    android:paddingTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/driverImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="#dcdcdc"
+                        app:srcCompat="@drawable/user_thumbnail" />
+
+                    <TextView
+                        android:id="@+id/driverName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toRightOf="@id/driverImageView"
+                        android:text="driver name" />
+
+                    <TextView
+                        android:id="@+id/vehicleRegistrationNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@id/driverName"
+                        android:layout_below="@id/driverName"
+                        android:layout_marginTop="5dp"
+                        android:text="DL 2CA 2386" />
+
+                    <ImageView
+                        android:id="@+id/callDriverImage"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@color/colorAccent"
+                        android:onClick="callDriver"
+                        app:srcCompat="@android:drawable/stat_sys_phone_call"
+                        android:layout_alignBottom="@+id/vehicleRegistrationNo" />
+
+                    <TextView
+                        android:id="@+id/callDriverValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@id/callDriverImage"
+                        android:layout_below="@id/callDriverImage"
+                        android:layout_marginTop="5dp"
+                        android:onClick="callDriver"
+                        android:text="Call Driver" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <!-- The navigation drawer -->
+
+
+    <include layout="@layout/left_side_menu" />
+
+</android.support.v4.widget.DrawerLayout>

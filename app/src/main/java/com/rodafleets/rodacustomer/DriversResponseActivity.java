@@ -10,9 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
@@ -31,6 +31,7 @@ public class DriversResponseActivity extends MapActivity {
     private DriversResponseAdapter driversResponseAdapter;
     private RadioButton selectedButton;
     private Button reqeustPickupButton;
+    private VehicleRequestResponse selectedResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +60,15 @@ public class DriversResponseActivity extends MapActivity {
     };
 
     private void addResponseToList(Intent intent) {
-        final String driverName = intent.getStringExtra("driverName");
-        final String amount = intent.getStringExtra("Amount");
-        final String requestId = intent.getStringExtra("requestId");
-        final String bid = intent.getStringExtra("bid");
         VehicleRequestResponse response = new VehicleRequestResponse();
-        response.setName(driverName);
-        response.setFareEstimate(amount);
-        response.setRequestId(requestId);
-        response.setBidId(bid);
+        response.setName(intent.getStringExtra("driverName"));
+        response.setVehicleRegId(intent.getStringExtra("vehicleRegId"));
+        response.setDriverContact(intent.getStringExtra("driverContact"));
+        response.setFareEstimate(intent.getStringExtra("Amount"));
+        response.setRequestId(intent.getStringExtra("requestId"));
+        response.setBidId(intent.getStringExtra("bid"));
         response.setDistance("6 KM");
-        response.setRating("3.2");
+        response.setDriverRating("3.2");
         vehicleResponses.add(response);
         driversResponseAdapter.notifyDataSetChanged();
 
@@ -95,19 +94,32 @@ public class DriversResponseActivity extends MapActivity {
 
     public void acceptBid(View view) {
         if (null != selectedButton) {
-            final VehicleRequestResponse vehicleRequestResponse = vehicleResponses.get((int) selectedButton.getTag());
-            RodaRestClient.acceptBid(Long.parseLong(vehicleRequestResponse.getRequestId()), Long.parseLong(vehicleRequestResponse.getBidId()), ApplicationSettings.getCustomerId(this), acceptBidResponseHandler);
+            selectedResponse = vehicleResponses.get((int) selectedButton.getTag());
+            RodaRestClient.acceptBid(Long.parseLong(selectedResponse.getRequestId()), Long.parseLong(selectedResponse.getBidId()), ApplicationSettings.getCustomerId(this), acceptBidResponseHandler);
         } else {
             Toast toast = Toast.makeText(this, "Please select 1 bid", Toast.LENGTH_SHORT);
             toast.show();
         }
     }
 
+    private void startNextActivity() {
+        Intent intent = new Intent(this, ScehuledTripDetailsActivity.class);
+        final LatLng sourceLoc = ApplicationSettings.getSourceLoc();
+        intent.putExtra("driverName", selectedResponse.getName());
+        intent.putExtra("driverMob", selectedResponse.getDriverContact());
+        intent.putExtra("vehicleRegNo", selectedResponse.getVehicleRegId());
+        intent.putExtra("sourcePlace", ApplicationSettings.getSourcePlace());
+        Bundle b = new Bundle();
+        b.putParcelable("sourceLocation", sourceLoc);
+        intent.putExtras(b);
+        startActivityForResult(intent, 15);
+    }
+
     private JsonHttpResponseHandler acceptBidResponseHandler = new JsonHttpResponseHandler() {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             Toast toast = Toast.makeText(DriversResponseActivity.this, "response sent successfully", Toast.LENGTH_SHORT);
-            // startNextActivity();
+            startNextActivity();
         }
 
         @Override
@@ -116,5 +128,7 @@ public class DriversResponseActivity extends MapActivity {
             Toast toast = Toast.makeText(DriversResponseActivity.this, "Oops!", Toast.LENGTH_SHORT);
         }
     };
+
+
 }
 

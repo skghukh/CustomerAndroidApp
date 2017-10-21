@@ -3,6 +3,8 @@ package com.rodafleets.rodacustomer.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONObject;
 
 public final class ApplicationSettings {
@@ -17,6 +19,9 @@ public final class ApplicationSettings {
     private static final String LOGGED_IN = "LOGGED_IN";
     private static final String REGISTRATION_ID = "REGISTRATION_ID";
     private static final String VEHICLE_REQUEST = "VEHICLE_REQUEST";
+    private static LatLng sourceLoc;
+    private static String sourcePlace;
+
 
     private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(SETTINGS_NAME, 0);
@@ -114,7 +119,7 @@ public final class ApplicationSettings {
 
     public static void setVehicleRequest(Context context, JSONObject jsonObject) {
         SharedPreferences.Editor editor = getEditor(context);
-        if(jsonObject != null) {
+        if (jsonObject != null) {
             editor.putString(VEHICLE_REQUEST, jsonObject.toString());
         } else {
             editor.putString(VEHICLE_REQUEST, "");
@@ -124,5 +129,21 @@ public final class ApplicationSettings {
 
     public static String getVehicleRequest(Context context) {
         return getSharedPreferences(context).getString(VEHICLE_REQUEST, "");
+    }
+
+    public static LatLng getSourceLoc() {
+        return sourceLoc;
+    }
+
+    public static void setSourceLoc(LatLng lat) {
+        sourceLoc = lat;
+    }
+
+    public static String getSourcePlace() {
+        return sourcePlace;
+    }
+
+    public static void setSourcePlace(String sourcePlace) {
+        ApplicationSettings.sourcePlace = sourcePlace;
     }
 }

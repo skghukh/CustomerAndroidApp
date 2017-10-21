@@ -1,7 +1,6 @@
 package com.rodafleets.rodacustomer;
 
 import android.content.Context;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +9,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
-
-import static android.R.attr.data;
 
 /**
  * Created by sverma4 on 14/10/17.
@@ -62,7 +57,7 @@ public class DriversResponseAdapter extends BaseAdapter {
         distance.setText("4.6 KM");
         fare.setText("INR 230");
         driverName.setText(vehicleRequestResponse.getName());
-        driverRating.setText(vehicleRequestResponse.getRating());
+        driverRating.setText(vehicleRequestResponse.getDriverRating());
         distance.setText(vehicleRequestResponse.getDistance());
         fare.setText(vehicleRequestResponse.getFareEstimate());
         radioButton.setTag(position);

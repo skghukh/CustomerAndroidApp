@@ -24,7 +24,7 @@
             app:srcCompat="@drawable/user_thumbnail" />
 
         <TextView
-            android:id="@+id/driverName"
+            android:id="@+id/name"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="ADITYA BHARDWAJ"
@@ -46,7 +46,7 @@
             android:textSize="@dimen/text_medium"
             android:background="@drawable/btn_small_background_purple"
             android:onClick="onGoOfflineBtnClick"
-            android:layout_below="@id/driverName" />
+            android:layout_below="@id/name" />
 
     </RelativeLayout>
 

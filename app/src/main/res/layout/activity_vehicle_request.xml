@@ -319,7 +319,7 @@
                     android:background="@color/reqeust_pickup_button_bg"
                     app:srcCompat="@drawable/user_thumbnail" />
                 <TextView
-                    android:id="@+id/driverName"
+                    android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -331,8 +331,8 @@
                     android:id="@+id/driverContact"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignRight="@id/driverName"
-                    android:layout_below="@id/driverName"
+                    android:layout_alignRight="@id/name"
+                    android:layout_below="@id/name"
                     android:autoLink="phone"
                     android:text="9986291127"
                     android:textSize="20sp" />

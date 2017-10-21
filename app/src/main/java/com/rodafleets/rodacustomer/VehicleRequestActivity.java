@@ -121,6 +121,8 @@ public class VehicleRequestActivity extends MapActivity {
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 if (requestCode == PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE) {
                     sourceLatLang = place.getLatLng();
+                    ApplicationSettings.setSourceLoc(sourceLatLang);
+                    ApplicationSettings.setSourcePlace(place.getAddress().toString());
                     searchSrc.setText(place.getAddress());
                     resetPickupPointMarker();
                     resetCurrentMarkers();
