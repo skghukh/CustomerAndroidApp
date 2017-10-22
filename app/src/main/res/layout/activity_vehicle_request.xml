@@ -57,24 +57,24 @@
                     android:id="@+id/imageButtonSrc"
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    app:srcCompat="@drawable/source_img"
+                    android:layout_alignParentBottom="true"
                     android:drawablePadding="5dp"
                     android:gravity="center_vertical"
-                    android:layout_alignParentBottom="true" />
+                    app:srcCompat="@drawable/source_img" />
 
                 <EditText
                     android:id="@+id/search_src"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toRightOf="@id/imageButtonSrc"
                     android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/imageButtonSrc"
+                    android:backgroundTint="@android:color/transparent"
                     android:gravity="center_horizontal|center_vertical"
                     android:hint="Pickup Location"
+                    android:inputType="textNoSuggestions"
                     android:textColor="@color/Source_dest_font"
                     android:textColorHint="@android:color/holo_orange_light"
-                    android:textSize="12sp"
-                    android:inputType="textNoSuggestions"
-                    android:backgroundTint="@android:color/transparent"/>
+                    android:textSize="12sp" />
 
             </RelativeLayout>
 
@@ -83,35 +83,34 @@
                 android:id="@+id/search_dst_box"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@id/search_src_box"
-                android:background="@drawable/src_dst_border"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
+                android:layout_below="@id/search_src_box"
+                android:background="@drawable/src_dst_border"
                 android:gravity="bottom">
 
                 <ImageView
                     android:id="@+id/imageButtonDst"
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    app:srcCompat="@drawable/dest_img"
+                    android:layout_alignParentTop="true"
                     android:drawablePadding="5dp"
                     android:gravity="top"
-                    android:layout_alignParentTop="true"
-                    />
+                    app:srcCompat="@drawable/dest_img" />
 
                 <EditText
                     android:id="@+id/search_dst"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="Enter Drop Location"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@id/imageButtonDst"
+                    android:backgroundTint="@android:color/transparent"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:hint="Enter Drop Location"
+                    android:inputType="textNoSuggestions"
                     android:textColor="@color/Source_dest_font"
                     android:textColorHint="@android:color/holo_orange_light"
-                    android:textSize="12sp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:inputType="textNoSuggestions"
-                    android:backgroundTint="@android:color/transparent"/>
+                    android:textSize="12sp" />
             </RelativeLayout>
 
 
@@ -122,14 +121,14 @@
             android:id="@+id/receiverDetailsCardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/src_dst_border"
             android:visibility="invisible"
             app:cardBackgroundColor="@android:color/white"
             app:contentPadding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            card_view:cardCornerRadius="0dp"
-            android:background="@drawable/src_dst_border">
+            card_view:cardCornerRadius="0dp">
 
             <RelativeLayout
                 android:id="@+id/receiverDetailsView"
@@ -301,7 +300,7 @@
                     android:text="Unloading/Unloading help needed" />
 
             </RelativeLayout>
-
+            <!--
             <RelativeLayout
                 android:id="@+id/driverDetails"
                 android:layout_width="match_parent"
@@ -344,7 +343,7 @@
                     android:layout_below="@id/driverContact"
                     android:text="HR51BE3767"
                     android:textSize="20sp" />
-            </RelativeLayout>
+            </RelativeLayout> -->
         </android.support.v7.widget.CardView>
 
     </android.support.constraint.ConstraintLayout>

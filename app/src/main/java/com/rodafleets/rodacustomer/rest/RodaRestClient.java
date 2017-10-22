@@ -172,4 +172,10 @@ public class RodaRestClient {
         params.put("customer_id", custId);
         RodaRestClient.POST(url, params, responseHandler);
     }
+
+    public static void getDriverLocation(int driverId, JsonHttpResponseHandler responseHandler) {
+        String url = "/location/" + driverId;
+        RequestParams params = new RequestParams();
+        RodaRestClient.GET(url, params, responseHandler);
+    }
 }

@@ -33,4 +33,6 @@
 
     <color name = "pickup_button_disabled_background">#dddddd</color>
     <color name = "pickup_button_enabled_background">#765267</color>
+
+    <color name="separator_color">#e5e5e5</color>
 </resources>

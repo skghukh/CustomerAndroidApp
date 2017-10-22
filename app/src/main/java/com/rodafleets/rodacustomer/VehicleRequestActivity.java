@@ -20,6 +20,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.model.VehicleRequest;
@@ -38,21 +39,28 @@ public class VehicleRequestActivity extends MapActivity {
     private CardView receiverDetailsCardView;
     private RelativeLayout selectedVehicle;
     private VehicleRequest vehicleRequest;
-    private RelativeLayout vehicleSelectView;
-    private RelativeLayout driverDetailsView;
+    private RelativeLayout selectVehicleType;
+    private RelativeLayout receiverDetails;
+    // private RelativeLayout driverDetailsView;
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        super.onMapReady(googleMap);
+        RodaRestClient.getNearByDriverLocations(10.1, 10.8, getNearByDriverLocationResponseHandler);
+    }
+
     private EditText searchSrc;
     private EditText searchDst;
     private TextView driverName;
     private TextView driverContact;
-    private long bidId;
-    private long requestId;
-    private long amount;
     int PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE = 1;
     int PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE = 2;
     int viewType = 1;
     LatLng sourceLatLang;
     LatLng destLatLang;
     private Handler handler;
+    private EditText receiverName;
+    private EditText receiverPhone;
 
 
     @Override
@@ -68,10 +76,12 @@ public class VehicleRequestActivity extends MapActivity {
         searchSrc = (EditText) findViewById(R.id.search_src);
         searchDst = (EditText) findViewById(R.id.search_dst);
         receiverDetailsCardView = (CardView) findViewById(R.id.receiverDetailsCardView);
-        vehicleSelectView = (RelativeLayout) findViewById(R.id.selectVehicleType);
-        driverDetailsView = (RelativeLayout) findViewById(R.id.driverDetails);
+        selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
+        // driverDetailsView = (RelativeLayout) findViewById(R.id.driverDetails);
         driverName = (TextView) findViewById(R.id.driverName);
-        driverContact = (TextView) findViewById(R.id.driverContact);
+       // driverContact = (TextView) findViewById(R.id.driverContact);
+        receiverName = (EditText) findViewById(R.id.receiverName);
+        receiverPhone = (EditText) findViewById(R.id.receiverPhone);
         initMap();
         setFonts();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Vehicle_Requested"));
@@ -126,12 +136,12 @@ public class VehicleRequestActivity extends MapActivity {
                     searchSrc.setText(place.getAddress());
                     resetPickupPointMarker();
                     resetCurrentMarkers();
-                    addMarkerOnMap(0, sourceLatLang, markerSrc);
+                    addMarkerOnMap(0, sourceLatLang, markerSrc, true);
                 } else if (requestCode == PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE) {
                     destLatLang = place.getLatLng();
                     searchDst.setText(place.getAddress());
                     resetDropPointMarker();
-                    addMarkerOnMap(1, destLatLang, markerDst);
+                    addMarkerOnMap(1, destLatLang, markerDst, true);
                 }
                 checkIfSourceDestinationAvailable();
                 Log.i(TAG, "Place: " + place.getName());
@@ -141,19 +151,6 @@ public class VehicleRequestActivity extends MapActivity {
                 Log.i(TAG, status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
-            }
-        } else if (requestCode == 11 && resultCode == RESULT_OK) {
-            if (null != vehicleSelectView) {
-                vehicleSelectView.setVisibility(View.GONE);
-            }
-            if (null != driverDetailsView) {
-                final String driverName = data.getStringExtra("driverName");
-                final String requestId = data.getStringExtra("requestId");
-                final String bid = data.getStringExtra("bid");
-                final String amount = data.getStringExtra("amount");
-                RodaRestClient.acceptBid(requestCode, Long.parseLong(bid), ApplicationSettings.getCustomerId(VehicleRequestActivity.this), acceptBidResponseHandler);
-                this.driverName.setText(driverName);
-                driverDetailsView.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -168,27 +165,17 @@ public class VehicleRequestActivity extends MapActivity {
 //        makeOfferBtn.setTypeface(poppinsSemiBold);
     }
 
-
-    private void bidRequest() {
-        int driverId = ApplicationSettings.getCustomerId(VehicleRequestActivity.this);
-        RodaRestClient.bidRequest(vehicleRequest.getId(), driverId, vehicleRequest.getApproxFareInCents(), bidRequestResponseHandler);
-    }
-
-    public void onRejectBtnClick(View view) {
-        int driverId = ApplicationSettings.getCustomerId(VehicleRequestActivity.this);
-        RodaRestClient.rejectRequest(vehicleRequest.getId(), driverId, rejectRequestResponseHandler);
-    }
-
-    public void onCallCustomerBtnClick(View view) {
-
-    }
-
     private void startNextActivity() {
         //this.startActivity(new Intent(this, RequestConfirmationDetails.class));
         //Intent intent = new Intent(this, RequestConfirmationDetails.class);
         Intent intent = new Intent(this, DriversResponseActivity.class);
-        startActivityForResult(intent, 11);
-        // startActivityForResult(intent, requestCode);
+        startActivity(intent);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                resetViews();
+            }
+        }, 1000);
     }
 
 
@@ -211,8 +198,6 @@ public class VehicleRequestActivity extends MapActivity {
 
             long fare = vehicleRequest.getApproxFareInCents() / 100;
 
-
-            // requestView.setVisibility(View.VISIBLE);
 
         } catch (Exception e) {
             //handle error
@@ -253,7 +238,6 @@ public class VehicleRequestActivity extends MapActivity {
             Log.i(AppConstants.APP_NAME, "response = " + jsonResponseObject.toString());
             ApplicationSettings.setVehicleRequest(VehicleRequestActivity.this, null);
             clearMap();
-            // requestView.setVisibility(View.GONE);
         }
 
         public final void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
@@ -303,9 +287,10 @@ public class VehicleRequestActivity extends MapActivity {
         }
     };
 
+    // Show view for vehicle types.
     public void showVehicleTypes(View view) {
-        RelativeLayout receiverDetails = (RelativeLayout) findViewById(R.id.receiverDetailsView);
-        RelativeLayout selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
+        receiverDetails = (RelativeLayout) findViewById(R.id.receiverDetailsView);
+        selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
         if (null != receiverDetails && null != selectVehicleType) {
             startGoneAnimation(receiverDetailsCardView);
             receiverDetails.setVisibility(View.GONE);
@@ -314,6 +299,7 @@ public class VehicleRequestActivity extends MapActivity {
         }
     }
 
+    //Animation to show view coming from bottom, intended for card view.
     private void startInAnimation(View v, int position) {
         Display mDisplay = this.getWindowManager().getDefaultDisplay();
         final int height = mDisplay.getHeight();
@@ -323,6 +309,7 @@ public class VehicleRequestActivity extends MapActivity {
         v.animate().y(position > 0 ? position : yPosition).setDuration(500).start();
     }
 
+    //Animation to hide view down, intended for card view.
     private void startGoneAnimation(View v) {
         Display mDisplay = this.getWindowManager().getDefaultDisplay();
         final int height = mDisplay.getHeight();
@@ -330,9 +317,44 @@ public class VehicleRequestActivity extends MapActivity {
         v.setVisibility(View.GONE);
     }
 
+    //This is to show bottom CardView to fill vehicle type & receiver details.
     private void showReceiversDetails() {
         if (null != sourceLatLang && null != destLatLang) {
             this.startInAnimation(receiverDetailsCardView, 0);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+    }
+
+    //This is to reset the views once next activity is started.
+    private void resetViews() {
+        if (null != searchSrc) {
+            searchSrc.getText().clear();
+            sourceLatLang = null;
+        }
+        if (null != searchDst) {
+            searchDst.getText().clear();
+            destLatLang = null;
+        }
+        if (null != receiverPhone) {
+            receiverPhone.getText().clear();
+        }
+        if (null != receiverName) {
+            receiverName.getText().clear();
+        }
+
+        if (null != receiverDetails) {
+            receiverDetails.setVisibility(View.VISIBLE);
+        }
+        if (null != selectVehicleType) {
+            selectVehicleType.setVisibility(View.INVISIBLE);
+        }
+        if (null != receiverDetailsCardView) {
+            receiverDetailsCardView.setVisibility(View.INVISIBLE);
         }
     }
 }

@@ -63,7 +63,7 @@
             <RelativeLayout
                 android:id="@+id/receiverDetailsView"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="160dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
@@ -79,12 +79,21 @@
                         android:layout_height="31dp"
                         app:srcCompat="@drawable/marker_green" />
 
+                    <View
+                        android:id="@+id/separator"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@id/locationImageView"
+                        android:layout_marginLeft="20dp"
+                        android:background="@color/separator_color"
+                        />
+
                     <TextView
                         android:id="@+id/pickupLocationKey"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="40dp"
-                        android:layout_toRightOf="@id/locationImageView"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toRightOf="@id/separator"
                         android:text="PICKUP LOCATION" />
 
                     <TextView
@@ -99,17 +108,19 @@
                         android:ellipsize="end"/>
 
                 </RelativeLayout>
-                <android.support.v4.widget.Space
-                    android:layout_height="1dp"
-                    android:background="@color/reqeust_pickup_button_bg"
+                <View
+                    android:id="@+id/separator1"
                     android:layout_width="match_parent"
+                    android:layout_height="1dp"
                     android:layout_below="@id/locationDetails"
+                    android:background="@color/separator_color"
                     />
+
                 <RelativeLayout
                     android:id="@+id/driverDetails"
                     android:layout_width="match_parent"
                     android:layout_height="74dp"
-                    android:layout_below="@id/locationDetails"
+                    android:layout_below="@id/separator1"
                     android:gravity="center_vertical"
                     android:paddingTop="10dp">
 

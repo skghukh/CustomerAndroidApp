@@ -60,10 +60,11 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
     Marker mCurrLocationMarker;
     Marker pickupPointMarker;
     Marker dropPointMarker;
+    Marker driverPosition;
 
     private Bitmap redIcon;
     private Bitmap greenIcon;
-    private Bitmap carIcon;
+    protected Bitmap carIcon;
     Bitmap markerSrc;
     Bitmap markerDst;
     private List<LatLng> nearByDrivers;
@@ -113,7 +114,7 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
         }
 
         initMarkerBitmaps();
-        RodaRestClient.getNearByDriverLocations(10.1, 10.8, getNearByDriverLocationResponseHandler);
+        // RodaRestClient.getNearByDriverLocations(10.1, 10.8, getNearByDriverLocationResponseHandler);
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -146,7 +147,7 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
     public void onConnectionFailed(ConnectionResult connectionResult) {
     }
 
-    private void initMarkerBitmaps() {
+    protected void initMarkerBitmaps() {
 
         int marker_height = 90;
         int marker_width = 60;
@@ -194,12 +195,14 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
             mCurrLocationMarker.remove();
         }
 
-        for (LatLng pos : nearByDrivers) {
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(pos);
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(carIcon));
-            Marker driverPosition = mGoogleMap.addMarker(markerOptions);
-            mGoogleMap.addMarker(markerOptions);
+        if (null != nearByDrivers && !nearByDrivers.isEmpty()) {
+            for (LatLng pos : nearByDrivers) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(pos);
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(carIcon));
+                Marker driverPosition = mGoogleMap.addMarker(markerOptions);
+                mGoogleMap.addMarker(markerOptions);
+            }
         }
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -265,20 +268,22 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
 
     }
 
-    protected void addMarkerOnMap(int source, LatLng pos, Bitmap icon) {
+    protected void addMarkerOnMap(int source, LatLng pos, Bitmap icon, boolean isCameraMoveRequired) {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(pos);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
-        Marker driverPosition = mGoogleMap.addMarker(markerOptions);
+        driverPosition = mGoogleMap.addMarker(markerOptions);
         if (source == 0) {
             pickupPointMarker = mGoogleMap.addMarker(markerOptions);
         } else {
             driverPosition = mGoogleMap.addMarker(markerOptions);
         }
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16f));
+        if (isCameraMoveRequired) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16f));
+        }
     }
 
-    private JsonHttpResponseHandler getNearByDriverLocationResponseHandler = new JsonHttpResponseHandler() {
+    protected JsonHttpResponseHandler getNearByDriverLocationResponseHandler = new JsonHttpResponseHandler() {
         public void onSuccess(int statusCode, Header[] headers, JSONObject jsonResponseObject) {
             System.out.println(jsonResponseObject);
             nearByDrivers = new ArrayList<>();

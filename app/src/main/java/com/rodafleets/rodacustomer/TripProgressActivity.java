@@ -93,7 +93,7 @@ public class TripProgressActivity extends MapActivity {
         customerName = (TextView) findViewById(R.id.customerName);
         acceptanceStatus = (TextView) findViewById(R.id.acceptanceStatus);
 
-        navigate  = (TextView) findViewById(R.id.navigate);
+        navigate = (TextView) findViewById(R.id.navigate);
         fromAddress = (TextView) findViewById(R.id.fromAddress);
 
         arrivedAtOriginTxt = (TextView) findViewById(R.id.arrivedAtOriginTxt);
@@ -287,7 +287,7 @@ public class TripProgressActivity extends MapActivity {
         });
     }
 
-    private void initEndTripBtn () {
+    private void initEndTripBtn() {
 
         endTripBtn.getSlider().setOnTouchListener(new AppCompatSeekBar.OnTouchListener() {
             @Override
@@ -321,7 +321,7 @@ public class TripProgressActivity extends MapActivity {
                 hideAllViews();
                 rateCustomerTxt.setText("Rate " + vehicleRequest.getCustomerName());
                 paidByTxt.setText("Payment made by e-wallet");
-                long fare = vehicleRequest.getApproxFareInCents()/100;
+                long fare = vehicleRequest.getApproxFareInCents() / 100;
                 fareTxt.setText("₹" + fare);
                 fareSummaryView.setVisibility(View.VISIBLE);
             }
@@ -392,8 +392,8 @@ public class TripProgressActivity extends MapActivity {
                 fromAddress.setText(vehicleRequest.getOriginAddress());
                 acceptanceStatus.setText("ACCEPTED");
                 Handler h = new Handler();
-                h.postDelayed(new Runnable(){
-                    public void run(){
+                h.postDelayed(new Runnable() {
+                    public void run() {
                         customerView.setVisibility(View.GONE);
                         addressView.setVisibility(View.VISIBLE);
                         startLoadingView.setVisibility(View.VISIBLE);

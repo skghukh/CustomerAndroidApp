@@ -3,7 +3,9 @@ package com.rodafleets.rodacustomer;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,9 +16,22 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.rodafleets.rodacustomer.model.DriverLocation;
+import com.rodafleets.rodacustomer.model.NearByDrivers;
+import com.rodafleets.rodacustomer.rest.RodaRestClient;
+import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
+
+import java.util.logging.Logger;
+
+import cz.msebera.android.httpclient.Header;
 
 public class ScehuledTripDetailsActivity extends MapActivity {
 
@@ -28,6 +43,7 @@ public class ScehuledTripDetailsActivity extends MapActivity {
     private TextView vehicleRegistrationNo;
     private TextView pickupLocationValue;
     private TextView driverMobNo;
+    final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +80,16 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         vehicleRegistrationNo.setText(vehicleRegNo);
         pickupLocationValue = (TextView) findViewById(R.id.pickupLocationValue);
         pickupLocationValue.setText(sourcePlace);
-        driverMobNo  = (TextView) findViewById(R.id.callDriverValue);
+        driverMobNo = (TextView) findViewById(R.id.callDriverValue);
         driverMobNo.setText(driverMob);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        super.onMapReady(googleMap);
+        addMarkerForPickupLocation(ApplicationSettings.getSourceLoc());
+        addMarkerForDriverCurrentLocation();
+        addThreadForUpdateDriverCurrentLocation();
     }
 
     public void callDriver(View view) {
@@ -74,15 +98,90 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         myIntent.setData(Uri.parse(phNum));
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Toast.makeText(this, "Not able to call due to permissions ",Toast.LENGTH_SHORT);
+            Toast.makeText(this, "Not able to call due to permissions ", Toast.LENGTH_SHORT);
             return;
         }
         startActivity(myIntent);
     }
+
+    private void addThreadForUpdateDriverCurrentLocation() {
+
+    }
+
+    private void addMarkerForDriverCurrentLocation() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                DriverLocationUpdaterTask mDriverLocationTask = new DriverLocationUpdaterTask(19);
+                mDriverLocationTask.execute(19);
+                addMarkerForDriverCurrentLocation();
+            }
+        }, 5000);
+    }
+
+    private void addMarkerForPickupLocation(LatLng sourceLocation) {
+        if (null == sourceLocation) {
+            System.out.println("Pickup location is invalid " + sourceLocation);
+        }
+        System.out.println("Pickup location is " + sourceLocation);
+        initMarkerBitmaps();
+        addMarkerOnMap(0, sourceLocation, markerSrc,false);
+    }
+
+
+    private class DriverLocationUpdaterTask extends AsyncTask<Integer, Void, Void> {
+
+        private LatLng currentLocation;
+
+        int driverId;
+
+        DriverLocationUpdaterTask(int driverId) {
+            this.driverId = driverId;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... input) {
+            RodaRestClient.getDriverLocation(driverId, getDriverLocationHandler);
+            return null;
+        }
+
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (null != handler) {
+           // handler.getLooper().quit();
+            handler.removeCallbacks(null);
+        }
+        super.onPause();
+    }
+
+    private JsonHttpResponseHandler getDriverLocationHandler = new JsonHttpResponseHandler() {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            Toast.makeText(ScehuledTripDetailsActivity.this, "driver location updated ", Toast.LENGTH_SHORT).show();
+            Gson gson = new GsonBuilder().create();
+            DriverLocation driverLocation = gson.fromJson(response.toString(), DriverLocation.class);
+            if (null != driverPosition) {
+                driverPosition.remove();
+                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), carIcon,false);
+            }else{
+                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), carIcon,false);
+            }
+
+
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            super.onFailure(statusCode, headers, throwable, errorResponse);
+            Toast toast = Toast.makeText(ScehuledTripDetailsActivity.this, "Not able to fetch latest location!", Toast.LENGTH_SHORT);
+        }
+    };
+
 }

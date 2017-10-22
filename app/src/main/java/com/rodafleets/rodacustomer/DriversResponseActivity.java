@@ -113,6 +113,7 @@ public class DriversResponseActivity extends MapActivity {
         b.putParcelable("sourceLocation", sourceLoc);
         intent.putExtras(b);
         startActivityForResult(intent, 15);
+        finish();
     }
 
     private JsonHttpResponseHandler acceptBidResponseHandler = new JsonHttpResponseHandler() {
