@@ -126,10 +126,9 @@
 
                     <ImageView
                         android:id="@+id/driverImageView"
-                        android:layout_width="40dp"
+                        android:layout_width="50dp"
                         android:layout_height="40dp"
-                        android:background="#dcdcdc"
-                        app:srcCompat="@drawable/user_thumbnail" />
+                        app:srcCompat="@drawable/driver_selected_profile_pic" />
 
                     <TextView
                         android:id="@+id/driverName"
@@ -150,21 +149,21 @@
 
                     <ImageView
                         android:id="@+id/callDriverImage"
-                        android:layout_width="60dp"
-                        android:layout_height="50dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_alignParentRight="true"
-                        android:background="@color/colorAccent"
                         android:onClick="callDriver"
-                        app:srcCompat="@android:drawable/stat_sys_phone_call"
+                        app:srcCompat="@drawable/call_driver"
                         android:layout_alignBottom="@+id/vehicleRegistrationNo" />
 
                     <TextView
                         android:id="@+id/callDriverValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignRight="@id/callDriverImage"
+                       android:layout_alignRight="@id/callDriverImage"
                         android:layout_below="@id/callDriverImage"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="3dp"
+                        android:textSize="8sp"
                         android:onClick="callDriver"
                         android:text="Call Driver" />
 

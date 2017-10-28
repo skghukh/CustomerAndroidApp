@@ -87,19 +87,61 @@ public class NotificationService extends FirebaseMessagingService {
                 Map<String, String> dataMessage = remoteMessage.getData();
                 intent.putExtra("driverName", dataMessage.get("driverName"));
                 intent.putExtra("driverContact", dataMessage.get("driverContact"));
-                intent.putExtra("vehicleRegId", dataMessage.get("vehicleRegid"));
+                intent.putExtra("vehicleRegId", dataMessage.get("vehicleRegId"));
                 intent.putExtra("requestId", dataMessage.get("requestId"));
                 intent.putExtra("bid", dataMessage.get("bid"));
                 intent.putExtra("Amount", dataMessage.get("Amount"));
             }
 
+        } else if (notificationTitle.equals("Driver_Location_Updated")) {
+            if (remoteMessage.getData().size() > 0) {
+                Map<String, String> dataMessage = remoteMessage.getData();
+                final String reqId = dataMessage.get("reqId");
+                System.out.println("Driver location is updated for reqId " + reqId);
+                intent = new Intent("Location_Updated_" + reqId);
+                intent.putExtra("driverId", dataMessage.get("driverId"));
+                intent.putExtra("bId", dataMessage.get("driverId"));
+                intent.putExtra("lat", dataMessage.get("lat"));
+                intent.putExtra("lan", dataMessage.get("lan"));
+            }
+        } else if (notificationTitle.equals("TRIP_UPDATED")) {
+            if (remoteMessage.getData().size() > 0) {
+                Map<String, String> dataMessage = remoteMessage.getData();
+                final String driverId = dataMessage.get("driverId");
+                final String tripId = dataMessage.get("tripId");
+                final String bId = dataMessage.get("bId");
+                final String reqId = dataMessage.get("reqId");
+                final String status = dataMessage.get("status");
+                int tripStatus = Integer.parseInt(status);
+                String notificationBodyMessage = "Trip Status is ";
+                switch (tripStatus) {
+                    case 0: {
+                        notificationBodyMessage = notificationBodyMessage + "Confirmed";
+                        break;
+                    }
+                    case 1: {
+                        notificationBodyMessage = notificationBodyMessage + "Loading";
+                        break;
+                    }
+                    case 2: {
+                        notificationBodyMessage = notificationBodyMessage + "Started";
+                        break;
+                    }
+                    case 3: {
+                        notificationBodyMessage = notificationBodyMessage + "Unloading";
+                        break;
+                    }
+                    case 10: {
+                        notificationBodyMessage = notificationBodyMessage + "Completed";
+                        break;
+                    }
+                }
+                sendNotification("Trip Status Updated", notificationBodyMessage);
+            }
         }
-
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
-        sendNotification(notificationTitle, notificationBody);
+        if (null != intent) {
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        }
     }
     // [END receive_message]
 

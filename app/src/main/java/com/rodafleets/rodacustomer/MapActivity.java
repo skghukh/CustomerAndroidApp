@@ -152,8 +152,8 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
         int marker_height = 90;
         int marker_width = 60;
 
-        int car_height = 18;
-        int car_width = 33;
+        int car_height = 25;
+        int car_width = 60;
 
         greenIcon = BitmapFactory.decodeResource(getResources(), R.drawable.marker_green);
         redIcon = BitmapFactory.decodeResource(getResources(), R.drawable.marker_red);
@@ -165,8 +165,8 @@ public class MapActivity extends ParentActivity implements OnMapReadyCallback,
         greenIcon = Bitmap.createScaledBitmap(greenIcon, marker_width, marker_height, false);
         redIcon = Bitmap.createScaledBitmap(redIcon, marker_width, marker_height, false);
         carIcon = Bitmap.createScaledBitmap(carIcon, car_width, car_height, false);
-        markerDst = Bitmap.createScaledBitmap(markerDst, 125, 200, false);
-        markerSrc = Bitmap.createScaledBitmap(markerSrc, 150, 200, false);
+        markerDst = Bitmap.createScaledBitmap(markerDst, 50, 90, false);
+        markerSrc = Bitmap.createScaledBitmap(markerSrc, 50, 90, false);
     }
 
 

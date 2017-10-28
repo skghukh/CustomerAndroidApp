@@ -14,6 +14,7 @@ public class VehicleRequestResponse {
     private String fareEstimate;
     private String requestId;
     private String bidId;
+    private String driverId;
 
 
     public String getName() {
@@ -78,5 +79,13 @@ public class VehicleRequestResponse {
 
     public void setVehicleRegId(String vehicleRegId) {
         this.vehicleRegId = vehicleRegId;
+    }
+
+    public String getDriverId() {
+        return driverId;
+    }
+
+    public void setDriverId(String driverId) {
+        this.driverId = driverId;
     }
 }

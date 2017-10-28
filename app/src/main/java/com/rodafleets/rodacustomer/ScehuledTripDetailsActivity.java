@@ -1,6 +1,9 @@
 package com.rodafleets.rodacustomer;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,6 +13,7 @@ import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -17,7 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -43,6 +50,8 @@ public class ScehuledTripDetailsActivity extends MapActivity {
     private TextView vehicleRegistrationNo;
     private TextView pickupLocationValue;
     private TextView driverMobNo;
+    private String tripRequestId;
+    private Marker driverPosition;
     final Handler handler = new Handler();
 
     @Override
@@ -50,25 +59,13 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scehuled_trip_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       /* setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
         Intent intent = getIntent();
         driverName = intent.getStringExtra("driverName");
         driverMob = intent.getStringExtra("driverMob");
-        vehicleRegNo = intent.getStringExtra("vehicleRegId");
+        vehicleRegNo = intent.getStringExtra("vehicleRegNo");
         sourcePlace = intent.getStringExtra("sourcePlace");
+        tripRequestId = intent.getStringExtra("tripRequestId");
         initComponents();
-        /*final Bundle extras = intent.getExtras();
-        LatLng src = intent.getParcelableExtra("sourceLocation");*/
-
     }
 
     protected void initComponents() {
@@ -82,14 +79,24 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         pickupLocationValue.setText(sourcePlace);
         driverMobNo = (TextView) findViewById(R.id.callDriverValue);
         driverMobNo.setText(driverMob);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Location_Updated_" + tripRequestId));
     }
+
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            System.out.println("Location has been updated to " + intent.getStringExtra("lat") + " , " + intent.getStringExtra("lan"));
+            addMarkerForDriverCurrentLocation(Double.parseDouble(intent.getStringExtra("lat")), Double.parseDouble(intent.getStringExtra("lan")));
+        }
+    };
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
         addMarkerForPickupLocation(ApplicationSettings.getSourceLoc());
-        addMarkerForDriverCurrentLocation();
-        addThreadForUpdateDriverCurrentLocation();
+        new DriverLocationUpdaterTask(driver)
+        //addMarkerForDriverCurrentLocation();
     }
 
     public void callDriver(View view) {
@@ -104,19 +111,20 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         startActivity(myIntent);
     }
 
-    private void addThreadForUpdateDriverCurrentLocation() {
-
-    }
-
-    private void addMarkerForDriverCurrentLocation() {
-        handler.postDelayed(new Runnable() {
+    private void addMarkerForDriverCurrentLocation(final double lat, final double lan) {
+        handler.post(new Runnable() {
             @Override
             public void run() {
-                DriverLocationUpdaterTask mDriverLocationTask = new DriverLocationUpdaterTask(19);
-                mDriverLocationTask.execute(19);
-                addMarkerForDriverCurrentLocation();
+                //addMarkerOnMap(1, new LatLng(lat, lan), carIcon, false);
+                if (null != driverPosition) {
+                    driverPosition.remove();
+                }
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(new LatLng(lat, lan));
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(carIcon));
+                driverPosition = mGoogleMap.addMarker(markerOptions);
             }
-        }, 5000);
+        });
     }
 
     private void addMarkerForPickupLocation(LatLng sourceLocation) {
@@ -125,7 +133,7 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         }
         System.out.println("Pickup location is " + sourceLocation);
         initMarkerBitmaps();
-        addMarkerOnMap(0, sourceLocation, markerSrc,false);
+        addMarkerOnMap(0, sourceLocation, markerSrc, false);
     }
 
 
@@ -152,15 +160,6 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         }
     }
 
-    @Override
-    public void onPause() {
-        if (null != handler) {
-           // handler.getLooper().quit();
-            handler.removeCallbacks(null);
-        }
-        super.onPause();
-    }
-
     private JsonHttpResponseHandler getDriverLocationHandler = new JsonHttpResponseHandler() {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -169,9 +168,9 @@ public class ScehuledTripDetailsActivity extends MapActivity {
             DriverLocation driverLocation = gson.fromJson(response.toString(), DriverLocation.class);
             if (null != driverPosition) {
                 driverPosition.remove();
-                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), carIcon,false);
-            }else{
-                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), carIcon,false);
+                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), carIcon, false);
+            } else {
+                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), carIcon, false);
             }
 
 

@@ -61,14 +61,20 @@ public class DriversResponseActivity extends MapActivity {
 
     private void addResponseToList(Intent intent) {
         VehicleRequestResponse response = new VehicleRequestResponse();
+        //driver details
+        response.setDriverId(intent.getStringExtra("driverId"));
         response.setName(intent.getStringExtra("driverName"));
-        response.setVehicleRegId(intent.getStringExtra("vehicleRegId"));
         response.setDriverContact(intent.getStringExtra("driverContact"));
-        response.setFareEstimate(intent.getStringExtra("Amount"));
+        response.setDriverRating(intent.getStringExtra("driverRating"));
+        response.setDistance(intent.getStringExtra("driverDistance"));
+
+        //request details
         response.setRequestId(intent.getStringExtra("requestId"));
         response.setBidId(intent.getStringExtra("bid"));
-        response.setDistance("6 KM");
-        response.setDriverRating("3.2");
+        response.setFareEstimate(intent.getStringExtra("Amount"));
+
+        //vehicle details
+        response.setVehicleRegId(intent.getStringExtra("vehicleRegId"));
         vehicleResponses.add(response);
         driversResponseAdapter.notifyDataSetChanged();
 
@@ -109,6 +115,7 @@ public class DriversResponseActivity extends MapActivity {
         intent.putExtra("driverMob", selectedResponse.getDriverContact());
         intent.putExtra("vehicleRegNo", selectedResponse.getVehicleRegId());
         intent.putExtra("sourcePlace", ApplicationSettings.getSourcePlace());
+        intent.putExtra("tripRequestId", selectedResponse.getRequestId());
         Bundle b = new Bundle();
         b.putParcelable("sourceLocation", sourceLoc);
         intent.putExtras(b);
