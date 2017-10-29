@@ -48,14 +48,17 @@ public class DriversResponseAdapter extends BaseAdapter {
         View vi = convertView;
         if (vi == null)
             vi = inflater.inflate(R.layout.list_item, null);
+        //get all views
         TextView driverName = (TextView) vi.findViewById(R.id.driverName);
         TextView driverRating = (TextView) vi.findViewById(R.id.driverRating);
         TextView distance = (TextView) vi.findViewById(R.id.distance);
         TextView fare = (TextView) vi.findViewById(R.id.fare);
         RadioButton radioButton = (RadioButton) vi.findViewById(R.id.radioButton);
+
+        //check response
         VehicleRequestResponse vehicleRequestResponse = driverResponseList.get(position);
-        distance.setText("4.6 KM");
-        fare.setText("INR 230");
+
+        //set views values based on response
         driverName.setText(vehicleRequestResponse.getName());
         driverRating.setText(vehicleRequestResponse.getDriverRating());
         distance.setText(vehicleRequestResponse.getDistance());

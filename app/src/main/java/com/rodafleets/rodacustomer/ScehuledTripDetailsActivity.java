@@ -1,10 +1,12 @@
 package com.rodafleets.rodacustomer;
 
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +19,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +56,14 @@ public class ScehuledTripDetailsActivity extends MapActivity {
     private TextView driverMobNo;
     private String tripRequestId;
     private Marker driverPosition;
+    private String driverId;
+    private String destPlace;
+    private RelativeLayout src_dst_long;
+    private RelativeLayout pickupLocationDetails;
+    private RelativeLayout priceDistanceView;
+    private RelativeLayout payment_mode_cancel_layout;
+    private TextView dest_loc_val;
+    private TextView pick_loc_val;
     final Handler handler = new Handler();
 
     @Override
@@ -60,11 +72,13 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         setContentView(R.layout.activity_scehuled_trip_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         Intent intent = getIntent();
+        driverId = intent.getStringExtra("driverId");
         driverName = intent.getStringExtra("driverName");
         driverMob = intent.getStringExtra("driverMob");
         vehicleRegNo = intent.getStringExtra("vehicleRegNo");
         sourcePlace = intent.getStringExtra("sourcePlace");
         tripRequestId = intent.getStringExtra("tripRequestId");
+        destPlace = intent.getStringExtra("destPlace");
         initComponents();
     }
 
@@ -80,6 +94,16 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         driverMobNo = (TextView) findViewById(R.id.callDriverValue);
         driverMobNo.setText(driverMob);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Location_Updated_" + tripRequestId));
+        src_dst_long = (RelativeLayout) findViewById(R.id.src_dst_long);
+        pickupLocationDetails = (RelativeLayout) findViewById(R.id.pickupLocationDetails);
+        priceDistanceView = (RelativeLayout) findViewById(R.id.price_dist_view);
+        payment_mode_cancel_layout = (RelativeLayout) findViewById(R.id.payment_mode_cancel_layout);
+        pick_loc_val = (TextView) findViewById(R.id.pick_loc_val);
+        dest_loc_val = (TextView) findViewById(R.id.dest_loc_val);
+        pick_loc_val.setText(sourcePlace);
+        dest_loc_val.setText(destPlace);
+
+
     }
 
 
@@ -95,7 +119,10 @@ public class ScehuledTripDetailsActivity extends MapActivity {
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
         addMarkerForPickupLocation(ApplicationSettings.getSourceLoc());
-        new DriverLocationUpdaterTask(driver)
+        if (null != driverId) {
+            new DriverLocationUpdaterTask(Integer.parseInt(driverId)).execute();
+        }
+
         //addMarkerForDriverCurrentLocation();
     }
 
@@ -134,6 +161,31 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         System.out.println("Pickup location is " + sourceLocation);
         initMarkerBitmaps();
         addMarkerOnMap(0, sourceLocation, markerSrc, false);
+    }
+
+    public void cancelTrip(View view) {
+    }
+
+    public void updownSelectionOnClick(View view) {
+        ImageButton imageButtonUpDown = (ImageButton) view;
+        System.out.println("image level is " + imageButtonUpDown.getDrawable().getLevel());
+        imageButtonUpDown.setImageLevel((imageButtonUpDown.getDrawable().getLevel() + 1) % 2);
+        System.out.println("image level is " + imageButtonUpDown.getDrawable().getLevel());
+
+        if (null != src_dst_long && null != pickupLocationDetails && null != priceDistanceView) {
+            if (imageButtonUpDown.getDrawable().getLevel() == 1) {
+                src_dst_long.setVisibility(View.VISIBLE);
+                pickupLocationDetails.setVisibility(View.GONE);
+                priceDistanceView.setVisibility(View.VISIBLE);
+                payment_mode_cancel_layout.setVisibility(View.VISIBLE);
+            } else {
+                src_dst_long.setVisibility(View.GONE);
+                pickupLocationDetails.setVisibility(View.VISIBLE);
+                priceDistanceView.setVisibility(View.GONE);
+                payment_mode_cancel_layout.setVisibility(View.GONE);
+            }
+        }
+        // background.setState(getResources().getDrawable(R.drawable));
     }
 
 

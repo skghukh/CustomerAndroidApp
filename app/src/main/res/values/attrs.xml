@@ -10,6 +10,7 @@
     <attr name="reverseSlide" format="boolean"/>
     <attr name="animateSlideText" format="boolean"/>
     <attr name="slideTextSize" format="dimension"/>
+    
 
     <declare-styleable name="SlideView">
         <attr name="slideBackgroundColor"/>
@@ -22,6 +23,7 @@
         <attr name="reverseSlide"/>
         <attr name="animateSlideText"/>
         <attr name="slideTextSize" />
+        <attr name="state_up" format="boolean" />
     </declare-styleable>
 
 </resources>

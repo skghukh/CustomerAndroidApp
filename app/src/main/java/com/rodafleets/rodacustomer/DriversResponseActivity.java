@@ -111,11 +111,18 @@ public class DriversResponseActivity extends MapActivity {
     private void startNextActivity() {
         Intent intent = new Intent(this, ScehuledTripDetailsActivity.class);
         final LatLng sourceLoc = ApplicationSettings.getSourceLoc();
+        //Driver details
+        intent.putExtra("driverId", selectedResponse.getDriverId());
         intent.putExtra("driverName", selectedResponse.getName());
         intent.putExtra("driverMob", selectedResponse.getDriverContact());
+
+        //Vehicle Details
         intent.putExtra("vehicleRegNo", selectedResponse.getVehicleRegId());
-        intent.putExtra("sourcePlace", ApplicationSettings.getSourcePlace());
+
+        //trip details
         intent.putExtra("tripRequestId", selectedResponse.getRequestId());
+        intent.putExtra("sourcePlace", ApplicationSettings.getSourcePlace());
+        intent.putExtra("destPlace", ApplicationSettings.getDestPlace());
         Bundle b = new Bundle();
         b.putParcelable("sourceLocation", sourceLoc);
         intent.putExtras(b);

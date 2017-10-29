@@ -131,7 +131,7 @@
             card_view:cardCornerRadius="0dp">
 
             <RelativeLayout
-                android:id="@+id/receiverDetailsView"
+                android:id="@+id/locationViewSmall"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:gravity="bottom"

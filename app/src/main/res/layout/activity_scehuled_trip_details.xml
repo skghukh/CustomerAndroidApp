@@ -61,16 +61,136 @@
             card_view:cardCornerRadius="0dp">
 
             <RelativeLayout
-                android:id="@+id/receiverDetailsView"
+                android:id="@+id/locationViewSmall"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
+                <ImageButton
+                    android:id="@+id/imageButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:onClick="updownSelectionOnClick"
+                    app:srcCompat="@drawable/up_down_selector" />
+
                 <RelativeLayout
-                    android:id="@+id/locationDetails"
+                    android:id="@+id/src_dst_long"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:visibility="gone">
+
+                    <RelativeLayout
+                        android:id="@+id/picup_loc_long"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true">
+
+                        <ImageView
+                            android:id="@+id/imageButtonSrc"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_alignParentBottom="true"
+                            android:drawablePadding="5dp"
+                            android:gravity="center_vertical"
+                            app:srcCompat="@drawable/source_img" />
+
+                        <View
+                            android:id="@+id/v_separator_picup"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/imageButtonSrc"
+                            android:background="@color/separator_color" />
+
+                        <TextView
+                            android:id="@+id/pick_loc_key"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/v_separator_picup"
+                            android:backgroundTint="@android:color/transparent"
+                            android:hint="PICKUP LOCATION"
+                            android:inputType="textNoSuggestions"
+                            android:textColor="@color/Source_dest_font"
+                            android:textColorHint="@android:color/holo_orange_light"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/pick_loc_val"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@id/pick_loc_key"
+                            android:layout_below="@id/pick_loc_key"
+                            android:layout_marginTop="5dp"
+                            android:text="TextView" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:id="@+id/sep_h_src_dst"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/picup_loc_long"
+                        android:background="@color/separator_color" />
+
+                    <RelativeLayout
+                        android:id="@+id/search_dst_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/picup_loc_long">
+
+                        <ImageView
+                            android:id="@+id/imageButtonDst"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_alignParentTop="true"
+                            android:drawablePadding="5dp"
+                            android:gravity="top"
+                            app:srcCompat="@drawable/dest_img" />
+
+                        <View
+                            android:id="@+id/v_separator_drop"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/imageButtonDst"
+                            android:background="@color/separator_color" />
+
+                        <TextView
+                            android:id="@+id/dest_loc_key"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_toRightOf="@id/v_separator_drop"
+                            android:backgroundTint="@android:color/transparent"
+                            android:hint="DROP LOCATION"
+                            android:inputType="textNoSuggestions"
+                            android:textColor="@color/Source_dest_font"
+                            android:textColorHint="@android:color/holo_orange_light"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/dest_loc_val"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@id/dest_loc_key"
+                            android:layout_below="@id/dest_loc_key"
+                            android:layout_marginTop="5dp"
+                            android:text="TextView" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/pickupLocationDetails"
                     android:layout_width="match_parent"
                     android:layout_height="75dp"
+                    android:layout_below="@id/src_dst_long"
                     android:gravity="center_vertical">
 
                     <ImageView
@@ -83,10 +203,9 @@
                         android:id="@+id/separator"
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:layout_toRightOf="@id/locationImageView"
                         android:layout_marginLeft="20dp"
-                        android:background="@color/separator_color"
-                        />
+                        android:layout_toRightOf="@id/locationImageView"
+                        android:background="@color/separator_color" />
 
                     <TextView
                         android:id="@+id/pickupLocationKey"
@@ -103,18 +222,18 @@
                         android:layout_alignLeft="@id/pickupLocationKey"
                         android:layout_below="@id/pickupLocationKey"
                         android:layout_marginTop="5dp"
-                        android:text="location"
+                        android:ellipsize="end"
                         android:singleLine="true"
-                        android:ellipsize="end"/>
+                        android:text="location" />
 
                 </RelativeLayout>
+
                 <View
                     android:id="@+id/separator1"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/locationDetails"
-                    android:background="@color/separator_color"
-                    />
+                    android:layout_below="@id/pickupLocationDetails"
+                    android:background="@color/separator_color" />
 
                 <RelativeLayout
                     android:id="@+id/driverDetails"
@@ -151,23 +270,107 @@
                         android:id="@+id/callDriverImage"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
+                        android:layout_alignBottom="@+id/vehicleRegistrationNo"
                         android:layout_alignParentRight="true"
                         android:onClick="callDriver"
-                        app:srcCompat="@drawable/call_driver"
-                        android:layout_alignBottom="@+id/vehicleRegistrationNo" />
+                        app:srcCompat="@drawable/call_driver" />
 
                     <TextView
                         android:id="@+id/callDriverValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                       android:layout_alignRight="@id/callDriverImage"
+                        android:layout_alignRight="@id/callDriverImage"
                         android:layout_below="@id/callDriverImage"
                         android:layout_marginTop="3dp"
-                        android:textSize="8sp"
                         android:onClick="callDriver"
-                        android:text="Call Driver" />
+                        android:text="Call Driver"
+                        android:textSize="8sp" />
 
                 </RelativeLayout>
+
+                <View
+                    android:id="@+id/separator2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/driverDetails"
+                    android:background="@color/separator_color" />
+
+                <RelativeLayout
+                    android:id="@+id/price_dist_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/separator2"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="INR 450"
+                        android:textColor="@color/src_dst_border_color"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="6.5 KM"
+                        android:textColor="@color/src_dst_border_color"
+                        android:textSize="20sp" />
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/separator3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/price_dist_view"
+                    android:background="@color/separator_color" />
+
+                <RelativeLayout
+                    android:id="@+id/payment_mode_cancel_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/price_dist_view"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/payment_mode_key"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Mode of Payment"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/payment_mode_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/payment_mode_key"
+                        android:text="Cash"
+                        android:textSize="20sp" />
+
+                    <View
+                        android:id="@+id/separator5"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/separator_color" />
+
+                    <TextView
+                        android:id="@+id/trip_cancel_key"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:onClick="cancelTrip"
+                        android:text="Cancel Trip"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+
 
             </RelativeLayout>
 

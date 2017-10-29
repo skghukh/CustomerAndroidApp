@@ -21,6 +21,7 @@ public final class ApplicationSettings {
     private static final String VEHICLE_REQUEST = "VEHICLE_REQUEST";
     private static LatLng sourceLoc;
     private static String sourcePlace;
+    private static String destPlace;
 
 
     private static SharedPreferences getSharedPreferences(Context context) {
@@ -145,5 +146,13 @@ public final class ApplicationSettings {
 
     public static void setSourcePlace(String sourcePlace) {
         ApplicationSettings.sourcePlace = sourcePlace;
+    }
+
+    public static String getDestPlace() {
+        return destPlace;
+    }
+
+    public static void setDestPlace(String destPlace) {
+        ApplicationSettings.destPlace = destPlace;
     }
 }

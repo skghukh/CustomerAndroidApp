@@ -85,9 +85,15 @@ public class NotificationService extends FirebaseMessagingService {
             intent = new Intent("Request_Accepted");
             if (remoteMessage.getData().size() > 0) {
                 Map<String, String> dataMessage = remoteMessage.getData();
+                //driver details
+                intent.putExtra("driverId",dataMessage.get("driverId"));
                 intent.putExtra("driverName", dataMessage.get("driverName"));
                 intent.putExtra("driverContact", dataMessage.get("driverContact"));
+                intent.putExtra("driverRating",dataMessage.get("driverRating"));
+                intent.putExtra("driverDistance",dataMessage.get("driverDistance"));
+                //vehicle details
                 intent.putExtra("vehicleRegId", dataMessage.get("vehicleRegId"));
+                //reqeust id
                 intent.putExtra("requestId", dataMessage.get("requestId"));
                 intent.putExtra("bid", dataMessage.get("bid"));
                 intent.putExtra("Amount", dataMessage.get("Amount"));

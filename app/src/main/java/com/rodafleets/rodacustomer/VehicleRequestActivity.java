@@ -79,7 +79,7 @@ public class VehicleRequestActivity extends MapActivity {
         selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
         // driverDetailsView = (RelativeLayout) findViewById(R.id.driverDetails);
         driverName = (TextView) findViewById(R.id.driverName);
-       // driverContact = (TextView) findViewById(R.id.driverContact);
+        // driverContact = (TextView) findViewById(R.id.driverContact);
         receiverName = (EditText) findViewById(R.id.receiverName);
         receiverPhone = (EditText) findViewById(R.id.receiverPhone);
         initMap();
@@ -140,6 +140,7 @@ public class VehicleRequestActivity extends MapActivity {
                 } else if (requestCode == PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE) {
                     destLatLang = place.getLatLng();
                     searchDst.setText(place.getAddress());
+                    ApplicationSettings.setDestPlace(place.getAddress().toString());
                     resetDropPointMarker();
                     addMarkerOnMap(1, destLatLang, markerDst, true);
                 }
@@ -289,7 +290,7 @@ public class VehicleRequestActivity extends MapActivity {
 
     // Show view for vehicle types.
     public void showVehicleTypes(View view) {
-        receiverDetails = (RelativeLayout) findViewById(R.id.receiverDetailsView);
+        receiverDetails = (RelativeLayout) findViewById(R.id.locationViewSmall);
         selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
         if (null != receiverDetails && null != selectVehicleType) {
             startGoneAnimation(receiverDetailsCardView);
