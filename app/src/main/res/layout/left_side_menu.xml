@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="260dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
@@ -9,7 +10,7 @@
 
     <RelativeLayout
         android:id="@+id/driverView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="20dp"
         android:background="@color/view_background_yellow"
@@ -27,36 +28,60 @@
             android:id="@+id/name"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="ADITYA BHARDWAJ"
+            android:text="Shailendra Verma"
             android:textColor="#FFFFFF"
             android:textSize="@dimen/text_medium"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
             android:layout_toRightOf="@id/driverThumbnail"/>
 
-        <Button
-            android:id="@+id/goOfflineBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:text="GO OFFLINE"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_medium"
-            android:background="@drawable/btn_small_background_purple"
-            android:onClick="onGoOfflineBtnClick"
-            android:layout_below="@id/name" />
 
     </RelativeLayout>
 
+    <View
+        android:id="@+id/separator"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#E5E5E5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuItems" />
+
+
+    <TextView
+        android:id="@+id/menu_contact_roda"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Contact Roda"
+        android:textColor="#a7a7a7"
+        android:textSize="@dimen/text_large"
+        android:paddingBottom="5dp"
+        android:paddingLeft="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/menu_terms" />
+
+    <TextView
+        android:id="@+id/menu_terms"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="25dp"
+        android:paddingLeft="20dp"
+        android:text="Terms and Conditions"
+        android:textColor="#a7a7a7"
+        android:textSize="@dimen/text_large"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="parent" />
+
     <RelativeLayout
         android:id="@+id/menuItems"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:paddingLeft="5dp"
         android:paddingBottom="10dp"
+        android:paddingLeft="5dp"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/driverView">
@@ -69,109 +94,82 @@
             android:padding="10dp"
             android:text="Trips"
             android:textColor="#1C0113"
-            android:textSize="@dimen/text_large" />
+            android:textSize="@dimen/text_large"
+            android:onClick="showTrips"/>
 
         <TextView
             android:id="@+id/menu_payment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/menu_trip"
             android:padding="10dp"
-            android:text="Payment"
+            android:text="Pay by"
             android:textColor="#1C0113"
             android:textSize="@dimen/text_large"
-            android:layout_below="@+id/menu_trip"/>
+            />
+
+        <Switch
+            android:id="@+id/paySwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/menu_payment"
+            android:layout_alignBottom="@+id/menu_payment"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="18dp"
+            android:layout_marginRight="18dp"
+            android:switchMinWidth="56dp"
+            android:textOff="CASH"
+            android:textOn="WALLET"
+            />
+
+
+        <TextView
+            android:id="@+id/menu_vehicle_rates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menu_payment"
+            android:padding="10dp"
+            android:text="Vehicle and Rates"
+            android:textColor="#1C0113"
+            android:textSize="@dimen/text_large"
+            android:onClick="showVehicleRates"/>
+
+        <TextView
+            android:id="@+id/menu_favourites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menu_vehicle_rates"
+            android:padding="10dp"
+            android:text="Favourites"
+            android:textColor="#1C0113"
+            android:textSize="@dimen/text_large" />
+
+        <TextView
+            android:id="@+id/menu_invite_friends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menu_favourites"
+            android:padding="10dp"
+            android:text="Invite friends"
+            android:textColor="#1C0113"
+            android:textSize="@dimen/text_large"
+            android:onClick="inviteFriends"/>
+
 
         <TextView
             android:id="@+id/menu_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/menu_invite_friends"
             android:padding="10dp"
             android:text="Settings"
             android:textColor="#1C0113"
             android:textSize="@dimen/text_large"
-            android:layout_below="@+id/menu_payment"/>
-
-        <TextView
-            android:id="@+id/menu_support"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Support"
-            android:textColor="#1C0113"
-            android:textSize="@dimen/text_large"
-            android:layout_below="@+id/menu_settings"/>
+            android:onClick="showSettings"/>
 
     </RelativeLayout>
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E5E5E5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menuItems" />
-
-    <RelativeLayout
-        android:id="@+id/driverRatingView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator">
-
-        <TextView
-            android:id="@+id/driverRatingViewTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="10dp"
-            android:text="Your Current Rating"
-            android:textColor="#A7A7A7"
-            android:textSize="@dimen/text_regular"/>
-
-        <ImageView
-            android:id="@+id/driverRatingImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/star"
-            android:paddingTop="10dp"
-            android:layout_below="@+id/driverRatingViewTxt"/>
-
-        <TextView
-            android:id="@+id/driver_rating"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="4.2"
-            android:textColor="#1C0113"
-            android:textSize="42sp"
-            android:layout_marginLeft="20dp"
-            android:paddingBottom="15dp"
-            android:layout_toRightOf="@id/driverRatingImage"
-            android:layout_below="@+id/driverRatingViewTxt"/>
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/separator2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E5E5E5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/driverRatingView" />
-
-    <TextView
-        android:id="@+id/menuLegal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="25dp"
-        android:paddingLeft="20dp"
-        android:text="Legal"
-        android:textColor="#1C0113"
-        android:textSize="@dimen/text_large"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

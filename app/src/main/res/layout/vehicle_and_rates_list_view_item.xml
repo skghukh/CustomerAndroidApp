@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="6dp"
+    android:paddingTop="6dp"
+    android:paddingLeft="12dp"
+    android:layout_margin="16dp">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/vehicle_type_image"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:background="@drawable/vehicle_request_list_item_unselect_background"
+        />
+
+    <TextView
+        android:id="@+id/vehicle_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/vehicle_type_image"
+        android:layout_marginLeft="8dp"
+        android:layout_toEndOf="@+id/vehicle_type_image"
+        android:layout_toRightOf="@+id/vehicle_type_image"
+        android:text="vehicle type"
+        android:textColor="#1c0113"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/baseFair"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/vehicle_type"
+        android:layout_alignStart="@+id/vehicle_type"
+        android:layout_below="@+id/vehicle_type"
+        android:layout_marginTop="16dp"
+        android:text="Base Fare"
+        android:textColor="#7d7d7d"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/capacity"
+        android:layout_alignStart="@+id/capacity"
+        android:layout_below="@+id/capacity"
+        android:layout_marginTop="10dp"
+        android:text="Size"
+        android:textColor="#7d7d7d"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/capacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cost"
+        android:layout_alignStart="@+id/cost"
+        android:layout_below="@+id/cost"
+        android:layout_marginTop="10dp"
+        android:text="Capacity"
+        android:textColor="#7d7d7d"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/cost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/baseFair"
+        android:layout_alignStart="@+id/baseFair"
+        android:layout_below="@+id/baseFair"
+        android:layout_marginTop="10dp"
+        android:text="Cost/km"
+        android:textColor="#7d7d7d"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/baserFairValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/baseFair"
+        android:layout_alignTop="@+id/baseFair"
+        android:layout_marginLeft="19dp"
+        android:layout_toEndOf="@+id/baseFair"
+        android:layout_toRightOf="@+id/baseFair"
+        android:text="INR 120"
+        android:textColor="#303030"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/costValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/cost"
+        android:layout_alignBottom="@+id/cost"
+        android:layout_alignLeft="@+id/baserFairValue"
+        android:layout_alignStart="@+id/baserFairValue"
+        android:text="20/km (After 1 km)"
+        android:textColor="#303030"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/capacityValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/capacity"
+        android:layout_alignBottom="@+id/capacity"
+        android:layout_alignLeft="@+id/costValue"
+        android:layout_alignStart="@+id/costValue"
+        android:text="500 kgs"
+        android:textColor="#303030"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/sizeValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/size"
+        android:layout_alignBottom="@+id/size"
+        android:layout_alignLeft="@+id/capacityValue"
+        android:layout_alignStart="@+id/capacityValue"
+        android:text="8ft x 5ft x 6ft (LxBxH)"
+        android:textColor="#303030"
+        android:textSize="10sp" />
+
+</RelativeLayout>

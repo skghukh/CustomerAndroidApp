@@ -1,5 +1,6 @@
 package com.rodafleets.rodacustomer;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -17,8 +18,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.rodafleets.rodacustomer.utils.AppConstants;
+import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
 public class ParentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -35,6 +40,8 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
     private ActionBarDrawerToggle mDrawerToggle;
 
     private Toolbar toolbar;
+    private Switch paySwitch;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,7 +59,7 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
     public void initializeSideMenu() {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(mDrawerLayout == null){
+        if (mDrawerLayout == null) {
             Log.i("MENU", "DrawerLayout is null");
         }
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -86,7 +93,27 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
 
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
+        checkPaymentListener();
     }
+
+    private void checkPaymentListener() {
+        paySwitch = (Switch) findViewById(R.id.paySwitch);
+        if (null != paySwitch) {
+            paySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if(isChecked){
+                        Toast.makeText(ParentActivity.this,"Cache pay option ",Toast.LENGTH_SHORT).show();
+                        ApplicationSettings.setPayOption(isChecked,ParentActivity.this);
+                    }else{
+                        Toast.makeText(ParentActivity.this,"Wallet pay option ",Toast.LENGTH_SHORT).show();
+                        ApplicationSettings.setPayOption(isChecked,ParentActivity.this);
+                    }
+                }
+            });
+        }
+    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -137,4 +164,37 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
         sintonyBold = Typeface.createFromAsset(getAssets(), AppConstants.FONT_SINTONY_BOLD);
     }
 
+    public void showTrips(View view) {
+        //TODO
+        //Start showTripsActivityHere.
+        Toast.makeText(this, "Trips: Not implmented yet ", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, TripHistory.class);
+        startActivity(intent);
+    }
+
+    public void showVehicleRates(View view) {
+        //TODO
+        //Show Vehicle Rates
+        Intent intent = new Intent(this, VehicleAndRates.class);
+        startActivity(intent);
+        //Toast.makeText(this, "Vechicle Rates: Not implmented yet ", Toast.LENGTH_SHORT).show();
+    }
+
+    public void inviteFriends(View view) {
+        //TODO
+        //Invite Friends
+        Toast.makeText(this, "InviteFriends: Not implmented yet ", Toast.LENGTH_SHORT).show();
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        String shareBody = "Hey There, I am using Roda App. Best application for Logistic, You can download from https://play.google.com/store/apps/details?id=com.awem.cradleofempires.andr";
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share Roda subject");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, "Share via"));
+    }
+
+    public void showSettings(View view) {
+        //TODO
+        //Show Settings
+        Toast.makeText(this, "Settings: Not implmented yet ", Toast.LENGTH_SHORT).show();
+    }
 }

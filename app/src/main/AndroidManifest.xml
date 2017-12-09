@@ -57,10 +57,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".DriversResponseActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ScehuledTripDetailsActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TripHistory"
+            android:label="@string/title_activity_trip_history"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <service android:name=".services.InstanceIdService">
             <intent-filter>
@@ -77,7 +82,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDDEi-HZe7_UvLsgZgT8uuyLtQVOBRVaOo" />
 
-
+        <activity
+            android:name=".VehicleAndRates"
+            android:label="@string/title_activity_vehicle_and_rates"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

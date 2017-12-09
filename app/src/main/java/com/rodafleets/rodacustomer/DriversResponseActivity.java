@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -32,24 +35,17 @@ public class DriversResponseActivity extends MapActivity {
     private RadioButton selectedButton;
     private Button reqeustPickupButton;
     private VehicleRequestResponse selectedResponse;
+    private ProgressBar progressBar;
+    private DriverResponseCountDownTimer mCounter;
+    private static final int waitingTime = 45000;
+    private RelativeLayout driverResponseLayout;
+    private RelativeLayout oopsLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drivers_response);
         initComponents();
-       /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -88,6 +84,9 @@ public class DriversResponseActivity extends MapActivity {
         driversResponseAdapter = new DriversResponseAdapter(this, vehicleResponses);
         driverResponseView.setAdapter(driversResponseAdapter);
         reqeustPickupButton = (Button) findViewById(R.id.requestPickUp);
+        progressBar = (ProgressBar) findViewById(R.id.driver_response_wait_progressbar);
+        mCounter = new DriverResponseCountDownTimer(waitingTime, 1000);
+        mCounter.start();
     }
 
     public void selectDriverResponse(View view) {
@@ -109,6 +108,7 @@ public class DriversResponseActivity extends MapActivity {
     }
 
     private void startNextActivity() {
+        mCounter.cancel();
         Intent intent = new Intent(this, ScehuledTripDetailsActivity.class);
         final LatLng sourceLoc = ApplicationSettings.getSourceLoc();
         //Driver details
@@ -144,6 +144,42 @@ public class DriversResponseActivity extends MapActivity {
         }
     };
 
+    public void tryAgain(View view) {
+        finish();
+    }
+
+    public class DriverResponseCountDownTimer extends CountDownTimer {
+
+        public DriverResponseCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+            int progress = (int) (millisUntilFinished / 1000);
+
+            progressBar.setProgress(progressBar.getMax() - progress + 1);
+        }
+
+        @Override
+        public void onFinish() {
+            if (vehicleResponses.isEmpty()) {
+                //If no response need to start oops here.
+                // finish();
+                Toast.makeText(DriversResponseActivity.this, "Oops! Try Again", Toast.LENGTH_LONG);
+                driverResponseLayout = (RelativeLayout) findViewById(R.id.responseLayout);
+                oopsLayout = (RelativeLayout) findViewById(R.id.oops_layout);
+
+                if (null != driverResponseLayout && null != oopsLayout) {
+                    driverResponseLayout.setVisibility(View.INVISIBLE);
+                    oopsLayout.setVisibility(View.VISIBLE);
+                }
+            } else {
+                Toast.makeText(DriversResponseActivity.this, "Select 1 from available responses", Toast.LENGTH_SHORT);
+            }
+        }
+    }
 
 }
 

@@ -55,6 +55,7 @@ public class DriversResponseAdapter extends BaseAdapter {
         TextView fare = (TextView) vi.findViewById(R.id.fare);
         RadioButton radioButton = (RadioButton) vi.findViewById(R.id.radioButton);
 
+
         //check response
         VehicleRequestResponse vehicleRequestResponse = driverResponseList.get(position);
 

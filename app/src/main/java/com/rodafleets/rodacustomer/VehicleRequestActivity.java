@@ -98,6 +98,7 @@ public class VehicleRequestActivity extends MapActivity {
         if (searchDst != null) {
             View.OnClickListener dstSearchListener = clickListener(PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE);
             searchDst.setOnClickListener(dstSearchListener);
+
         }
         handler = new Handler();
     }
@@ -307,7 +308,8 @@ public class VehicleRequestActivity extends MapActivity {
         final float yPosition = v.getY();
         v.setY(height);
         v.setVisibility(View.VISIBLE);
-        v.animate().y(position > 0 ? position : yPosition).setDuration(500).start();
+        //v.animate().y(position > receiverDetailsCardView.getBottom()-v.getHeight() ? position : 0).setDuration(500).start();
+        v.animate().y(receiverDetailsCardView.getBottom()-v.getHeight()).setDuration(500).start();
     }
 
     //Animation to hide view down, intended for card view.

@@ -64,6 +64,7 @@
 
                 <EditText
                     android:id="@+id/search_src"
+                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
@@ -103,6 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
+                    android:focusable="false"
                     android:layout_toRightOf="@id/imageButtonDst"
                     android:backgroundTint="@android:color/transparent"
                     android:gravity="center_vertical|center_horizontal"
@@ -128,14 +130,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            card_view:cardCornerRadius="0dp">
+            card_view:cardCornerRadius="0dp"
+            android:foregroundGravity="bottom">
+
 
             <RelativeLayout
                 android:id="@+id/locationViewSmall"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="220dp"
                 android:gravity="bottom"
+                android:visibility="visible"
                 android:paddingTop="50px">
+
 
                 <TextView
                     android:id="@+id/message"
@@ -189,8 +195,8 @@
                 android:layout_height="220dp"
                 android:layout_gravity="bottom"
                 android:gravity="bottom"
-                android:visibility="gone">
-
+                android:visibility="invisible"
+                android:foregroundGravity="bottom">
                 <LinearLayout
                     android:id="@+id/vehicle_lists_view"
                     android:layout_width="match_parent"
@@ -246,7 +252,6 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="20dp"
                             android:text="Medium Load" />
-
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -272,7 +277,6 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="20dp"
                             android:text="Large Load" />
-
                     </RelativeLayout>
                 </LinearLayout>
 
@@ -287,7 +291,8 @@
                     android:background="@color/reqeust_pickup_button_bg"
                     android:onClick="makeVehicleRequest"
                     android:text="REQUEST PICKUP"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:visibility="visible"/>
 
                 <CheckBox
                     android:id="@+id/loadingHelpCheckBox"
@@ -300,50 +305,6 @@
                     android:text="Unloading/Unloading help needed" />
 
             </RelativeLayout>
-            <!--
-            <RelativeLayout
-                android:id="@+id/driverDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="@drawable/vehicle_request_list_item_unselect_background"
-                android:visibility="gone">
-                <ImageView
-                    android:id="@+id/driverThumbnail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/reqeust_pickup_button_bg"
-                    app:srcCompat="@drawable/user_thumbnail" />
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:maxLength="18"
-                    android:text="Jai Mata di"
-                    android:textSize="20sp" />
-                <TextView
-                    android:id="@+id/driverContact"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignRight="@id/name"
-                    android:layout_below="@id/name"
-                    android:autoLink="phone"
-                    android:text="9986291127"
-                    android:textSize="20sp" />
-                <TextView
-                    android:id="@+id/vehicleNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignRight="@id/driverContact"
-                    android:layout_below="@id/driverContact"
-                    android:text="HR51BE3767"
-                    android:textSize="20sp" />
-            </RelativeLayout> -->
         </android.support.v7.widget.CardView>
 
     </android.support.constraint.ConstraintLayout>

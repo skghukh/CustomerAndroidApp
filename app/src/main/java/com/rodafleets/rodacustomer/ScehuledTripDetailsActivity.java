@@ -103,7 +103,6 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         pick_loc_val.setText(sourcePlace);
         dest_loc_val.setText(destPlace);
 
-
     }
 
 
@@ -123,7 +122,6 @@ public class ScehuledTripDetailsActivity extends MapActivity {
             new DriverLocationUpdaterTask(Integer.parseInt(driverId)).execute();
         }
 
-        //addMarkerForDriverCurrentLocation();
     }
 
     public void callDriver(View view) {
@@ -185,7 +183,6 @@ public class ScehuledTripDetailsActivity extends MapActivity {
                 payment_mode_cancel_layout.setVisibility(View.GONE);
             }
         }
-        // background.setState(getResources().getDrawable(R.drawable));
     }
 
 
@@ -205,7 +202,6 @@ public class ScehuledTripDetailsActivity extends MapActivity {
             return null;
         }
 
-
         @Override
         protected void onCancelled() {
             super.onCancelled();
@@ -224,8 +220,6 @@ public class ScehuledTripDetailsActivity extends MapActivity {
             } else {
                 addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), carIcon, false);
             }
-
-
         }
 
         @Override

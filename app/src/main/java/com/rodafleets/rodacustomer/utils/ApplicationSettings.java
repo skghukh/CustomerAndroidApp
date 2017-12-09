@@ -19,6 +19,7 @@ public final class ApplicationSettings {
     private static final String LOGGED_IN = "LOGGED_IN";
     private static final String REGISTRATION_ID = "REGISTRATION_ID";
     private static final String VEHICLE_REQUEST = "VEHICLE_REQUEST";
+    private static final String CASH_PREFERENCE = "CASH_PREFERENCE";
     private static LatLng sourceLoc;
     private static String sourcePlace;
     private static String destPlace;
@@ -154,5 +155,15 @@ public final class ApplicationSettings {
 
     public static void setDestPlace(String destPlace) {
         ApplicationSettings.destPlace = destPlace;
+    }
+
+    public static boolean getPayOption(Context context){
+        return getSharedPreferences(context).getBoolean(CASH_PREFERENCE, false);
+    }
+
+    public static void setPayOption(boolean isCash, Context context){
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putBoolean(CASH_PREFERENCE, isCash);
+        editor.commit();
     }
 }
