@@ -121,7 +121,7 @@ public class DriverDocs extends AppCompatActivity implements ImageUtils.ImageAtt
     }
 
     private void startNextActivity() {
-        this.startActivity(new Intent(this, SignInActivity.class));
+        this.startActivity(new Intent(this, RSignInActivity.class));
         finish();
     }
 

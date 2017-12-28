@@ -1,11 +1,13 @@
 package com.rodafleets.rodacustomer;
 
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +18,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
+import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
 import org.json.JSONObject;
@@ -37,15 +46,20 @@ public class DriversResponseActivity extends MapActivity {
     private VehicleRequestResponse selectedResponse;
     private ProgressBar progressBar;
     private DriverResponseCountDownTimer mCounter;
-    private static final int waitingTime = 45000;
+    private static final int waitingTime = 60000;
     private RelativeLayout driverResponseLayout;
     private RelativeLayout oopsLayout;
+    private DatabaseReference tripResponseReference;
+    private ChildEventListener tripResponseListener;
+    private DatabaseReference tripReferece;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drivers_response);
         initComponents();
+        startTripResponseListener(String.valueOf(ApplicationSettings.getCustomerId(this)), tripId);
+        tripReferece = FirebaseReferenceService.getTripReference(String.valueOf(ApplicationSettings.getCustomerId(this)), tripId);
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -54,6 +68,57 @@ public class DriversResponseActivity extends MapActivity {
             addResponseToList(intent);
         }
     };
+
+    private void startTripResponseListener(String custId, String currentTripId) {
+        tripResponseReference = FirebaseReferenceService.getTripResponseReference(String.valueOf(ApplicationSettings.getCustomerId(DriversResponseActivity.this)), tripId);
+        tripResponseListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                addResponseChildToList(dataSnapshot.getKey().toString(), "defaulut", "d", "d", "d", "d", "d");
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        tripResponseReference.addChildEventListener(tripResponseListener);
+    }
+
+    private void addResponseChildToList(String driverId, String driverName, String DriverContact, String DriverRating, String distance, String offeredFare, String vehicleRegistrationId) {
+        VehicleRequestResponse response = new VehicleRequestResponse();
+        response.setDriverId(driverId);
+        response.setName("driverName");
+        response.setDriverContact("driverContact");
+        response.setDriverRating("driverRating");
+        response.setDistance("5.2");
+
+        //request details
+        response.setRequestId("sdfsfds");
+        response.setBidId("jaiShri");
+        response.setFareEstimate("4000");
+
+        //vehicle details
+        response.setVehicleRegId("HR 51 BE3767");
+        vehicleResponses.add(response);
+        driversResponseAdapter.notifyDataSetChanged();
+
+    }
 
     private void addResponseToList(Intent intent) {
         VehicleRequestResponse response = new VehicleRequestResponse();
@@ -75,6 +140,7 @@ public class DriversResponseActivity extends MapActivity {
         driversResponseAdapter.notifyDataSetChanged();
 
     }
+
 
     protected void initComponents() {
         super.initComponents();
@@ -100,11 +166,32 @@ public class DriversResponseActivity extends MapActivity {
     public void acceptBid(View view) {
         if (null != selectedButton) {
             selectedResponse = vehicleResponses.get((int) selectedButton.getTag());
-            RodaRestClient.acceptBid(Long.parseLong(selectedResponse.getRequestId()), Long.parseLong(selectedResponse.getBidId()), ApplicationSettings.getCustomerId(this), acceptBidResponseHandler);
+            changeTripStatusToScheduled(selectedResponse.getDriverId(), selectedResponse.getFareEstimate());
+            // RodaRestClient.acceptBid(Long.parseLong(selectedResponse.getRequestId()), Long.parseLong(selectedResponse.getBidId()), ApplicationSettings.getCustomerId(this), acceptBidResponseHandler);
         } else {
             Toast toast = Toast.makeText(this, "Please select 1 bid", Toast.LENGTH_SHORT);
             toast.show();
         }
+    }
+
+    private void changeTripStatusToScheduled(String driverId, String offeredFare) {
+        tripResponseReference.removeEventListener(tripResponseListener);
+        final Task<Void> updateCarrierId = tripReferece.child("carrierId").setValue(driverId);
+        final Task<Void> updateStatus = tripReferece.child("status").setValue("Scheduled");
+        final Task<Void> updateOfferedFare = tripReferece.child("acceptedFare").setValue("offeredFare");
+
+        updateCarrierId.addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                updateStatus.addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        System.out.println("trip status is updated");
+                        startNextActivity();
+                    }
+                });
+            }
+        });
     }
 
     private void startNextActivity() {

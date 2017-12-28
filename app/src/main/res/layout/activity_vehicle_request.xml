@@ -47,7 +47,7 @@
             <RelativeLayout
                 android:id="@+id/search_src_box"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="82dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/src_dst_border"
@@ -55,26 +55,44 @@
 
                 <ImageView
                     android:id="@+id/imageButtonSrc"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="18dp"
+                    android:layout_height="45dp"
                     android:layout_alignParentBottom="true"
-                    android:drawablePadding="5dp"
+                    android:layout_marginLeft="27dp"
                     android:gravity="center_vertical"
-                    app:srcCompat="@drawable/source_img" />
+                    app:srcCompat="@drawable/ic_pickup_address_search" />
+
+
+                <TextView
+                    android:id="@+id/search_src_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="51dp"
+                    android:layout_marginTop="13dp"
+                    android:layout_toRightOf="@id/imageButtonSrc"
+                    android:backgroundTint="@android:color/transparent"
+                    android:focusable="false"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="PICKUP LOCATION"
+                    android:textColor="@android:color/holo_orange_light"
+                    android:textSize="12sp" />
 
                 <EditText
                     android:id="@+id/search_src"
-                    android:focusable="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@id/imageButtonSrc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/search_src_message"
+                    android:layout_below="@id/search_src_message"
+                    android:layout_marginTop="2dp"
                     android:backgroundTint="@android:color/transparent"
+                    android:focusable="false"
                     android:gravity="center_horizontal|center_vertical"
-                    android:hint="Pickup Location"
+                    android:hint="Enter pickup location"
                     android:inputType="textNoSuggestions"
+                    android:maxWidth="244dp"
                     android:textColor="@color/Source_dest_font"
-                    android:textColorHint="@android:color/holo_orange_light"
+                    android:textColorHint="@color/colorTextHint"
                     android:textSize="12sp" />
 
             </RelativeLayout>
@@ -83,36 +101,63 @@
             <RelativeLayout
                 android:id="@+id/search_dst_box"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="82dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/search_src_box"
                 android:background="@drawable/src_dst_border"
-                android:gravity="bottom">
+                android:backgroundTint="#f5f5f5"
+                android:gravity="top">
 
                 <ImageView
                     android:id="@+id/imageButtonDst"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="18dp"
+                    android:layout_height="45dp"
                     android:layout_alignParentTop="true"
-                    android:drawablePadding="5dp"
+                    android:layout_marginStart="27dp"
                     android:gravity="top"
-                    app:srcCompat="@drawable/dest_img" />
+                    app:srcCompat="@drawable/ic_drop_address_search" />
+
+                <TextView
+                    android:id="@+id/search_dst_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="51dp"
+                    android:layout_marginTop="13dp"
+                    android:layout_toRightOf="@id/imageButtonDst"
+                    android:backgroundTint="@android:color/transparent"
+                    android:focusable="false"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="DROP LOCATION"
+                    android:textColor="@android:color/holo_orange_light"
+                    android:textSize="12sp" />
 
                 <EditText
                     android:id="@+id/search_dst"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:focusable="false"
-                    android:layout_toRightOf="@id/imageButtonDst"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/search_dst_message"
+                    android:layout_below="@id/search_dst_message"
+                    android:layout_marginTop="2dp"
                     android:backgroundTint="@android:color/transparent"
+                    android:focusable="false"
                     android:gravity="center_vertical|center_horizontal"
-                    android:hint="Enter Drop Location"
+                    android:hint="Enter drop location"
                     android:inputType="textNoSuggestions"
+                    android:maxWidth="244dp"
                     android:textColor="@color/Source_dest_font"
-                    android:textColorHint="@android:color/holo_orange_light"
+
                     android:textSize="12sp" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="12dp"
+                    android:background="@null"
+                    android:src="@drawable/ic_from_favourite" />
             </RelativeLayout>
 
 
@@ -124,66 +169,85 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/src_dst_border"
+            android:foregroundGravity="bottom"
             android:visibility="invisible"
             app:cardBackgroundColor="@android:color/white"
             app:contentPadding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            card_view:cardCornerRadius="0dp"
-            android:foregroundGravity="bottom">
+            card_view:cardCornerRadius="0dp">
 
 
             <RelativeLayout
                 android:id="@+id/locationViewSmall"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="276dp"
                 android:gravity="bottom"
-                android:visibility="visible"
-                android:paddingTop="50px">
+                android:visibility="visible">
 
+                <ToggleButton
+                    android:id="@+id/favourite_toggle"
+                    android:layout_width="20dp"
+                    android:layout_height="15.5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/favourite_selector"
+                    android:checked="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:paddingRight="5dp"
+                    android:paddingTop="5dp"
+                    android:textOff=""
+                    android:textOn="" />
 
                 <TextView
                     android:id="@+id/message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20px"
-                    android:layout_marginRight="20px"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="50dp"
+                    android:fontFamily="@font/poppins"
                     android:text="Receiver's Details"
                     android:textColor="#1c0113"
                     android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/receiverName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="322dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/message"
                     android:layout_below="@id/message"
-                    android:layout_marginLeft="20px"
-                    android:layout_marginRight="20px"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="30dp"
                     android:ems="10"
+                    android:fontFamily="@font/poppins"
                     android:hint="Full Name"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/receiverPhone"
-                    android:layout_width="wrap_content"
+                    android:layout_width="322dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/receiverName"
                     android:layout_below="@id/receiverName"
-                    android:layout_marginLeft="20px"
-                    android:layout_marginRight="20px"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="25dp"
                     android:ems="10"
                     android:hint="Phone Number"
                     android:inputType="phone" />
 
                 <Button
                     android:id="@+id/nextButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="330dp"
+                    android:layout_height="42dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@id/receiverPhone"
-                    android:layout_marginLeft="15px"
-                    android:layout_marginRight="15px"
                     android:layout_marginTop="10dp"
+                    android:background="#765267"
+                    android:gravity="center_horizontal|center_vertical"
                     android:hint="Phone Number"
                     android:onClick="showVehicleTypes"
                     android:text="Next" />
@@ -192,21 +256,24 @@
             <RelativeLayout
                 android:id="@+id/selectVehicleType"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="276dp"
                 android:layout_gravity="bottom"
+                android:foregroundGravity="bottom"
                 android:gravity="bottom"
-                android:visibility="invisible"
-                android:foregroundGravity="bottom">
+                android:visibility="invisible">
+
                 <LinearLayout
                     android:id="@+id/vehicle_lists_view"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
+                    android:layout_height="166dp"
                     android:layout_alignParentTop="true"
+                    android:gravity="bottom"
                     android:weightSum="3">
 
                     <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        android:layout_marginRight="7dp"
                         android:layout_weight="1"
                         android:background="@drawable/vehicle_request_list_item_unselect_background"
                         android:gravity="bottom"
@@ -227,13 +294,14 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="20dp"
                             android:text="Small Load" />
-
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        android:layout_marginRight="7dp"
                         android:layout_weight="1"
+                        android:background="@drawable/vehicle_request_list_item_unselect_background"
                         android:gravity="bottom"
                         android:onClick="selectVehicleType"
                         android:orientation="vertical"
@@ -255,9 +323,10 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
                         android:layout_weight="1"
+                        android:background="@drawable/vehicle_request_list_item_unselect_background"
                         android:gravity="bottom"
                         android:onClick="selectVehicleType"
                         android:orientation="vertical"
@@ -278,6 +347,7 @@
                             android:layout_marginTop="20dp"
                             android:text="Large Load" />
                     </RelativeLayout>
+
                 </LinearLayout>
 
                 <Button
@@ -288,11 +358,11 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15px"
                     android:layout_marginRight="15px"
-                    android:background="@color/reqeust_pickup_button_bg"
+                    android:background="#765267"
                     android:onClick="makeVehicleRequest"
                     android:text="REQUEST PICKUP"
                     android:textColor="@android:color/white"
-                    android:visibility="visible"/>
+                    android:visibility="visible" />
 
                 <CheckBox
                     android:id="@+id/loadingHelpCheckBox"

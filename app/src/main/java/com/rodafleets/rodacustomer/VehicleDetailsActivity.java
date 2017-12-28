@@ -176,7 +176,7 @@ public class VehicleDetailsActivity extends AppCompatActivity {
     }
 
     public void signIn(View view) {
-        startActivity(new Intent(this, SignInActivity.class));
+        startActivity(new Intent(this, RSignInActivity.class));
         finish();
     }
 

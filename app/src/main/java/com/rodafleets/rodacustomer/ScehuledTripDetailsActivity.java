@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,11 +16,14 @@ import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +33,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.model.DriverLocation;
 import com.rodafleets.rodacustomer.model.NearByDrivers;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
+import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
 import org.json.JSONObject;
@@ -65,6 +74,13 @@ public class ScehuledTripDetailsActivity extends MapActivity {
     private TextView dest_loc_val;
     private TextView pick_loc_val;
     final Handler handler = new Handler();
+    private final int REQUEST_CALL_PHONE = 1;
+    private LinearLayout statusLayout;
+    private TextView loading;
+    private TextView unloading;
+    private TextView inprogress;
+    private TextView arrivedAtLocation;
+    private CardView receiverDetailsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +101,8 @@ public class ScehuledTripDetailsActivity extends MapActivity {
     protected void initComponents() {
         super.initComponents();
         initMap();
+        clearAllMarkers();
+        subscribeForSpecifiDriver(driverId);
         driverNameTextView = (TextView) findViewById(R.id.driverName);
         driverNameTextView.setText(driverName);
         vehicleRegistrationNo = (TextView) findViewById(R.id.vehicleRegistrationNo);
@@ -102,7 +120,31 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         dest_loc_val = (TextView) findViewById(R.id.dest_loc_val);
         pick_loc_val.setText(sourcePlace);
         dest_loc_val.setText(destPlace);
+        statusLayout = findViewById(R.id.statusLayout);
+        loading = findViewById(R.id.status_loading);
+        inprogress = findViewById(R.id.status_inprogress);
+        unloading = findViewById(R.id.status_unloading);
+        arrivedAtLocation = findViewById(R.id.status_arrived);
+        receiverDetailsView = findViewById(R.id.receiverDetailsCardView);
+        subscribeForTripStatus(String.valueOf(ApplicationSettings.getCustomerId(ScehuledTripDetailsActivity.this)),tripId);
 
+    }
+
+
+    private void subscribeForTripStatus(String custId, String tripId){
+        DatabaseReference tripReference = FirebaseReferenceService.getTripReference(custId,tripId);
+        final DatabaseReference statusRef = tripReference.child("status");
+        statusRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                setStatusLayoutForStatus(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -118,9 +160,9 @@ public class ScehuledTripDetailsActivity extends MapActivity {
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
         addMarkerForPickupLocation(ApplicationSettings.getSourceLoc());
-        if (null != driverId) {
+        /*if (null != driverId) {
             new DriverLocationUpdaterTask(Integer.parseInt(driverId)).execute();
-        }
+        }*/
 
     }
 
@@ -129,12 +171,11 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         String phNum = "tel:" + driverMob;
         myIntent.setData(Uri.parse(phNum));
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            Toast.makeText(this, "Not able to call due to permissions ", Toast.LENGTH_SHORT);
-            return;
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_CALL_PHONE);
         }
         startActivity(myIntent);
     }
+
 
     private void addMarkerForDriverCurrentLocation(final double lat, final double lan) {
         handler.post(new Runnable() {
@@ -146,7 +187,7 @@ public class ScehuledTripDetailsActivity extends MapActivity {
                 }
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(new LatLng(lat, lan));
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(carIcon));
+                markerOptions.icon(vehicleIcon);
                 driverPosition = mGoogleMap.addMarker(markerOptions);
             }
         });
@@ -157,11 +198,11 @@ public class ScehuledTripDetailsActivity extends MapActivity {
             System.out.println("Pickup location is invalid " + sourceLocation);
         }
         System.out.println("Pickup location is " + sourceLocation);
-        initMarkerBitmaps();
         addMarkerOnMap(0, sourceLocation, markerSrc, false);
     }
 
     public void cancelTrip(View view) {
+
     }
 
     public void updownSelectionOnClick(View view) {
@@ -208,6 +249,64 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         }
     }
 
+    private void setStatusLayoutForStatus(String status) {
+        switch (status) {
+            case "Awaiting":
+                statusLayout.setVisibility(View.INVISIBLE);
+                break;
+            case "Scheduled":
+                statusLayout.setVisibility(View.VISIBLE);
+                statusLayout.setBackgroundColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.separator_color));
+                loading.setVisibility(View.GONE);
+                inprogress.setVisibility(View.GONE);
+                unloading.setVisibility(View.GONE);
+                arrivedAtLocation.setVisibility(View.VISIBLE);
+                break;
+            case "arrived":
+                break;
+            case "Loading":
+                statusLayout.setVisibility(View.VISIBLE);
+                arrivedAtLocation.setVisibility(View.GONE);
+                statusLayout.setBackgroundColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.black));
+                loading.setVisibility(View.VISIBLE);
+                inprogress.setVisibility(View.VISIBLE);
+                unloading.setVisibility(View.VISIBLE);
+                loading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.white));
+                inprogress.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                unloading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                break;
+            case "Inprogress":
+                statusLayout.setVisibility(View.VISIBLE);
+                arrivedAtLocation.setVisibility(View.GONE);
+                statusLayout.setBackgroundColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.black));
+                loading.setVisibility(View.VISIBLE);
+                inprogress.setVisibility(View.VISIBLE);
+                unloading.setVisibility(View.VISIBLE);
+                loading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                inprogress.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.white));
+                unloading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                break;
+            case "UnLoading":
+                statusLayout.setVisibility(View.VISIBLE);
+                arrivedAtLocation.setVisibility(View.GONE);
+                statusLayout.setBackgroundColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.black));
+                loading.setVisibility(View.VISIBLE);
+                inprogress.setVisibility(View.VISIBLE);
+                unloading.setVisibility(View.VISIBLE);
+                loading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                inprogress.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                unloading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.white));
+                break;
+            case "Completed":
+                receiverDetailsView.setVisibility(View.GONE);
+                finish();
+            default:
+                statusLayout.setVisibility(View.INVISIBLE);
+                break;
+
+        }
+    }
+
     private JsonHttpResponseHandler getDriverLocationHandler = new JsonHttpResponseHandler() {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -216,9 +315,9 @@ public class ScehuledTripDetailsActivity extends MapActivity {
             DriverLocation driverLocation = gson.fromJson(response.toString(), DriverLocation.class);
             if (null != driverPosition) {
                 driverPosition.remove();
-                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), carIcon, false);
+                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), vehicleIcon, false);
             } else {
-                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), carIcon, false);
+                addMarkerOnMap(1, new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()), vehicleIcon, false);
             }
         }
 

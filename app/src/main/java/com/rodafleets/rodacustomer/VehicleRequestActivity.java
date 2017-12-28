@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -22,12 +23,18 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.Task;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.rodafleets.rodacustomer.database.DBHelper;
+import com.rodafleets.rodacustomer.database.Favourite;
+import com.rodafleets.rodacustomer.database.FavouriteReceiver;
 import com.rodafleets.rodacustomer.model.VehicleRequest;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
+import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.utils.AppConstants;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
@@ -41,14 +48,9 @@ public class VehicleRequestActivity extends MapActivity {
     private VehicleRequest vehicleRequest;
     private RelativeLayout selectVehicleType;
     private RelativeLayout receiverDetails;
+    private Place sourcePlace;
+    private Place destPlace;
     // private RelativeLayout driverDetailsView;
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        super.onMapReady(googleMap);
-        RodaRestClient.getNearByDriverLocations(10.1, 10.8, getNearByDriverLocationResponseHandler);
-    }
-
     private EditText searchSrc;
     private EditText searchDst;
     private TextView driverName;
@@ -62,6 +64,11 @@ public class VehicleRequestActivity extends MapActivity {
     private EditText receiverName;
     private EditText receiverPhone;
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        super.onMapReady(googleMap);
+        // RodaRestClient.getNearByDriverLocations(10.1, 10.8, getNearByDriverLocationResponseHandler);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +77,9 @@ public class VehicleRequestActivity extends MapActivity {
         initComponents();
     }
 
-
     protected void initComponents() {
         super.initComponents();
+        subscribeForDriversLocationUpdates();
         searchSrc = (EditText) findViewById(R.id.search_src);
         searchDst = (EditText) findViewById(R.id.search_dst);
         receiverDetailsCardView = (CardView) findViewById(R.id.receiverDetailsCardView);
@@ -131,6 +138,7 @@ public class VehicleRequestActivity extends MapActivity {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 if (requestCode == PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE) {
+                    sourcePlace = place;
                     sourceLatLang = place.getLatLng();
                     ApplicationSettings.setSourceLoc(sourceLatLang);
                     ApplicationSettings.setSourcePlace(place.getAddress().toString());
@@ -139,6 +147,7 @@ public class VehicleRequestActivity extends MapActivity {
                     resetCurrentMarkers();
                     addMarkerOnMap(0, sourceLatLang, markerSrc, true);
                 } else if (requestCode == PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE) {
+                    destPlace = place;
                     destLatLang = place.getLatLng();
                     searchDst.setText(place.getAddress());
                     ApplicationSettings.setDestPlace(place.getAddress().toString());
@@ -159,7 +168,12 @@ public class VehicleRequestActivity extends MapActivity {
 
 
     private void checkIfSourceDestinationAvailable() {
+        showSourceDestRoute();
         showReceiversDetails();
+    }
+
+    private void showSourceDestRoute() {
+
     }
 
     private void setFonts() {
@@ -272,13 +286,18 @@ public class VehicleRequestActivity extends MapActivity {
 
     public void makeVehicleRequest(View view) {
         if (sourceLatLang != null && destLatLang != null)
-            RodaRestClient.requestVehicle(ApplicationSettings.getCustomerId(VehicleRequestActivity.this), 1, sourceLatLang.latitude, sourceLatLang.longitude, destLatLang.latitude, destLatLang.longitude, vehicleReqestHandler);
+            RodaRestClient.requestVehicle(ApplicationSettings.getCustomerId(VehicleRequestActivity.this), 1, sourceLatLang.latitude, sourceLatLang.longitude, destLatLang.latitude, destLatLang.longitude, sourcePlace.getAddress().toString(), destPlace.getAddress().toString(), vehicleReqestHandler);
     }
 
     private JsonHttpResponseHandler vehicleReqestHandler = new JsonHttpResponseHandler() {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            System.out.println("Response code is " + statusCode + " Response is " + response);
+            try {
+                System.out.println("Response code is " + statusCode + " Response is " + response + " request code is " + response.getString("ref"));
+                tripId = response.getString("ref");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             startNextActivity();
         }
 
@@ -291,14 +310,32 @@ public class VehicleRequestActivity extends MapActivity {
 
     // Show view for vehicle types.
     public void showVehicleTypes(View view) {
+
         receiverDetails = (RelativeLayout) findViewById(R.id.locationViewSmall);
         selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
+        ToggleButton favouriteToggle = (ToggleButton) findViewById(R.id.favourite_toggle);
+
+        if (null != favouriteToggle && favouriteToggle.isChecked()) {
+            //create here new thread to put on favourites.
+            String receiverName = ((EditText) findViewById(R.id.receiverName)).getText().toString();
+            String receiverPhone = ((EditText) findViewById(R.id.receiverPhone)).getText().toString();
+            addToFavourites(this, receiverName, receiverPhone, destPlace.getAddress().toString(), destPlace.getLatLng());
+        }
         if (null != receiverDetails && null != selectVehicleType) {
             startGoneAnimation(receiverDetailsCardView);
             receiverDetails.setVisibility(View.GONE);
             selectVehicleType.setVisibility(View.VISIBLE);
             startInAnimation(receiverDetailsCardView, 750);
         }
+    }
+
+
+    private void addToFavourites(Context context, String receiverName, String receiverPhoneNumber, String destAddress, LatLng dest) {
+        FavouriteReceiver favRec = new FavouriteReceiver(receiverName, receiverPhoneNumber, destAddress, dest.latitude, dest.longitude);
+        FirebaseReferenceService.addFavourite(String.valueOf(ApplicationSettings.getCustomerId(VehicleRequestActivity.this)), favRec);
+       /* Favourite favourite = new Favourite(receiverName, receiverPhoneNumber, sourceAddress, destAddress, source, dest);
+        DBHelper mydb = new DBHelper(context);
+        mydb.addToFavourites(favourite);*/
     }
 
     //Animation to show view coming from bottom, intended for card view.
@@ -309,7 +346,7 @@ public class VehicleRequestActivity extends MapActivity {
         v.setY(height);
         v.setVisibility(View.VISIBLE);
         //v.animate().y(position > receiverDetailsCardView.getBottom()-v.getHeight() ? position : 0).setDuration(500).start();
-        v.animate().y(receiverDetailsCardView.getBottom()-v.getHeight()).setDuration(500).start();
+        v.animate().y(receiverDetailsCardView.getBottom() - v.getHeight()).setDuration(500).start();
     }
 
     //Animation to hide view down, intended for card view.
@@ -360,4 +397,5 @@ public class VehicleRequestActivity extends MapActivity {
             receiverDetailsCardView.setVisibility(View.INVISIBLE);
         }
     }
+
 }

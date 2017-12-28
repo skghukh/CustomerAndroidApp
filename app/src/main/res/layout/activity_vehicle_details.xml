@@ -190,7 +190,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:onClick="signIn"
-        android:text="@string/sign_up_existing_driver"
+        android:text="@string/sign_up_existing_user"
         android:textColor="@color/colorPrimary"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saveVehicleDetailsBtn" />

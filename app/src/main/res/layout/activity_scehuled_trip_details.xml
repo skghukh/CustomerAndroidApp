@@ -49,16 +49,20 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/receiverDetailsCardView"
-            android:layout_width="0dp"
+            android:layout_width="354dp"
             android:layout_height="wrap_content"
             android:background="@drawable/src_dst_border"
             android:visibility="visible"
             app:cardBackgroundColor="@android:color/white"
-            app:contentPadding="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:contentPaddingTop="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             card_view:cardCornerRadius="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
             <RelativeLayout
                 android:id="@+id/locationViewSmall"
@@ -370,10 +374,66 @@
                         android:text="Cancel Trip"
                         android:textSize="16sp" />
                 </RelativeLayout>
-
-
             </RelativeLayout>
+                <LinearLayout
+                    android:id ="@+id/statusLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_below="@+id/locationViewSmall"
+                    android:background="@color/separator_color"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
+                    <TextView
+                        android:id="@+id/status_loading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:text="LOADING"
+                        android:textSize="12sp"
+                        android:textColor="#ffffff"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/status_inprogress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="ON TRIP"
+                        android:textAlignment="center"
+                        android:textSize="12sp"
+                        android:textColor="#ffffff"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/status_unloading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="UNLOADING"
+                        android:textSize="12sp"
+                        android:textAlignment="center"
+                        android:textColor="#ffffff"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/status_arrived"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textColor="#765267"
+                        android:textSize="16sp"
+                        android:text="ARRIVED AT PICK-UP LOCATION"
+                        android:visibility="gone"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:background="#ffc719"/>
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 

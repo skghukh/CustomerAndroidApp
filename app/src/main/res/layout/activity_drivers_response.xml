@@ -50,12 +50,12 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/driverResponsesView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="354dp"
+            android:layout_height="356dp"
             android:background="@drawable/src_dst_border"
             android:visibility="visible"
             app:cardBackgroundColor="@android:color/white"
-            app:contentPadding="10dp"
+            app:contentPadding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -64,13 +64,16 @@
             <RelativeLayout
                 android:id="@+id/responseLayout"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
                 android:gravity="bottom"
                 android:visibility="visible">
 
                 <TextView
                     android:id="@+id/messageView"
+                    android:layout_marginTop="36dp"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/poppins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Confirm your driver" />
@@ -87,10 +90,11 @@
 
                 <Button
                     android:id="@+id/requestPickUp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="330dp"
+                    android:layout_height="42dp"
                     android:background="@color/pickup_button_disabled_background"
                     android:onClick="acceptBid"
+                    android:textSize="14sp"
                     android:text="REQUEST PICKUP"
                     android:textColor="@android:color/white"
                     android:layout_above="@+id/driver_response_wait_progressbar"

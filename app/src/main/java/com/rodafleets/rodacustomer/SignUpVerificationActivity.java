@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -46,8 +45,6 @@ public class SignUpVerificationActivity extends AppCompatActivity {
     private TextView otpMessage;
     private TextView existingDriver;
 
-    private Button vehicleDetailsBtn;
-
     private ProgressDialog progressDialog;
 
     @Override
@@ -76,8 +73,6 @@ public class SignUpVerificationActivity extends AppCompatActivity {
         otpText = (TextView) findViewById(R.id.otpText);
         otpMessage = (TextView) findViewById(R.id.otpMessage);
 
-        vehicleDetailsBtn = (Button) findViewById(R.id.vehicleDetailsBtn);
-
         existingDriver = (TextView) findViewById(R.id.existingDriver);
 
         Typeface poppinsRegular = Typeface.createFromAsset(getAssets(), "fonts/Poppins-Regular.ttf");
@@ -98,12 +93,12 @@ public class SignUpVerificationActivity extends AppCompatActivity {
         otpDigit3.setTypeface(poppinsRegular);
         otpDigit4.setTypeface(poppinsRegular);
 
-        vehicleDetailsBtn.setTypeface(sintonyBold);
+       //vehicleDetailsBtn.setTypeface(sintonyBold);
 
         otpDigit1.addTextChangedListener(new OtpTextWatcher(otpDigit1, otpDigit2));
         otpDigit2.addTextChangedListener(new OtpTextWatcher(otpDigit2, otpDigit3));
         otpDigit3.addTextChangedListener(new OtpTextWatcher(otpDigit3, otpDigit4));
-//        otpDigit4.addTextChangedListener(new OtpTextWatcher(otpDigit1, otpDigit2));
+        //otpDigit4.addTextChangedListener(new OtpTextWatcher(otpDigit1, otpDigit2));
 
         try {
             JSONObject jsonObject = new JSONObject(ApplicationSettings.getDriver(SignUpVerificationActivity.this));
@@ -139,7 +134,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
     }
 
     public void signIn(View view) {
-        startActivity(new Intent(this, SignInActivity.class));
+        startActivity(new Intent(this, RSignInActivity.class));
         finish();
     }
 
@@ -149,7 +144,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
 
     private void startNextActivity(){
         //this.startActivity(new Intent(this, VehicleDetailsActivity.class));
-        this.startActivity(new Intent(this, SignInActivity.class));
+        this.startActivity(new Intent(this, RSignInActivity.class));
         finish();
     }
 

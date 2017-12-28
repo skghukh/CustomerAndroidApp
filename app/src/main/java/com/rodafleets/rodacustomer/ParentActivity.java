@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,7 +47,7 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        //getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -54,6 +55,23 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initializeSideMenu();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        //int id = item.getItemId();
+
+        boolean isDrawerOpen = mDrawerLayout.isDrawerOpen(Gravity.LEFT);
+        if(!isDrawerOpen){
+            mDrawerLayout.openDrawer(Gravity.LEFT);
+        }else{
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void initializeSideMenu() {
@@ -165,25 +183,16 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
     }
 
     public void showTrips(View view) {
-        //TODO
-        //Start showTripsActivityHere.
-        Toast.makeText(this, "Trips: Not implmented yet ", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, TripHistory.class);
         startActivity(intent);
     }
 
     public void showVehicleRates(View view) {
-        //TODO
-        //Show Vehicle Rates
         Intent intent = new Intent(this, VehicleAndRates.class);
         startActivity(intent);
-        //Toast.makeText(this, "Vechicle Rates: Not implmented yet ", Toast.LENGTH_SHORT).show();
     }
 
     public void inviteFriends(View view) {
-        //TODO
-        //Invite Friends
-        Toast.makeText(this, "InviteFriends: Not implmented yet ", Toast.LENGTH_SHORT).show();
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         String shareBody = "Hey There, I am using Roda App. Best application for Logistic, You can download from https://play.google.com/store/apps/details?id=com.awem.cradleofempires.andr";
@@ -196,5 +205,10 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
         //TODO
         //Show Settings
         Toast.makeText(this, "Settings: Not implmented yet ", Toast.LENGTH_SHORT).show();
+    }
+
+    public void showFavourites(View view) {
+        Intent intent = new Intent(this,Favourites.class);
+        startActivity(intent);
     }
 }

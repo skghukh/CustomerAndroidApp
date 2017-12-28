@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rodafleets.rodacustomer.SignInActivity"
+    tools:context="com.rodafleets.rodacustomer.RSignInActivity"
     android:id="@+id/constraintLayout">
 
     <RelativeLayout
@@ -116,7 +116,7 @@
         android:id="@+id/newDriver"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sign_in_new_driver"
+        android:text="@string/sign_in_new_user"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"

@@ -145,7 +145,8 @@
             android:padding="10dp"
             android:text="Favourites"
             android:textColor="#1C0113"
-            android:textSize="@dimen/text_large" />
+            android:textSize="@dimen/text_large"
+            android:onClick="showFavourites"/>
 
         <TextView
             android:id="@+id/menu_invite_friends"

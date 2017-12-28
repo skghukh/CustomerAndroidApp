@@ -13,7 +13,7 @@ public class RodaRestClient {
     private static final String API_VERSION = "0.1";
 
     //    private static final String API_BASE_URL = "https://api.rodafleets.com/" + API_VERSION;
-    private static final String API_BASE_URL = "http://104.198.208.172:8080/" + API_VERSION;
+    private static final String API_BASE_URL = "http://192.168.0.12:8080/" + API_VERSION;
     //http://192.168.0.12:8080/
     //http://104.198.208.172:8080/"
     //private static final String API_BASE_URL = "http://10.64.13.254:8080/" + API_VERSION;
@@ -157,7 +157,7 @@ public class RodaRestClient {
 
     }
 
-    public static void requestVehicle(int custId, int vehicleTypeId, Double sourceLat, Double sourceLan, Double destLat, Double destLan, JsonHttpResponseHandler responseHandler) {
+    public static void requestVehicle(int custId, int vehicleTypeId, Double sourceLat, Double sourceLan, Double destLat, Double destLan,String source, String dest, JsonHttpResponseHandler responseHandler) {
         RequestParams params = new RequestParams();
         params.put("customer_id", custId);
         params.put("vehicletype_id", vehicleTypeId);
@@ -166,7 +166,10 @@ public class RodaRestClient {
         params.put("destination_lat", destLat);
         params.put("destination_lng", destLan);
         params.put("approx_fare_in_cents", 3000);
-        RodaRestClient.POST("/requests", params, responseHandler);
+        params.put("source", source);
+        params.put("dest", dest);
+        RodaRestClient.POST("/requests/add/bids",params,responseHandler);
+       // RodaRestClient.POST("/requests", params, responseHandler);
     }
 
     public static void acceptBid(long requestId, long bidId, int custId, JsonHttpResponseHandler responseHandler) {

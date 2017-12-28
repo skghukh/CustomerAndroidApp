@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="89dp">
+
+
+    <ImageView
+        android:id="@+id/user_thumbnail"
+        android:layout_width="36.9dp"
+        android:layout_height="33.6dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginLeft="16dp"
+        android:background="@android:color/black"
+        app:srcCompat="@drawable/user_thumbnail" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:textSize="12sp"
+        android:fontFamily="@font/poppins"
+        android:textColor="#ff960b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/user_thumbnail"
+        android:layout_marginLeft="11.1dp"
+        android:layout_marginTop="16dp"
+        android:text="Name Surname" />
+
+    <TextView
+        android:id="@+id/user_phone"
+        android:layout_toRightOf="@id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/user_name"
+        android:layout_marginLeft="8dp"
+        android:text="(phoneNumber)" />
+
+    <TextView
+        android:id="@+id/dest_address"
+        android:layout_below="@id/user_name"
+        android:layout_alignLeft="@id/user_name"
+        android:layout_marginTop="2dp"
+        android:layout_width="wrap_content"
+        android:maxWidth="310dp"
+        android:maxLines="3"
+        android:layout_height="wrap_content"
+        android:text="Address" />
+
+    <ImageView
+        android:id="@+id/fav_icon"
+        android:layout_width="20dp"
+        android:layout_height="15.5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="17dp"
+        app:srcCompat="@drawable/ic_favourite_enabled_icon" />
+</RelativeLayout>

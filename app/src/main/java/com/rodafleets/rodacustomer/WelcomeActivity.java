@@ -37,7 +37,7 @@ public class WelcomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, VehicleRequestActivity.class));
             finish();
         } else {
-            startActivity(new Intent(this, SignInActivity.class));
+            startActivity(new Intent(this, RSignInActivity.class));
             finish();
         }
     }

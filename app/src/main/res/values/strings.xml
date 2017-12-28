@@ -2,13 +2,11 @@
     <string name="app_name">Roda Customer</string>
 
     <!-- Default -->
-    <string name="loading">Loading...</string>
     <string name="default_error">Something went wrong. Please try again!</string>
     <string name="internet_error">Check your internet connectivity and try again!</string>
 
     <!-- Activity Splash -->
     <string name="welcome_text">Welcome to RODA</string>
-    <string name="select_language">Select Language</string>
 
     <string-array name="language_dropdown">
         <item>Select Language</item>
@@ -16,12 +14,9 @@
         <item>हिंदी</item>
     </string-array>
 
-    <string name="english">English</string>
-    <string name="hindi">Hindi</string>
-
     <!-- Activity Welcome -->
     <string name="sign_up">SIGN UP</string>
-    <string name="sign_in">Existing Driver? SIGN IN</string>
+    <string name="sign_in">Existing USER? SIGN IN</string>
 
     <!-- Activity Sign In -->
     <!--<string name="login_phone_number">Vehicle Number / Phone Number</string>-->
@@ -29,7 +24,7 @@
     <string name="sign_in_password">Password</string>
     <string name="forgot_password"><u>Forgot Password</u></string>
     <string name="sign_in_login">SIGN IN</string>
-    <string name="sign_in_new_driver">New Driver? SIGN UP</string>
+    <string name="sign_in_new_user">New User? SIGN UP</string>
 
     <string name="sign_in_phone_number_required_error">Phone number is required</string>
     <string name="sign_in_password_required_error">Password is required</string>
@@ -42,9 +37,9 @@
     <string name="sign_up_female">Female</string>
     <string name="sign_up_phone_number">+91 Mobile Number</string>
     <string name="sign_up_password">Password</string>
-    <string name="sign_up_existing_driver">Existing Driver? SIGN IN</string>
+    <string name="sign_up_existing_user">Existing User? SIGN IN</string>
     <string name="sign_up_next">Next</string>
-    <string name="sign_up_saving">"Saving driver info..."</string>
+    <string name="sign_up_saving">"Saving user info..."</string>
 
     <string name="sign_up_phone_number_required_error">Phone number is required</string>
     <string name="sign_up_first_name_required_error">Firstname is required</string>
@@ -58,17 +53,12 @@
     <!-- Activity Sign Up 2 -->
     <string name="sign_up_otp">One Time Password (OTP)</string>
     <string name="sign_up_otp_message">OTP is sent to your mobile number.</string>
-    <string name="sign_up_vehicle_details">VEHICLE DETAILS</string>
-    <string name="sign_up_saving_vehicle_info">"Saving vehicle info..."</string>
 
     <string name="sign_up_invalid_otp_error">Invalid OTP</string>
     <string name="sign_up_session_id_required_error">Session ID is required to verify OTP</string>
 
     <!-- Activity Sign Up 3 -->
     <string name="sign_up_vehicle_number">Vehicle Number</string>
-    <string name="sign_up_vehicle_type">Vehicle Type</string>
-    <string name="sign_up_manufacturer">Manufacturer</string>
-    <string name="sign_up_model">Model</string>
     <string name="sign_up_is_owner">Are you the Owner?</string>
     <string name="sign_up_owner_details">OWNER\'S DETAILS</string>
     <string name="sign_up_owner_first_name">First Name</string>
@@ -89,24 +79,17 @@
     <string name="sign_up_document_to_upload3">Doc 3</string>
     <string name="sign_up_submit_documents">SUBMIT DOCUMENTS</string>
     <string name="sign_up_final">SIGN UP</string>
-    <string name="title_activity_sign_up_verification">SignUpVerification</string>
     <string name="sign_up_successful_message">You have successfully signed up. Please use your registered phone number and password to login.</string>
 
     <string name="sign_up_document_name_required_error">Document name required before uploading</string>
     <string name="sign_up_document_required_error">Atleast one document is required</string>
 
     <!-- Menu -->
-    <string name="menu_trip_info">Trip Info</string>
-    <string name="menu_settings">Settings</string>
-    <string name="menu_logout">Go Offline</string>
 
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-    <string name="title_activity_request_confirmation_details">RequestConfirmationDetails</string>
-    <string name="title_activity_drivers_response">DriversResponseActivity</string>
-    <string name="title_activity_scehuled_trip_details">ScehuledTripDetailsActivity</string>
     <string name="title_activity_trip_history">TripHistory</string>
-    <string name="title_activity_vehicle_and_rates">Vehicle And Rates</string>
+    <string name="title_activity_favourites">Favourites</string>
+    <string name = "open">Open</string>
+    <string name ="close">Close</string>
 
 
     <!-- Map Activity -->

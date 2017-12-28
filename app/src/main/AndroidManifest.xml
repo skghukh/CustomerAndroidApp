@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.rodafleets.rodacustomer">
+
+    <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"
+        tools:replace="android:value" />
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -25,7 +29,7 @@
             android:name=".WelcomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignInActivity"
+            android:name=".RSignInActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SignUpActivity"
@@ -66,6 +70,14 @@
             android:label="@string/title_activity_trip_history"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".VehicleAndRates"
+            android:label="Vehicle And Rates"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Favourites"
+            android:label="@string/title_activity_favourites"
+            android:theme="@style/AppTheme" />
 
         <service android:name=".services.InstanceIdService">
             <intent-filter>
@@ -81,12 +93,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDDEi-HZe7_UvLsgZgT8uuyLtQVOBRVaOo" />
-
-        <activity
-            android:name=".VehicleAndRates"
-            android:label="@string/title_activity_vehicle_and_rates"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

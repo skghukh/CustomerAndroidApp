@@ -16,6 +16,6 @@
         android:endColor="@android:color/transparent"
         android:angle="90"/>-->
 
-    <solid android:color="@color/src_dst_background_color"/>
+    <solid android:color="#f5f5f5"/>
 
 </shape>
