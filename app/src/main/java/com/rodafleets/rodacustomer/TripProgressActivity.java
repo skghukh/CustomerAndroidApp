@@ -82,40 +82,40 @@ public class TripProgressActivity extends MapActivity {
 
         initMap();
 
-        customerView = (CardView) findViewById(R.id.customerView);
-        addressView = (CardView) findViewById(R.id.addressView);
-        startLoadingView = (CardView) findViewById(R.id.startLoadingView);
-        startTripView = (CardView) findViewById(R.id.startTripView);
-        startUnloadingView = (CardView) findViewById(R.id.startUnloadingView);
-        endTripView = (CardView) findViewById(R.id.endTripView);
-        fareSummaryView = (CardView) findViewById(R.id.fareSummaryView);
+        customerView = findViewById(R.id.customerView);
+        addressView = findViewById(R.id.addressView);
+        startLoadingView = findViewById(R.id.startLoadingView);
+        startTripView = findViewById(R.id.startTripView);
+        startUnloadingView = findViewById(R.id.startUnloadingView);
+        endTripView = findViewById(R.id.endTripView);
+        fareSummaryView = findViewById(R.id.fareSummaryView);
 
-        customerName = (TextView) findViewById(R.id.customerName);
-        acceptanceStatus = (TextView) findViewById(R.id.acceptanceStatus);
+        customerName = findViewById(R.id.customerName);
+        acceptanceStatus = findViewById(R.id.acceptanceStatus);
 
-        navigate = (TextView) findViewById(R.id.navigate);
-        fromAddress = (TextView) findViewById(R.id.fromAddress);
+        navigate = findViewById(R.id.navigate);
+        fromAddress = findViewById(R.id.fromAddress);
 
-        arrivedAtOriginTxt = (TextView) findViewById(R.id.arrivedAtOriginTxt);
-        startLoadingTxt = (TextView) findViewById(R.id.startLoadingTxt);
+        arrivedAtOriginTxt = findViewById(R.id.arrivedAtOriginTxt);
+        startLoadingTxt = findViewById(R.id.startLoadingTxt);
 
-        startTripTxt = (TextView) findViewById(R.id.startTripTxt);
+        startTripTxt = findViewById(R.id.startTripTxt);
 
-        arrivedAtDestinationTxt = (TextView) findViewById(R.id.arrivedAtDestinationTxt);
-        startUnloadingTxt = (TextView) findViewById(R.id.startUnloadingTxt);
+        arrivedAtDestinationTxt = findViewById(R.id.arrivedAtDestinationTxt);
+        startUnloadingTxt = findViewById(R.id.startUnloadingTxt);
 
-        endTripTxt = (TextView) findViewById(R.id.endTripTxt);
+        endTripTxt = findViewById(R.id.endTripTxt);
 
-        fareSummaryTxt = (TextView) findViewById(R.id.fareSummaryTxt);
-        paidByTxt = (TextView) findViewById(R.id.paidByTxt);
-        fareTxt = (TextView) findViewById(R.id.fareTxt);
-        rateCustomerTxt = (TextView) findViewById(R.id.rateCustomerTxt);
+        fareSummaryTxt = findViewById(R.id.fareSummaryTxt);
+        paidByTxt = findViewById(R.id.paidByTxt);
+        fareTxt = findViewById(R.id.fareTxt);
+        rateCustomerTxt = findViewById(R.id.rateCustomerTxt);
 
-        startLoadingBtn = (SlideView) findViewById(R.id.startLoadingBtn);
-        startTripBtn = (SlideView) findViewById(R.id.startTripBtn);
-        startUnloadingBtn = (SlideView) findViewById(R.id.startUnloadingBtn);
-        endTripBtn = (SlideView) findViewById(R.id.endTripBtn);
-        goOnlineBtn = (SlideView) findViewById(R.id.goOnlineBtn);
+        startLoadingBtn = findViewById(R.id.startLoadingBtn);
+        startTripBtn = findViewById(R.id.startTripBtn);
+        startUnloadingBtn = findViewById(R.id.startUnloadingBtn);
+        endTripBtn = findViewById(R.id.endTripBtn);
+        goOnlineBtn = findViewById(R.id.goOnlineBtn);
 
         setFonts();
         initSwipeButtonEvents();

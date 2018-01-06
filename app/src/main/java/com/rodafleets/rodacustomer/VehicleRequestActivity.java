@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -23,19 +24,25 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.rodafleets.rodacustomer.database.DBHelper;
-import com.rodafleets.rodacustomer.database.Favourite;
 import com.rodafleets.rodacustomer.database.FavouriteReceiver;
 import com.rodafleets.rodacustomer.model.VehicleRequest;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
 import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
+import com.rodafleets.rodacustomer.services.Utils;
 import com.rodafleets.rodacustomer.utils.AppConstants;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -50,7 +57,6 @@ public class VehicleRequestActivity extends MapActivity {
     private RelativeLayout receiverDetails;
     private Place sourcePlace;
     private Place destPlace;
-    // private RelativeLayout driverDetailsView;
     private EditText searchSrc;
     private EditText searchDst;
     private TextView driverName;
@@ -63,6 +69,7 @@ public class VehicleRequestActivity extends MapActivity {
     private Handler handler;
     private EditText receiverName;
     private EditText receiverPhone;
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -77,20 +84,135 @@ public class VehicleRequestActivity extends MapActivity {
         initComponents();
     }
 
+
+    protected void checkIfTripInProgress() {
+        final String customerEid = ApplicationSettings.getCustomerEid(VehicleRequestActivity.this);
+        final DatabaseReference currentTripReference = FirebaseReferenceService.getCustomerCurrentTripIdReference(customerEid);
+        currentTripReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (null != dataSnapshot && null != dataSnapshot.getValue()) {
+                    final String lastTripId = (String) dataSnapshot.getValue();
+                    final DatabaseReference lastTripReference = FirebaseReferenceService.getTripReference(customerEid, lastTripId);
+                    lastTripReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (null != dataSnapshot.getValue()) {
+                                final HashMap<String, Object> tripDetails = (HashMap<String, Object>) dataSnapshot.getValue();
+                                String status = (String) (tripDetails.get("status"));
+                                Long timeStamp = (Long) (tripDetails.get("timestamp"));
+                                final long l = Utils.getCurrentTime().longValue();
+                                //TODO awaiting time right now is 3 mins, should be configurable.
+                                if ((l - timeStamp < 180000) || !((status == null) || status.equalsIgnoreCase("completed") || status.equalsIgnoreCase("expired")))
+                                {
+                                    currentTripId = lastTripId;
+                                    currentVehicleRequest = VehicleRequest.getVehicleRequest(tripDetails);
+                                    startNextActivityForCurrentTrip(status);
+                                } else{
+                                    //trip is expired, remove current trip reference.
+                                    FirebaseReferenceService.expireCustomerCurrentTrip(customerEid, lastTripId);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    protected void checkIfAnyTripInProgressSession() {
+        //TODO this is depricated for now, as only 1 trip could be in progress for a user.
+        final Query lastTripReferece = FirebaseReferenceService.getLastTripReferece(ApplicationSettings.getCustomerEid(VehicleRequestActivity.this));
+        lastTripReferece.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (null != dataSnapshot.getValue()) {
+                    final Map.Entry<String, Object> tripMapEntry = ((Map<String, Object>) dataSnapshot.getValue()).entrySet().iterator().next();
+                    String tripId = tripMapEntry.getKey();
+                    final HashMap<String, Object> tripDetails = (HashMap<String, Object>) tripMapEntry.getValue();
+                    String status = (String) (tripDetails.get("status"));
+                    Long timeStamp = (Long) (tripDetails.get("timestamp"));
+                    final long l = Utils.getCurrentTime().longValue();
+                    if (l - timeStamp < 180000 || !(status.equalsIgnoreCase("awaiting") || status.equalsIgnoreCase("completed") || status.equalsIgnoreCase("expired"))) {
+                        currentTripId = tripId;
+                        currentVehicleRequest = VehicleRequest.getVehicleRequest(tripDetails);
+                        startNextActivityForCurrentTrip(status);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+/*        lastTripReferece.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapShot : dataSnapshot.getChildren()) {
+                    String tripId = snapShot.getKey();
+                    final HashMap<String, Object> tripDetails = (HashMap<String, Object>) snapShot.getValue();
+                    String status = (String) (tripDetails.get("status"));
+                    Long timeStamp = (Long) (tripDetails.get("timestamp"));
+                    final long l = Utils.getCurrentTime().longValue();
+                    if (l - timeStamp < 180000 || !(status.equalsIgnoreCase("awaiting") || status.equalsIgnoreCase("completed"))) {
+                        currentTripId = tripId;
+                        currentVehicleRequest = VehicleRequest.getVehicleRequest(tripDetails);
+                        startNextActivityForCurrentTrip(status);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
+        Snackbar.make(receiverDetailsCardView, "Checking Active Bookings", Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+    }
+
+    private void startNextActivityForCurrentTrip(String status) {
+        Intent intent = new Intent(this, ScehuledTripDetailsActivity.class);
+        startActivity(intent);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                resetViews();
+            }
+        }, 1000);
+    }
+
+    private void initViews() {
+        searchSrc = findViewById(R.id.search_src);
+        searchDst = findViewById(R.id.search_dst);
+        receiverDetailsCardView = findViewById(R.id.receiverDetailsCardView);
+        selectVehicleType = findViewById(R.id.selectVehicleType);
+        driverName = findViewById(R.id.driverName);
+        receiverName = findViewById(R.id.receiverName);
+        receiverPhone = findViewById(R.id.receiverPhone);
+    }
+
     protected void initComponents() {
         super.initComponents();
-        subscribeForDriversLocationUpdates();
-        searchSrc = (EditText) findViewById(R.id.search_src);
-        searchDst = (EditText) findViewById(R.id.search_dst);
-        receiverDetailsCardView = (CardView) findViewById(R.id.receiverDetailsCardView);
-        selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
-        // driverDetailsView = (RelativeLayout) findViewById(R.id.driverDetails);
-        driverName = (TextView) findViewById(R.id.driverName);
-        // driverContact = (TextView) findViewById(R.id.driverContact);
-        receiverName = (EditText) findViewById(R.id.receiverName);
-        receiverPhone = (EditText) findViewById(R.id.receiverPhone);
+        initViews();
         initMap();
         setFonts();
+        //checkIfAnyTripInProgressSession();
+        checkIfTripInProgress();
+        subscribeForSurroundingDriversLocationUpdates();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Vehicle_Requested"));
         boolean fromNotification = getIntent().getBooleanExtra("FROM_NOTIFICATION", false);
         if (fromNotification) {
@@ -134,6 +256,7 @@ public class VehicleRequestActivity extends MapActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE || requestCode == PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
@@ -286,17 +409,17 @@ public class VehicleRequestActivity extends MapActivity {
 
     public void makeVehicleRequest(View view) {
         if (sourceLatLang != null && destLatLang != null)
-            RodaRestClient.requestVehicle(ApplicationSettings.getCustomerId(VehicleRequestActivity.this), 1, sourceLatLang.latitude, sourceLatLang.longitude, destLatLang.latitude, destLatLang.longitude, sourcePlace.getAddress().toString(), destPlace.getAddress().toString(), vehicleReqestHandler);
+            RodaRestClient.requestVehicle(ApplicationSettings.getCustomerEid(VehicleRequestActivity.this), 1, sourceLatLang.latitude, sourceLatLang.longitude, destLatLang.latitude, destLatLang.longitude, sourcePlace.getAddress().toString(), destPlace.getAddress().toString(), vehicleReqestHandler);
     }
 
     private JsonHttpResponseHandler vehicleReqestHandler = new JsonHttpResponseHandler() {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             try {
-                System.out.println("Response code is " + statusCode + " Response is " + response + " request code is " + response.getString("ref"));
-                tripId = response.getString("ref");
+                currentTripId = response.getString("ref");
+                FirebaseReferenceService.addCustomerCurrentTrip(ApplicationSettings.getCustomerEid(VehicleRequestActivity.this), currentTripId);
             } catch (JSONException e) {
-                e.printStackTrace();
+                Snackbar.make(receiverDetailsCardView, "Something went wrong : Try Again", Snackbar.LENGTH_LONG).show();
             }
             startNextActivity();
         }
@@ -304,7 +427,8 @@ public class VehicleRequestActivity extends MapActivity {
         @Override
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
             super.onFailure(statusCode, headers, throwable, errorResponse);
-            System.out.println("Oops ! " + errorResponse);
+            //TODO Actually errors should be handled, and proper UI message should be displayed
+            Snackbar.make(receiverDetailsCardView, "Something went wrong : Try Again", Snackbar.LENGTH_LONG).show();
         }
     };
 
@@ -332,7 +456,7 @@ public class VehicleRequestActivity extends MapActivity {
 
     private void addToFavourites(Context context, String receiverName, String receiverPhoneNumber, String destAddress, LatLng dest) {
         FavouriteReceiver favRec = new FavouriteReceiver(receiverName, receiverPhoneNumber, destAddress, dest.latitude, dest.longitude);
-        FirebaseReferenceService.addFavourite(String.valueOf(ApplicationSettings.getCustomerId(VehicleRequestActivity.this)), favRec);
+        FirebaseReferenceService.addFavourite(ApplicationSettings.getCustomerEid(VehicleRequestActivity.this), favRec);
        /* Favourite favourite = new Favourite(receiverName, receiverPhoneNumber, sourceAddress, destAddress, source, dest);
         DBHelper mydb = new DBHelper(context);
         mydb.addToFavourites(favourite);*/

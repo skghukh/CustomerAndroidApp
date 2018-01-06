@@ -37,7 +37,7 @@ public class WelcomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, VehicleRequestActivity.class));
             finish();
         } else {
-            startActivity(new Intent(this, RSignInActivity.class));
+            startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
     }
@@ -56,7 +56,7 @@ public class WelcomeActivity extends AppCompatActivity {
             Log.e(AppConstants.APP_NAME, "driver info found but signup process not completed.");
             startActivity(new Intent(this, SignUpVerificationActivity.class));
             finish();
-        } else if (!vehicleInfoSaved){
+        }/* else if (!vehicleInfoSaved){
             Log.e(AppConstants.APP_NAME, "driver info found, navigating to vehicle info");
             startActivity(new Intent(this, VehicleDetailsActivity.class));
             finish();
@@ -64,6 +64,6 @@ public class WelcomeActivity extends AppCompatActivity {
             Log.e(AppConstants.APP_NAME, "driver info found, navigating to vehicle info");
             startActivity(new Intent(this, DriverDocs.class));
             finish();
-        }
+        }*/
     }
 }

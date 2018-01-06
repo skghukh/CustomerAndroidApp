@@ -1,6 +1,5 @@
 package com.rodafleets.rodacustomer;
 
-import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +25,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.rodafleets.rodacustomer.rest.RodaRestClient;
 import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
@@ -58,8 +57,8 @@ public class DriversResponseActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drivers_response);
         initComponents();
-        startTripResponseListener(String.valueOf(ApplicationSettings.getCustomerId(this)), tripId);
-        tripReferece = FirebaseReferenceService.getTripReference(String.valueOf(ApplicationSettings.getCustomerId(this)), tripId);
+        startTripResponseListener(ApplicationSettings.getCustomerEid(this), currentTripId);
+        tripReferece = FirebaseReferenceService.getTripReference(ApplicationSettings.getCustomerEid(this), currentTripId);
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -70,7 +69,7 @@ public class DriversResponseActivity extends MapActivity {
     };
 
     private void startTripResponseListener(String custId, String currentTripId) {
-        tripResponseReference = FirebaseReferenceService.getTripResponseReference(String.valueOf(ApplicationSettings.getCustomerId(DriversResponseActivity.this)), tripId);
+        tripResponseReference = FirebaseReferenceService.getTripResponseReference(custId, MapActivity.currentTripId);
         tripResponseListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -146,11 +145,11 @@ public class DriversResponseActivity extends MapActivity {
         super.initComponents();
         initMap();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Request_Accepted"));
-        driverResponseView = (ListView) findViewById(R.id.driverResponseList);
+        driverResponseView = findViewById(R.id.driverResponseList);
         driversResponseAdapter = new DriversResponseAdapter(this, vehicleResponses);
         driverResponseView.setAdapter(driversResponseAdapter);
-        reqeustPickupButton = (Button) findViewById(R.id.requestPickUp);
-        progressBar = (ProgressBar) findViewById(R.id.driver_response_wait_progressbar);
+        reqeustPickupButton = findViewById(R.id.requestPickUp);
+        progressBar = findViewById(R.id.driver_response_wait_progressbar);
         mCounter = new DriverResponseCountDownTimer(waitingTime, 1000);
         mCounter.start();
     }
@@ -169,18 +168,22 @@ public class DriversResponseActivity extends MapActivity {
             changeTripStatusToScheduled(selectedResponse.getDriverId(), selectedResponse.getFareEstimate());
             // RodaRestClient.acceptBid(Long.parseLong(selectedResponse.getRequestId()), Long.parseLong(selectedResponse.getBidId()), ApplicationSettings.getCustomerId(this), acceptBidResponseHandler);
         } else {
-            Toast toast = Toast.makeText(this, "Please select 1 bid", Toast.LENGTH_SHORT);
-            toast.show();
+            Snackbar.make(driverResponseLayout, "select 1 vehicle", Snackbar.LENGTH_SHORT).show();
         }
     }
 
     private void changeTripStatusToScheduled(String driverId, String offeredFare) {
         tripResponseReference.removeEventListener(tripResponseListener);
-        final Task<Void> updateCarrierId = tripReferece.child("carrierId").setValue(driverId);
-        final Task<Void> updateStatus = tripReferece.child("status").setValue("Scheduled");
-        final Task<Void> updateOfferedFare = tripReferece.child("acceptedFare").setValue("offeredFare");
+        //final Task<Void> updateCarrierId = tripReferece.child("carrierId").setValue(driverId);
+        final Task<Void> updateStatus = tripReferece.child("status").setValue("scheduled_" + driverId);
+        final Task<Void> updateOfferedFare = tripReferece.child("acceptedFare").setValue(offeredFare);
+        updateStatus.addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                System.out.println("trip status is updated");
+                startNextActivity();
 
-        updateCarrierId.addOnCompleteListener(new OnCompleteListener<Void>() {
+       /* updateCarrierId.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 updateStatus.addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -190,6 +193,8 @@ public class DriversResponseActivity extends MapActivity {
                         startNextActivity();
                     }
                 });
+            }
+        });*/
             }
         });
     }

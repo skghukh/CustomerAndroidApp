@@ -13,7 +13,7 @@ import com.rodafleets.rodacustomer.utils.AppConstants;
 import java.util.ArrayList;
 
 public class RequestHistoryListActivity extends ParentActivity {
-
+    //TODO This activity need to be deleted.
     public static final String TAG = AppConstants.APP_NAME;
 
     private ListView vehicleRequestListView;

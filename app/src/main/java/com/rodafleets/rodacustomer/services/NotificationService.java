@@ -114,7 +114,7 @@ public class NotificationService extends FirebaseMessagingService {
             if (remoteMessage.getData().size() > 0) {
                 Map<String, String> dataMessage = remoteMessage.getData();
                 final String driverId = dataMessage.get("driverId");
-                final String tripId = dataMessage.get("tripId");
+                final String tripId = dataMessage.get("currentTripId");
                 final String bId = dataMessage.get("bId");
                 final String reqId = dataMessage.get("reqId");
                 final String status = dataMessage.get("status");

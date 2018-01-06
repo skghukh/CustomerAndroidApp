@@ -43,7 +43,7 @@ public class Favourites extends AppCompatActivity {
 
     private void initViews() {
         view = findViewById(R.id.favourite_list);
-        DatabaseReference ref = FirebaseReferenceService.getFavouriteReference(String.valueOf(ApplicationSettings.getCustomerId(Favourites.this)));
+        DatabaseReference ref = FirebaseReferenceService.getFavouriteReference(ApplicationSettings.getCustomerEid(Favourites.this));
         myAdapter = new FirebaseListAdapter<FavouriteReceiver>(Favourites.this, FavouriteReceiver.class, R.layout.favourite_list_item, ref.limitToFirst(10)) {
             @Override
             protected void populateView(View v, FavouriteReceiver model, int position) {

@@ -81,7 +81,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     public void signIn(View view) {
-        startActivity(new Intent(this, RSignInActivity.class));
+        startActivity(new Intent(this, SignInActivity.class));
         finish();
     }
 
@@ -92,6 +92,10 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void onSignUpCLick(View view) {
         signUp();
+    }
+
+    private void verifyPhoneNumber() {
+
     }
 
     private void signUp() {
@@ -120,9 +124,46 @@ public class SignUpActivity extends AppCompatActivity {
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setMessage(getString(R.string.sign_up_saving));
             progressDialog.show();
-
-            RodaRestClient.signUp(number, fName, lName, gender, responseHandler);
+            verifyPhoneNumber(number);
+            //RodaRestClient.signUp(number, fName, lName, gender, responseHandler);
         }
+    }
+
+    private void verifyPhoneNumber(String number){
+        RodaRestClient.sendNumberVerificationRequest(number, numberVerificationHandler);
+
+    }
+
+    private JsonHttpResponseHandler numberVerificationHandler = new JsonHttpResponseHandler() {
+        public void onSuccess(int statusCode, Header[] headers, JSONObject jsonResponseObject) {
+            try {
+                Log.i(AppConstants.APP_NAME, "response = " + jsonResponseObject.toString());
+                String sessionId = jsonResponseObject.getString("sessionId");
+                progressDialog.dismiss();
+                startNextActivity(sessionId, firstName.getText().toString(), lastName.getText().toString(), phoneNumber.getText().toString(), gender);
+            } catch (JSONException e) {
+                //handle error
+                Log.e(AppConstants.APP_NAME, "jsonException = " + e.getMessage());
+                progressDialog.dismiss();
+                Toast.makeText(SignUpActivity.this, getString(R.string.sign_up_default_error), Toast.LENGTH_LONG).show();
+            }
+        }
+
+        public final void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            progressDialog.dismiss();
+            Toast.makeText(SignUpActivity.this, getString(R.string.sign_up_default_error), Toast.LENGTH_LONG).show();
+        }
+    };
+
+    private void startNextActivity(String sessionId, String firstName, String lastName, String phoneNumber, String gender) {
+        final Intent verificationIntent = new Intent(this, SignUpVerificationActivity.class);
+        verificationIntent.putExtra("sessionId", sessionId);
+        verificationIntent.putExtra("firstName", firstName);
+        verificationIntent.putExtra("lastName", lastName);
+        verificationIntent.putExtra("gender", gender);
+        verificationIntent.putExtra("phoneNumber", phoneNumber);
+        this.startActivity(verificationIntent);
+        finish();
     }
 
     private OnCheckedChangeListener onGenderChange = new OnCheckedChangeListener() {

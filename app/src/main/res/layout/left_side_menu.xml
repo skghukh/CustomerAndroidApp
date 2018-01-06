@@ -114,23 +114,17 @@
             android:id="@+id/paySwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/menu_payment"
-            android:layout_alignBottom="@+id/menu_payment"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="18dp"
-            android:layout_marginRight="18dp"
+            android:layout_below="@id/menu_payment"
             android:switchMinWidth="56dp"
             android:textOff="CASH"
-            android:textOn="WALLET"
-            />
+            android:textOn="WALLET" />
 
 
         <TextView
             android:id="@+id/menu_vehicle_rates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/menu_payment"
+            android:layout_below="@+id/paySwitch"
             android:padding="10dp"
             android:text="Vehicle and Rates"
             android:textColor="#1C0113"

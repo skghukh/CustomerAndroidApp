@@ -25,6 +25,12 @@ public final class ApplicationSettings {
     private static String destPlace;
 
 
+    //New Requirements
+    private static final String CUSTOMER_UID = "CUSTOMER_UID";
+    private static final String CUSTOMER_EID = "CUSTOMER_EID";
+    private static final String CUSTOMER_NAME = "CUSTOMER_NAME";
+
+
     private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(SETTINGS_NAME, 0);
     }
@@ -166,4 +172,35 @@ public final class ApplicationSettings {
         editor.putBoolean(CASH_PREFERENCE, isCash);
         editor.commit();
     }
+
+    public static String getCustomerUId(Context context) {
+        return getSharedPreferences(context).getString(CUSTOMER_UID, null);
+    }
+
+    public static void setCustomerUId(Context context, String uid) {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putString(CUSTOMER_UID, uid);
+        editor.commit();
+    }
+
+    public static void setCustomerName(Context context, String name) {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putString(CUSTOMER_NAME, name);
+        editor.commit();
+    }
+
+    public static String getCustomerName(Context context) {
+        return getSharedPreferences(context).getString(CUSTOMER_NAME, null);
+    }
+
+    public static void setCustomerEid(Context context, String eid){
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putString(CUSTOMER_EID, eid);
+        editor.commit();
+    }
+
+    public static String getCustomerEid(Context context){
+        return getSharedPreferences(context).getString(CUSTOMER_EID, null);
+    }
+
 }

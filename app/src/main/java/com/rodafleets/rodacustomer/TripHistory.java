@@ -10,16 +10,22 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.rodafleets.rodacustomer.database.FavouriteReceiver;
 import com.rodafleets.rodacustomer.model.NearByDrivers;
 import com.rodafleets.rodacustomer.model.TripHistoryDetails;
+import com.rodafleets.rodacustomer.model.VehicleRequest;
 import com.rodafleets.rodacustomer.rest.RodaRestClient;
+import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 import com.rodafleets.rodacustomer.utils.TripHistoryAdapter;
 
@@ -36,6 +42,8 @@ public class TripHistory extends AppCompatActivity {
 
     List<TripHistoryDetails> tripsList = new ArrayList<>();
     TripHistoryAdapter tripAdapter;
+    FirebaseListAdapter<TripHistoryDetails> tripHistoryAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +74,35 @@ public class TripHistory extends AppCompatActivity {
     }
 
     private void initComponents() {
-        tripAdapter = new TripHistoryAdapter(this,tripsList);
+        getHistoryRequestsFromFirebase();
+       /* tripAdapter = new TripHistoryAdapter(this, tripsList);
         ListView historyList = (ListView) findViewById(R.id.trip_history_list);
-        if(null != historyList){
+        if (null != historyList) {
             historyList.setAdapter(tripAdapter);
         }
-        getHistoryRequests();
+        getHistoryRequests();*/
+    }
+
+
+    private void getHistoryRequestsFromFirebase() {
+        final DatabaseReference requestHistoryReference = FirebaseReferenceService.getRequestHistoryReference(ApplicationSettings.getCustomerEid(TripHistory.this));
+        tripHistoryAdapter = new FirebaseListAdapter<TripHistoryDetails>(TripHistory.this, TripHistoryDetails.class, R.layout.trip_history_list_item, requestHistoryReference.limitToFirst(10)) {
+            @Override
+            protected void populateView(View v, TripHistoryDetails model, int position) {
+                TextView time = v.findViewById(R.id.time);
+                time.setText(String.valueOf(model.getTimestamp()));
+                TextView vehicleId = v.findViewById(R.id.vehicleId);
+                vehicleId.setText("HR 51 BE3767");
+                TextView src = v.findViewById(R.id.src);
+                src.setText(model.getOriginAddress());
+                TextView dst = v.findViewById(R.id.dst);
+                dst.setText(model.getDestinationAddress());
+                TextView price = v.findViewById(R.id.price);
+                price.setText(model.getAcceptedFare());
+            }
+        };
+        ListView historyList = (ListView) findViewById(R.id.trip_history_list);
+        historyList.setAdapter(tripHistoryAdapter);
     }
 
     @Override
@@ -113,7 +144,7 @@ public class TripHistory extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                System.out.println(statusCode+ " "+errorResponse);
+                System.out.println(statusCode + " " + errorResponse);
                 Toast.makeText(TripHistory.this, "Oops!", Toast.LENGTH_SHORT).show();
             }
         };
@@ -121,7 +152,7 @@ public class TripHistory extends AppCompatActivity {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                RodaRestClient.getTripsHistory(ApplicationSettings.getCustomerId(TripHistory.this), tripHistoryRestResponse);
+                RodaRestClient.getTripsHistory(ApplicationSettings.getCustomerEid(TripHistory.this), tripHistoryRestResponse);
             }
         });
 

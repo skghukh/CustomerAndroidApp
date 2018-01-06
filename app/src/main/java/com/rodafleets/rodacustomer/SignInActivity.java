@@ -2,6 +2,7 @@ package com.rodafleets.rodacustomer;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,12 +13,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.rodafleets.rodacustomer.model.Customer;
 import com.rodafleets.rodacustomer.rest.ResponseCode;
-import com.rodafleets.rodacustomer.rest.RodaRestClient;
+import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.utils.AppConstants;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 import com.rodafleets.rodacustomer.utils.Utils;
@@ -28,7 +35,9 @@ import org.json.JSONObject;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
 
-public class RSignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
+
+    private static final String TAG = "RD";
 
     TextView welcomeText;
     Button signInBtn;
@@ -54,14 +63,14 @@ public class RSignInActivity extends AppCompatActivity {
         welcomeText = (TextView) findViewById(R.id.welcomeText);
         signInBtn = (Button) findViewById(R.id.signInBtn);
 
-        phoneNumber = (EditText) findViewById(R.id.phoneNumber);
-        password = (EditText) findViewById(R.id.password);
+        phoneNumber =  findViewById(R.id.phoneNumber);
+        password =  findViewById(R.id.password);
 
-        forgotPasswordText = (TextView) findViewById(R.id.forgotPasswordText);
-        newDriver = (TextView) findViewById(R.id.newDriver);
+        forgotPasswordText =  findViewById(R.id.forgotPasswordText);
+        newDriver =  findViewById(R.id.newDriver);
 
-        constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
-        progressBar = (ProgressBar) findViewById(R.id.loading);
+        constraintLayout = findViewById(R.id.constraintLayout);
+        progressBar =  findViewById(R.id.loading);
 
         Typeface poppinsSemibold = Typeface.createFromAsset(getAssets(), "fonts/Poppins-SemiBold.ttf");
         Typeface poppinsRegular = Typeface.createFromAsset(getAssets(), "fonts/Poppins-Regular.ttf");
@@ -118,8 +127,51 @@ public class RSignInActivity extends AppCompatActivity {
                 ApplicationSettings.setRegistrationId(this, token);
             }
 
-            RodaRestClient.login(number, pwd, token, signInResponseHandler);
+            signInUsingEmailAndPassword(number, pwd);
+
+           // RodaRestClient.login(number, pwd, token, signInResponseHandler);
         }
+    }
+
+    private void signInUsingEmailAndPassword(String number, String pwd) {
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signInWithEmailAndPassword((number.trim() + "@roda.com").trim(), pwd)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.i(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Log.d(TAG, "User login is successfull for " + user.getUid() + " : " + user.getDisplayName() + " : " + user.getPhoneNumber());
+                            //updateUI(user);
+                            // ApplicationSettings.setDriverId(SignInActivity.this,user.getUid());
+                            ApplicationSettings.setCustomerUId(SignInActivity.this, user.getUid());
+                            ApplicationSettings.setCustomerName(SignInActivity.this, user.getDisplayName());
+                            ApplicationSettings.setCustomerEid(SignInActivity.this, user.getEmail().split("\\@")[0]);
+                            ApplicationSettings.setLoggedIn(SignInActivity.this, true);
+
+                            String token = ApplicationSettings.getRegistrationId(SignInActivity.this);
+                            if (!"".equalsIgnoreCase(token)) {
+                                token = FirebaseInstanceId.getInstance().getToken();
+                                ApplicationSettings.setRegistrationId(SignInActivity.this, token);
+                                FirebaseReferenceService.updateCustomerToken(ApplicationSettings.getCustomerEid(SignInActivity.this).split("\\@")[0],token);
+                            }
+                            startNextActivity();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            //TODO Instead of Toast make a snack bar here.
+                            Toast.makeText(SignInActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                        // ...
+                    }
+                });
+
+
     }
 
     private JsonHttpResponseHandler signInResponseHandler = new JsonHttpResponseHandler() {
@@ -129,9 +181,9 @@ public class RSignInActivity extends AppCompatActivity {
                 Log.i(AppConstants.APP_NAME, "response = " + jsonResponseObject.toString());
                 JSONObject driverJson = jsonResponseObject.getJSONObject("customer");
                 Customer driver = new Customer(driverJson);
-                ApplicationSettings.setCustomerId(RSignInActivity.this, driver.getId());
-                ApplicationSettings.setDriver(RSignInActivity.this, driverJson);
-                ApplicationSettings.setLoggedIn(RSignInActivity.this, true);
+                ApplicationSettings.setCustomerId(SignInActivity.this, driver.getId());
+                ApplicationSettings.setDriver(SignInActivity.this, driverJson);
+                ApplicationSettings.setLoggedIn(SignInActivity.this, true);
                 startNextActivity();
             } catch (JSONException e) {
                 //handle error

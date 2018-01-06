@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.utils.AppConstants;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
@@ -29,35 +30,35 @@ public class SplashScreenActivity extends AppCompatActivity {
         initComponents();
     }
 
-    private void initComponents(){
+    private void initComponents() {
         // Welcome Text Font
         welcomeText = (TextView) findViewById(R.id.welcomeText);
         Typeface sintonyBold = Typeface.createFromAsset(getAssets(), "fonts/Sintony-Bold.otf");
         welcomeText.setTypeface(sintonyBold);
 
         // Language Spinner
-        languageSpinner = (Spinner)findViewById(R.id.languageSpinner);
+        //languageSpinner = (Spinner) findViewById(R.id.languageSpinner);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.language_dropdown, R.layout.language_spinner_view);
         adapter.setDropDownViewResource(R.layout.language_spinner_dropdown_view);
-        languageSpinner.setAdapter(adapter);
+        //languageSpinner.setAdapter(adapter);
 
-        languageSpinner.setOnItemSelectedListener(languageSelectedListener);
+        //languageSpinner.setOnItemSelectedListener(languageSelectedListener);
 
-        String language = ApplicationSettings.getAppLanguage(this);
-        if(!language.equals("")) {
+        String language = "en"; //ApplicationSettings.getAppLanguage(this);
+        if (!language.equals("")) {
             checkAppLocale();
         }
     }
 
-    private AdapterView.OnItemSelectedListener languageSelectedListener = new AdapterView.OnItemSelectedListener(){
+    private AdapterView.OnItemSelectedListener languageSelectedListener = new AdapterView.OnItemSelectedListener() {
 
         @Override
         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
             Log.i(AppConstants.APP_NAME, "on change called");
             String appLanguage;
 
-            switch (position){
+            switch (position) {
                 case 1:
                     appLanguage = "en";
                     break;
@@ -69,7 +70,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
 
             ApplicationSettings.setAppLanguage(SplashScreenActivity.this, appLanguage);
-            if(!appLanguage.equals("")) {
+            if (!appLanguage.equals("")) {
                 setLocale(appLanguage);
             }
         }
@@ -80,16 +81,20 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     };
 
-    private void startNextActivity(){
+    private void startNextActivity() {
         Boolean loggedIn = ApplicationSettings.getLoggedIn(SplashScreenActivity.this);
-        if(loggedIn) {
+        if (loggedIn) {
 //            startActivity(new Intent(this, VehicleRequestListActivity.class));
-            startActivity(new Intent(this, VehicleRequestActivity.class));
-            finish();
+            openNextActivity();
         } else {
             this.startActivity(new Intent(this, WelcomeActivity.class));
             finish();
         }
+    }
+
+    private void openNextActivity() {
+        startActivity(new Intent(this, VehicleRequestActivity.class));
+        finish();
     }
 
     public void setLocale(String languageCode) {
@@ -108,7 +113,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     public Locale getAppLocale() {
-        if(ApplicationSettings.getAppLanguage(this).equals("")) {
+        if (ApplicationSettings.getAppLanguage(this).equals("")) {
             return Locale.getDefault();
         } else {
             return new Locale(ApplicationSettings.getAppLanguage(this));

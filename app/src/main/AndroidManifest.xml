@@ -21,7 +21,6 @@
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -29,7 +28,7 @@
             android:name=".WelcomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".RSignInActivity"
+            android:name=".SignInActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SignUpActivity"

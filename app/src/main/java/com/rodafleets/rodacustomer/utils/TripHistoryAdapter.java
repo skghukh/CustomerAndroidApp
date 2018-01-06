@@ -58,10 +58,10 @@ public class TripHistoryAdapter extends BaseAdapter {
         TripHistoryDetails tripDetails = historyDetails.get(i);
 
         time.setText("Mon 21 Dec, 2017, 8:00 PM");
-        vehicleId.setText(tripDetails.getVehicle());
+       /* vehicleId.setText(tripDetails.getVehicle());
         srcView.setText(tripDetails.getSrc());
         dstView.setText(tripDetails.getDst());
-        price.setText(tripDetails.getAmount());
+        price.setText(tripDetails.getAmount());*/
         return vi;
     }
 }

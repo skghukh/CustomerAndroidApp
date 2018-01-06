@@ -157,7 +157,7 @@ public class RodaRestClient {
 
     }
 
-    public static void requestVehicle(int custId, int vehicleTypeId, Double sourceLat, Double sourceLan, Double destLat, Double destLan,String source, String dest, JsonHttpResponseHandler responseHandler) {
+    public static void requestVehicle(String custId, int vehicleTypeId, Double sourceLat, Double sourceLan, Double destLat, Double destLan,String source, String dest, JsonHttpResponseHandler responseHandler) {
         RequestParams params = new RequestParams();
         params.put("customer_id", custId);
         params.put("vehicletype_id", vehicleTypeId);
@@ -168,6 +168,8 @@ public class RodaRestClient {
         params.put("approx_fare_in_cents", 3000);
         params.put("source", source);
         params.put("dest", dest);
+        params.put("recName", "shailu");
+        params.put("recNum","9986291127");
         RodaRestClient.POST("/requests/add/bids",params,responseHandler);
        // RodaRestClient.POST("/requests", params, responseHandler);
     }
@@ -185,9 +187,24 @@ public class RodaRestClient {
         RodaRestClient.GET(url, params, responseHandler);
     }
 
-    public static void getTripsHistory(int custId, JsonHttpResponseHandler responseHandler){
+    public static void getTripsHistory(String custId, JsonHttpResponseHandler responseHandler){
         String url = "/trip/history/custid/"+custId;
         RequestParams params = new RequestParams();
         RodaRestClient.GET(url,params,responseHandler);
+    }
+
+    public static void sendNumberVerificationRequest(String phoneNumber, JsonHttpResponseHandler responseHandler){
+        String url = "/verification";
+        RequestParams param = new RequestParams();
+        param.put("phoneNumber", phoneNumber);
+        RodaRestClient.GET(url,param,responseHandler);
+    }
+
+    public static void verifyOTP(String sessionId, String otp, JsonHttpResponseHandler responseHandler){
+        String url = "/verification";
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("sessionId",sessionId);
+        requestParams.put("otp",otp);
+        RodaRestClient.GET(url,requestParams,responseHandler);
     }
 }

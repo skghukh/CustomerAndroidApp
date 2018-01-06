@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.rodafleets.rodacustomer.utils.AppConstants;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
@@ -66,9 +67,9 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
         //int id = item.getItemId();
 
         boolean isDrawerOpen = mDrawerLayout.isDrawerOpen(Gravity.LEFT);
-        if(!isDrawerOpen){
+        if (!isDrawerOpen) {
             mDrawerLayout.openDrawer(Gravity.LEFT);
-        }else{
+        } else {
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
         return super.onOptionsItemSelected(item);
@@ -115,17 +116,17 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
     }
 
     private void checkPaymentListener() {
-        paySwitch = (Switch) findViewById(R.id.paySwitch);
+        paySwitch = findViewById(R.id.paySwitch);
         if (null != paySwitch) {
             paySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    if(isChecked){
-                        Toast.makeText(ParentActivity.this,"Cache pay option ",Toast.LENGTH_SHORT).show();
-                        ApplicationSettings.setPayOption(isChecked,ParentActivity.this);
-                    }else{
-                        Toast.makeText(ParentActivity.this,"Wallet pay option ",Toast.LENGTH_SHORT).show();
-                        ApplicationSettings.setPayOption(isChecked,ParentActivity.this);
+                    if (isChecked) {
+                        Toast.makeText(ParentActivity.this, "Cache pay option ", Toast.LENGTH_SHORT).show();
+                        ApplicationSettings.setPayOption(isChecked, ParentActivity.this);
+                    } else {
+                        Toast.makeText(ParentActivity.this, "Wallet pay option ", Toast.LENGTH_SHORT).show();
+                        ApplicationSettings.setPayOption(isChecked, ParentActivity.this);
                     }
                 }
             });
@@ -208,7 +209,7 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
     }
 
     public void showFavourites(View view) {
-        Intent intent = new Intent(this,Favourites.class);
+        Intent intent = new Intent(this, Favourites.class);
         startActivity(intent);
     }
 }

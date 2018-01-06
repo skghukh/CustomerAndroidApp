@@ -1,9 +1,20 @@
 package com.rodafleets.rodacustomer.services;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.rodafleets.rodacustomer.database.FavouriteReceiver;
+import com.rodafleets.rodacustomer.utils.Customer;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,7 +25,43 @@ import java.util.concurrent.Executors;
 
 public class FirebaseReferenceService {
 
-    private static ExecutorService pool = Executors.newFixedThreadPool(1);
+    public static final String TAG = "RC";
+
+    private static ExecutorService firebaseOperationThreadPool = Executors.newFixedThreadPool(3);
+
+
+    final static String customerPath = "customers/";
+
+    public static void updateCustomerToken(String customerId, String token) {
+        DatabaseReference driverTokenReference = Utils.getFBInstance().getReference(customerPath + "/" + customerId + "/atoken");
+        driverTokenReference.setValue(token);
+    }
+
+    public static void addCustomer(String phoneNumber, Customer customer) {
+        DatabaseReference customerReference = Utils.getFBInstance().getReference(customerPath + "/" + phoneNumber);
+        final Task<Void> addCustomer = customerReference.setValue(customer);
+        firebaseOperationThreadPool.submit(new Runnable() {
+            @Override
+            public void run() {
+                addCustomer.getResult();
+            }
+        });
+
+    }
+
+    public static DatabaseReference getCustomerReference(String custId) {
+        return Utils.getFBInstance().getReference(customerPath + "/" + custId);
+    }
+
+    public static void addCustomerCurrentTrip(String custId, String tripId) {
+        final Task<Void> updateCurrentTrip = Utils.getFBInstance().getReference(customerPath + "/" + custId).child("currentTrip").setValue(tripId);
+        firebaseOperationThreadPool.submit(new Runnable() {
+            @Override
+            public void run() {
+                updateCurrentTrip.getResult();
+            }
+        });
+    }
 
     public static DatabaseReference getTripReference(String custId, String tripId) {
         DatabaseReference tripRef = Utils.getFBInstance().getReference("vehicleRequests/" + custId + "/" + tripId);
@@ -35,7 +82,7 @@ public class FirebaseReferenceService {
         final DatabaseReference favouriteRef = fbInstance.getReference("favourites/" + custId);
         final DatabaseReference pushRef = favouriteRef.push();
         final Task<Void> voidTask = pushRef.setValue(favouriteReceiver);
-        pool.submit(new Runnable() {
+        firebaseOperationThreadPool.submit(new Runnable() {
             @Override
             public void run() {
                 voidTask.getResult();
@@ -43,10 +90,58 @@ public class FirebaseReferenceService {
         });
     }
 
-    public static DatabaseReference firebaseCustomerFavouriteReference(String custId){
-         FirebaseDatabase fbInstance = Utils.getFBInstance();
-         DatabaseReference favouriteRef = fbInstance.getReference("favourites/" + custId);
-         return favouriteRef;
+    public static DatabaseReference firebaseCustomerFavouriteReference(String custId) {
+        FirebaseDatabase fbInstance = Utils.getFBInstance();
+        DatabaseReference favouriteRef = fbInstance.getReference("favourites/" + custId);
+        return favouriteRef;
     }
+
+    public static DatabaseReference getRequestHistoryReference(String custId) {
+        return Utils.getFBInstance().getReference("vehicleRequests/" + custId);
+    }
+
+    public static Query getLastTripReferece(String custId) {
+        final Query lastTripQuery = Utils.getFBInstance().getReference("vehicleRequests/" + custId).orderByChild("timestamp").limitToLast(1);
+        lastTripQuery.keepSynced(true);
+        return lastTripQuery;
+    }
+
+    public static DatabaseReference getCustomerCurrentTripIdReference(String custId) {
+        return Utils.getFBInstance().getReference("customers/" + custId).child("currentTrip");
+    }
+
+    public static void expireCustomerCurrentTrip(final String custId, final String tripId) {
+        final Task<Void> removeCurrentTrip = Utils.getFBInstance().getReference("customers/" + custId).child("currentTrip").removeValue();
+        firebaseOperationThreadPool.submit(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "Removed current trip " + tripId);
+                removeCurrentTrip.getResult();
+            }
+        });
+        final Task<Void> expireTrip = getTripReference(custId, tripId).child("status").setValue("expired");
+        firebaseOperationThreadPool.submit(new Runnable() {
+            @Override
+            public void run() {
+                expireTrip.getResult();
+                Log.d(TAG, "Expired trip : " + tripId);
+            }
+        });
+    }
+
+    public static DatabaseReference getLocationReference() {
+        return Utils.getFBInstance().getReference("locations");
+    }
+
+    public static DatabaseReference getLocationUpdatesForDriver(String driverId) {
+        return Utils.getFBInstance().getReference("locations" + "/" + driverId);
+    }
+
+    public void signOut() {
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
+
+    }
+
 
 }

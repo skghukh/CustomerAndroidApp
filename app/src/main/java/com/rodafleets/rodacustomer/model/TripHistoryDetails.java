@@ -6,51 +6,77 @@ package com.rodafleets.rodacustomer.model;
 
 public class TripHistoryDetails {
 
-
-    private String time;
-    private String vehicle;
-    private String src;
-    private String dst;
-    private String amount;
+    private Long timestamp;
+    private int vehicleTypeId;
+    private String originAddress;
+    private String destinationAddress;
+    private String acceptedFare;
     private String status;
+    private String recName;
 
-    public String getTime() {
-        return time;
+    public String getRecName() {
+        return recName;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setRecName(String recName) {
+        this.recName = recName;
     }
 
-    public String getVehicle() {
-        return vehicle;
+    public String getRecNum() {
+        return recNum;
     }
 
-    public void setVehicle(String vehicle) {
-        this.vehicle = vehicle;
+    public void setRecNum(String recNum) {
+        this.recNum = recNum;
     }
 
-    public String getSrc() {
-        return src;
+    private String recNum;
+
+    public Long getTimestamp() {
+        return timestamp;
     }
 
-    public void setSrc(String src) {
-        this.src = src;
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public String getDst() {
-        return dst;
+    public int getVehicleTypeId() {
+        return vehicleTypeId;
     }
 
-    public void setDst(String dst) {
-        this.dst = dst;
+    public void setVehicleTypeId(int vehicleTypeId) {
+        this.vehicleTypeId = vehicleTypeId;
     }
 
-    public String getAmount() {
-        return amount;
+    public String getOriginAddress() {
+        return originAddress;
     }
 
-    public void setAmount(String amount) {
-        this.amount = amount;
+    public void setOriginAddress(String originAddress) {
+        this.originAddress = originAddress;
+    }
+
+    public String getDestinationAddress() {
+        return destinationAddress;
+    }
+
+    public void setDestinationAddress(String destinationAddress) {
+        this.destinationAddress = destinationAddress;
+    }
+
+    public String getAcceptedFare() {
+        return acceptedFare;
+    }
+
+    public void setAcceptedFare(String acceptedFare) {
+        this.acceptedFare = acceptedFare;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

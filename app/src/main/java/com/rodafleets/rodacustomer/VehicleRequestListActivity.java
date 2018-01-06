@@ -43,12 +43,16 @@ public class VehicleRequestListActivity extends ParentActivity {
 
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Vehicle_Requested"));
 
-        loadVehicleRequests();
+        //loadVehicleRequests();
     }
 
     private void setFonts() {
         loadFonts();
     }
+
+
+
+
 
     private void loadVehicleRequests(){
 

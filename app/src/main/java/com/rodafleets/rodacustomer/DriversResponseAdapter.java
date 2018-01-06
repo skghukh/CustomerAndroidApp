@@ -47,7 +47,7 @@ public class DriversResponseAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View vi = convertView;
         if (vi == null)
-            vi = inflater.inflate(R.layout.list_item, null);
+            vi = inflater.inflate(R.layout.vehicle_request_response_list_item, null);
         //get all views
         TextView driverName = (TextView) vi.findViewById(R.id.driverName);
         TextView driverRating = (TextView) vi.findViewById(R.id.driverRating);

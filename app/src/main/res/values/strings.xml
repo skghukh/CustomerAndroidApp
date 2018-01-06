@@ -24,7 +24,7 @@
     <string name="sign_in_password">Password</string>
     <string name="forgot_password"><u>Forgot Password</u></string>
     <string name="sign_in_login">SIGN IN</string>
-    <string name="sign_in_new_user">New User? SIGN UP</string>
+    <string name="sign_in_new_user">New Member? SIGN UP</string>
 
     <string name="sign_in_phone_number_required_error">Phone number is required</string>
     <string name="sign_in_password_required_error">Password is required</string>
