@@ -21,9 +21,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.utils.AppConstants;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
@@ -96,6 +98,8 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                TextView name = findViewById(R.id.name);
+                name.setText(ApplicationSettings.getCustomerName(ParentActivity.this));
 //                getActionBar().setTitle(mDrawerTitle);
             }
         };
@@ -206,6 +210,12 @@ public class ParentActivity extends AppCompatActivity implements NavigationView.
         //TODO
         //Show Settings
         Toast.makeText(this, "Settings: Not implmented yet ", Toast.LENGTH_SHORT).show();
+    }
+
+    public void logOut(View view) {
+        FirebaseReferenceService.logout(ParentActivity.this);
+        startActivity(new Intent(this, SignInActivity.class));
+        finish();
     }
 
     public void showFavourites(View view) {

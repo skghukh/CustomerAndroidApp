@@ -157,21 +157,21 @@ public class SignInActivity extends AppCompatActivity {
                                 ApplicationSettings.setRegistrationId(SignInActivity.this, token);
                                 FirebaseReferenceService.updateCustomerToken(ApplicationSettings.getCustomerEid(SignInActivity.this).split("\\@")[0],token);
                             }
+                            progressBar.setVisibility(View.INVISIBLE);
                             startNextActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             //TODO Instead of Toast make a snack bar here.
-                            Toast.makeText(SignInActivity.this, "Authentication failed.",
+                            progressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(SignInActivity.this, "Authentication failed."+task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
+                            Utils.enableWindowActivity(getWindow(), true);
                         }
 
                         // ...
                     }
                 });
-
-
     }
 
     private JsonHttpResponseHandler signInResponseHandler = new JsonHttpResponseHandler() {
@@ -189,6 +189,7 @@ public class SignInActivity extends AppCompatActivity {
                 //handle error
                 Log.e(AppConstants.APP_NAME, "jsonException = " + e.getMessage());
             }
+
         }
 
         public final void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {

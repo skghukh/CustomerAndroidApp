@@ -262,7 +262,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
                                                     Toast.LENGTH_SHORT).show();
 
                                         } else {
-                                            Toast.makeText(SignUpVerificationActivity.this, "Authentication failed.",
+                                            Toast.makeText(SignUpVerificationActivity.this, "Authentication failed."+task.getException().getLocalizedMessage(),
                                                     Toast.LENGTH_SHORT).show();
                                         }
                                         progressDialog.dismiss();

@@ -28,7 +28,7 @@
             android:id="@+id/name"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Shailendra Verma"
+            android:text="..."
             android:textColor="#FFFFFF"
             android:textSize="@dimen/text_medium"
             android:layout_marginLeft="20dp"
@@ -164,6 +164,18 @@
             android:textColor="#1C0113"
             android:textSize="@dimen/text_large"
             android:onClick="showSettings"/>
+
+        <TextView
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menu_settings"
+            android:padding="10dp"
+            android:text="Logout"
+            android:onClick="logOut"
+            android:textColor="#1C0113"
+            android:fontFamily="@font/poppins"
+            android:textSize="@dimen/text_large" />
 
     </RelativeLayout>
 

@@ -4,9 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -37,6 +41,7 @@ import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.services.Utils;
 import com.rodafleets.rodacustomer.utils.AppConstants;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
+import com.rodafleets.rodacustomer.utils.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +68,7 @@ public class VehicleRequestActivity extends MapActivity {
     private TextView driverContact;
     int PLACE_SOURCE_AUTOCOMPLETE_REQUEST_CODE = 1;
     int PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE = 2;
-    int viewType = 1;
+    int selectedVehicleType = 0;
     LatLng sourceLatLang;
     LatLng destLatLang;
     private Handler handler;
@@ -74,7 +79,7 @@ public class VehicleRequestActivity extends MapActivity {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
-        // RodaRestClient.getNearByDriverLocations(10.1, 10.8, getNearByDriverLocationResponseHandler);
+
     }
 
     @Override
@@ -84,8 +89,28 @@ public class VehicleRequestActivity extends MapActivity {
         initComponents();
     }
 
+    public void checkLocationPermissionAndInitMap() {
+        //Initialize Google Play Services
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                //Location Permission already granted
+                checkIfTripInProgress();
+                subscribeForSurroundingDriversLocationUpdates();
+            } else {
+                //Request Location Permission
+                Utils.checkLocationPermission(VehicleRequestActivity.this);
+            }
+        } else {
+            checkIfTripInProgress();
+            subscribeForSurroundingDriversLocationUpdates();
+        }
+    }
+
 
     protected void checkIfTripInProgress() {
+        currentVehicleRequest = null;
         final String customerEid = ApplicationSettings.getCustomerEid(VehicleRequestActivity.this);
         final DatabaseReference currentTripReference = FirebaseReferenceService.getCustomerCurrentTripIdReference(customerEid);
         currentTripReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -100,15 +125,22 @@ public class VehicleRequestActivity extends MapActivity {
                             if (null != dataSnapshot.getValue()) {
                                 final HashMap<String, Object> tripDetails = (HashMap<String, Object>) dataSnapshot.getValue();
                                 String status = (String) (tripDetails.get("status"));
+                                String carrierId = null;
+                                if(null!=status) {
+                                    carrierId = status.split("\\_")[1];
+                                    status = status.split("\\_")[0];
+                                }
                                 Long timeStamp = (Long) (tripDetails.get("timestamp"));
                                 final long l = Utils.getCurrentTime().longValue();
                                 //TODO awaiting time right now is 3 mins, should be configurable.
-                                if ((l - timeStamp < 180000) || !((status == null) || status.equalsIgnoreCase("completed") || status.equalsIgnoreCase("expired")))
-                                {
+                                if (status != null && !(status.equalsIgnoreCase("completed") || status.equalsIgnoreCase("expired") || status.equalsIgnoreCase("cancelled"))) {
                                     currentTripId = lastTripId;
                                     currentVehicleRequest = VehicleRequest.getVehicleRequest(tripDetails);
-                                    startNextActivityForCurrentTrip(status);
-                                } else{
+                                    currentVehicleRequest.setCarrierId(carrierId);
+                                    final HashMap<String,Object> responses = (HashMap<String,Object>) tripDetails.get("responses");
+                                    HashMap<String,Object> carrierResponse = (HashMap<String,Object>) responses.get(carrierId);
+                                    startNextActivityForCurrentTrip(status,currentVehicleRequest.getCarrierId(), carrierResponse);
+                                } else if(l - timeStamp > 180000 && status == null){
                                     //trip is expired, remove current trip reference.
                                     FirebaseReferenceService.expireCustomerCurrentTrip(customerEid, lastTripId);
                                 }
@@ -131,61 +163,14 @@ public class VehicleRequestActivity extends MapActivity {
         });
     }
 
-    protected void checkIfAnyTripInProgressSession() {
-        //TODO this is depricated for now, as only 1 trip could be in progress for a user.
-        final Query lastTripReferece = FirebaseReferenceService.getLastTripReferece(ApplicationSettings.getCustomerEid(VehicleRequestActivity.this));
-        lastTripReferece.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (null != dataSnapshot.getValue()) {
-                    final Map.Entry<String, Object> tripMapEntry = ((Map<String, Object>) dataSnapshot.getValue()).entrySet().iterator().next();
-                    String tripId = tripMapEntry.getKey();
-                    final HashMap<String, Object> tripDetails = (HashMap<String, Object>) tripMapEntry.getValue();
-                    String status = (String) (tripDetails.get("status"));
-                    Long timeStamp = (Long) (tripDetails.get("timestamp"));
-                    final long l = Utils.getCurrentTime().longValue();
-                    if (l - timeStamp < 180000 || !(status.equalsIgnoreCase("awaiting") || status.equalsIgnoreCase("completed") || status.equalsIgnoreCase("expired"))) {
-                        currentTripId = tripId;
-                        currentVehicleRequest = VehicleRequest.getVehicleRequest(tripDetails);
-                        startNextActivityForCurrentTrip(status);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-/*        lastTripReferece.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapShot : dataSnapshot.getChildren()) {
-                    String tripId = snapShot.getKey();
-                    final HashMap<String, Object> tripDetails = (HashMap<String, Object>) snapShot.getValue();
-                    String status = (String) (tripDetails.get("status"));
-                    Long timeStamp = (Long) (tripDetails.get("timestamp"));
-                    final long l = Utils.getCurrentTime().longValue();
-                    if (l - timeStamp < 180000 || !(status.equalsIgnoreCase("awaiting") || status.equalsIgnoreCase("completed"))) {
-                        currentTripId = tripId;
-                        currentVehicleRequest = VehicleRequest.getVehicleRequest(tripDetails);
-                        startNextActivityForCurrentTrip(status);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-        Snackbar.make(receiverDetailsCardView, "Checking Active Bookings", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
+    private void addDriverDetailsForTripInPogress(VehicleRequest currentTrip,HashMap<String,Object> response){
+        currentTrip.setAcceptedFare((String)response.get("offeredFare"));
     }
 
-    private void startNextActivityForCurrentTrip(String status) {
+    private void startNextActivityForCurrentTrip(String status, String carrierId, HashMap<String, Object> carrierResponse) {
         Intent intent = new Intent(this, ScehuledTripDetailsActivity.class);
+        intent.putExtra("driverName", (String) carrierResponse.get("name"));
+        intent.putExtra("vehicleRegNo",(String) carrierResponse.get("vehicleId"));
         startActivity(intent);
         handler.postDelayed(new Runnable() {
             @Override
@@ -211,8 +196,6 @@ public class VehicleRequestActivity extends MapActivity {
         initMap();
         setFonts();
         //checkIfAnyTripInProgressSession();
-        checkIfTripInProgress();
-        subscribeForSurroundingDriversLocationUpdates();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Vehicle_Requested"));
         boolean fromNotification = getIntent().getBooleanExtra("FROM_NOTIFICATION", false);
         if (fromNotification) {
@@ -266,15 +249,15 @@ public class VehicleRequestActivity extends MapActivity {
                     ApplicationSettings.setSourceLoc(sourceLatLang);
                     ApplicationSettings.setSourcePlace(place.getAddress().toString());
                     searchSrc.setText(place.getAddress());
-                    resetPickupPointMarker();
-                    resetCurrentMarkers();
+                    //resetPickupPointMarker();
+                    //resetCurrentMarkers();
                     addMarkerOnMap(0, sourceLatLang, markerSrc, true);
                 } else if (requestCode == PLACE_DEST_AUTOCOMPLETE_REQUEST_CODE) {
                     destPlace = place;
                     destLatLang = place.getLatLng();
                     searchDst.setText(place.getAddress());
                     ApplicationSettings.setDestPlace(place.getAddress().toString());
-                    resetDropPointMarker();
+                    //resetDropPointMarker();
                     addMarkerOnMap(1, destLatLang, markerDst, true);
                 }
                 checkIfSourceDestinationAvailable();
@@ -285,6 +268,27 @@ public class VehicleRequestActivity extends MapActivity {
                 Log.i(TAG, status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        checkIfTripInProgress();
+                        subscribeForSurroundingDriversLocationUpdates();
+                    }
+                } else {
+                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                }
+                return;
             }
         }
     }
@@ -391,25 +395,27 @@ public class VehicleRequestActivity extends MapActivity {
     private void resetSelected(View view) {
         if (null != selectedVehicle) {
             selectedVehicle.setBackground(getResources().getDrawable(R.drawable.vehicle_request_list_item_unselect_background));
+
         }
     }
 
     private void setSelected(View view) {
         selectedVehicle = (RelativeLayout) view;
         selectedVehicle.setBackground(getResources().getDrawable(R.drawable.vehicle_request_list_item_selected_background));
+        selectedVehicleType = Integer.parseInt(view.getTag().toString());
     }
 
     public void selectVehicleType(View view) {
         if (null != view) {
             resetSelected(view);
             setSelected(view);
-            viewType = 1;
+
         }
     }
 
     public void makeVehicleRequest(View view) {
         if (sourceLatLang != null && destLatLang != null)
-            RodaRestClient.requestVehicle(ApplicationSettings.getCustomerEid(VehicleRequestActivity.this), 1, sourceLatLang.latitude, sourceLatLang.longitude, destLatLang.latitude, destLatLang.longitude, sourcePlace.getAddress().toString(), destPlace.getAddress().toString(), vehicleReqestHandler);
+            RodaRestClient.requestVehicle(ApplicationSettings.getCustomerEid(VehicleRequestActivity.this), selectedVehicleType, sourceLatLang.latitude, sourceLatLang.longitude, destLatLang.latitude, destLatLang.longitude, sourcePlace.getAddress().toString(), destPlace.getAddress().toString(), vehicleReqestHandler);
     }
 
     private JsonHttpResponseHandler vehicleReqestHandler = new JsonHttpResponseHandler() {
@@ -435,9 +441,9 @@ public class VehicleRequestActivity extends MapActivity {
     // Show view for vehicle types.
     public void showVehicleTypes(View view) {
 
-        receiverDetails = (RelativeLayout) findViewById(R.id.locationViewSmall);
-        selectVehicleType = (RelativeLayout) findViewById(R.id.selectVehicleType);
-        ToggleButton favouriteToggle = (ToggleButton) findViewById(R.id.favourite_toggle);
+        receiverDetails = findViewById(R.id.locationViewSmall);
+        selectVehicleType = findViewById(R.id.selectVehicleType);
+        ToggleButton favouriteToggle = findViewById(R.id.favourite_toggle);
 
         if (null != favouriteToggle && favouriteToggle.isChecked()) {
             //create here new thread to put on favourites.
@@ -457,9 +463,6 @@ public class VehicleRequestActivity extends MapActivity {
     private void addToFavourites(Context context, String receiverName, String receiverPhoneNumber, String destAddress, LatLng dest) {
         FavouriteReceiver favRec = new FavouriteReceiver(receiverName, receiverPhoneNumber, destAddress, dest.latitude, dest.longitude);
         FirebaseReferenceService.addFavourite(ApplicationSettings.getCustomerEid(VehicleRequestActivity.this), favRec);
-       /* Favourite favourite = new Favourite(receiverName, receiverPhoneNumber, sourceAddress, destAddress, source, dest);
-        DBHelper mydb = new DBHelper(context);
-        mydb.addToFavourites(favourite);*/
     }
 
     //Animation to show view coming from bottom, intended for card view.
@@ -490,7 +493,6 @@ public class VehicleRequestActivity extends MapActivity {
 
     @Override
     public void onBackPressed() {
-
         super.onBackPressed();
     }
 

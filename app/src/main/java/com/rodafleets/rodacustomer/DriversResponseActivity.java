@@ -25,6 +25,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.rodafleets.rodacustomer.model.FBVehicleRequestResponse;
+import com.rodafleets.rodacustomer.model.VehicleRequest;
 import com.rodafleets.rodacustomer.services.FirebaseReferenceService;
 import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 
@@ -38,11 +40,11 @@ import cz.msebera.android.httpclient.Header;
 public class DriversResponseActivity extends MapActivity {
 
     private ListView driverResponseView;
-    private List<VehicleRequestResponse> vehicleResponses = new ArrayList<>();
+    private List<FBVehicleRequestResponse> vehicleResponses = new ArrayList<>();
     private DriversResponseAdapter driversResponseAdapter;
     private RadioButton selectedButton;
     private Button reqeustPickupButton;
-    private VehicleRequestResponse selectedResponse;
+    private FBVehicleRequestResponse selectedResponse;
     private ProgressBar progressBar;
     private DriverResponseCountDownTimer mCounter;
     private static final int waitingTime = 60000;
@@ -68,12 +70,15 @@ public class DriversResponseActivity extends MapActivity {
         }
     };
 
-    private void startTripResponseListener(String custId, String currentTripId) {
+    private void startTripResponseListener(String custId, final String currentTripId) {
         tripResponseReference = FirebaseReferenceService.getTripResponseReference(custId, MapActivity.currentTripId);
         tripResponseListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                addResponseChildToList(dataSnapshot.getKey().toString(), "defaulut", "d", "d", "d", "d", "d");
+                final FBVehicleRequestResponse response = dataSnapshot.getValue(FBVehicleRequestResponse.class);
+                response.setDriverId(dataSnapshot.getKey());
+                response.setTripId(currentTripId);
+                addResponseChildToList(response);
             }
 
             @Override
@@ -99,9 +104,9 @@ public class DriversResponseActivity extends MapActivity {
         tripResponseReference.addChildEventListener(tripResponseListener);
     }
 
-    private void addResponseChildToList(String driverId, String driverName, String DriverContact, String DriverRating, String distance, String offeredFare, String vehicleRegistrationId) {
-        VehicleRequestResponse response = new VehicleRequestResponse();
-        response.setDriverId(driverId);
+    private void addResponseChildToList(FBVehicleRequestResponse response) {
+        FBVehicleRequestResponse vehicleRequestResponse = new FBVehicleRequestResponse();
+        /*response.setDriverId(driverId);
         response.setName("driverName");
         response.setDriverContact("driverContact");
         response.setDriverRating("driverRating");
@@ -113,7 +118,7 @@ public class DriversResponseActivity extends MapActivity {
         response.setFareEstimate("4000");
 
         //vehicle details
-        response.setVehicleRegId("HR 51 BE3767");
+        response.setVehicleRegId("HR 51 BE3767");*/
         vehicleResponses.add(response);
         driversResponseAdapter.notifyDataSetChanged();
 
@@ -135,7 +140,7 @@ public class DriversResponseActivity extends MapActivity {
 
         //vehicle details
         response.setVehicleRegId(intent.getStringExtra("vehicleRegId"));
-        vehicleResponses.add(response);
+        // vehicleResponses.add(response);
         driversResponseAdapter.notifyDataSetChanged();
 
     }
@@ -165,10 +170,10 @@ public class DriversResponseActivity extends MapActivity {
     public void acceptBid(View view) {
         if (null != selectedButton) {
             selectedResponse = vehicleResponses.get((int) selectedButton.getTag());
-            changeTripStatusToScheduled(selectedResponse.getDriverId(), selectedResponse.getFareEstimate());
+            changeTripStatusToScheduled(selectedResponse.getDriverId(), selectedResponse.getOfferedFare());
             // RodaRestClient.acceptBid(Long.parseLong(selectedResponse.getRequestId()), Long.parseLong(selectedResponse.getBidId()), ApplicationSettings.getCustomerId(this), acceptBidResponseHandler);
         } else {
-            Snackbar.make(driverResponseLayout, "select 1 vehicle", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(driverResponseView, "select 1 vehicle", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -201,18 +206,19 @@ public class DriversResponseActivity extends MapActivity {
 
     private void startNextActivity() {
         mCounter.cancel();
+        currentVehicleRequest = null;
         Intent intent = new Intent(this, ScehuledTripDetailsActivity.class);
         final LatLng sourceLoc = ApplicationSettings.getSourceLoc();
         //Driver details
         intent.putExtra("driverId", selectedResponse.getDriverId());
         intent.putExtra("driverName", selectedResponse.getName());
-        intent.putExtra("driverMob", selectedResponse.getDriverContact());
+        intent.putExtra("driverMob", selectedResponse.getDriverId());
 
         //Vehicle Details
-        intent.putExtra("vehicleRegNo", selectedResponse.getVehicleRegId());
+        intent.putExtra("vehicleRegNo", selectedResponse.getVehicleId());
 
         //trip details
-        intent.putExtra("tripRequestId", selectedResponse.getRequestId());
+        intent.putExtra("tripRequestId", selectedResponse.getTripId());
         intent.putExtra("sourcePlace", ApplicationSettings.getSourcePlace());
         intent.putExtra("destPlace", ApplicationSettings.getDestPlace());
         Bundle b = new Bundle();

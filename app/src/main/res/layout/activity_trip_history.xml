@@ -21,18 +21,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-  <!--  <include layout="@layout/content_trip_history" />-->
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:background="@color/white"
-        app:backgroundTint="@color/colorAccent"
-        app:srcCompat="@drawable/truck_container" />
-
     <ListView
         android:id="@+id/trip_history_list"
         android:layout_width="match_parent"

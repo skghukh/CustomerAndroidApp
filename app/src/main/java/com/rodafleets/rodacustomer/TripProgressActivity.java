@@ -321,7 +321,7 @@ public class TripProgressActivity extends MapActivity {
                 hideAllViews();
                 rateCustomerTxt.setText("Rate " + vehicleRequest.getCustomerName());
                 paidByTxt.setText("Payment made by e-wallet");
-                long fare = vehicleRequest.getApproxFareInCents() / 100;
+                long fare = vehicleRequest.getApproxFareInCents();
                 fareTxt.setText("₹" + fare);
                 fareSummaryView.setVisibility(View.VISIBLE);
             }

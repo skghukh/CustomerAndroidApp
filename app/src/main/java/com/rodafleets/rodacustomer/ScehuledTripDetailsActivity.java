@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -25,6 +27,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,6 +73,7 @@ public class ScehuledTripDetailsActivity extends MapActivity {
     private TextView inprogress;
     private TextView arrivedAtLocation;
     private CardView receiverDetailsView;
+    private ImageButton cancel_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +83,9 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         Intent intent = getIntent();
         if (null != currentVehicleRequest) {
             driverId = currentVehicleRequest.getCarrierId();
-            driverName = "TODO Driver";
-            driverMob = "TODO DriverMobile";
-            vehicleRegNo = "TODO VehicleReg";
+            driverName = intent.getStringExtra("driverName");
+            driverMob =  driverId;
+            vehicleRegNo = intent.getStringExtra("vehicleRegNo");
             sourcePlace = currentVehicleRequest.getOriginAddress();
             tripRequestId = "-1";
             destPlace = currentVehicleRequest.getDestinationAddress();
@@ -94,21 +99,6 @@ public class ScehuledTripDetailsActivity extends MapActivity {
             destPlace = intent.getStringExtra("destPlace");
         }
         initComponents();
-    }
-
-    private void initComponetFromTripReference() {
-      /*  final DatabaseReference tripReference = FirebaseReferenceService.getTripReference(String.valueOf(ApplicationSettings.getCustomerId(ScehuledTripDetailsActivity.this)), currentTripId);
-        tripReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                dataSnapshot snapShot = tripReferece;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
     }
 
     protected void initComponents() {
@@ -132,7 +122,7 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         unloading = findViewById(R.id.status_unloading);
         arrivedAtLocation = findViewById(R.id.status_arrived);
         receiverDetailsView = findViewById(R.id.receiverDetailsCardView);
-
+        cancel_button = findViewById(R.id.cancel_button);
         driverNameTextView.setText(driverName);
         vehicleRegistrationNo.setText(vehicleRegNo);
         pickupLocationValue.setText(sourcePlace);
@@ -151,6 +141,7 @@ public class ScehuledTripDetailsActivity extends MapActivity {
         statusRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (null == dataSnapshot.getValue()) return;
                 setStatusLayoutForStatus(dataSnapshot.getValue().toString());
             }
 
@@ -210,15 +201,19 @@ public class ScehuledTripDetailsActivity extends MapActivity {
     private void addMarkerForPickupLocation(LatLng sourceLocation) {
         if (null == sourceLocation) {
             System.out.println("Pickup location is invalid " + sourceLocation);
-        }else{
-            System.out.println("Pickup location is " + sourceLocation);
+        } else {
             addMarkerOnMap(0, sourceLocation, markerSrc, false);
         }
 
     }
 
     public void cancelTrip(View view) {
-
+        String tag = (String) view.getTag();
+        if (Integer.parseInt(tag) == 0) {
+            FirebaseReferenceService.cancelCurrentTrip(ApplicationSettings.getCustomerEid(ScehuledTripDetailsActivity.this), currentTripId, driverId);
+        } else {
+            Snackbar.make(receiverDetailsView, "Trip can't be cancelled now", Snackbar.LENGTH_LONG).show();
+        }
     }
 
     public void updownSelectionOnClick(View view) {
@@ -241,7 +236,6 @@ public class ScehuledTripDetailsActivity extends MapActivity {
             }
         }
     }
-
 
     private class DriverLocationUpdaterTask extends AsyncTask<Integer, Void, Void> {
 
@@ -267,21 +261,31 @@ public class ScehuledTripDetailsActivity extends MapActivity {
 
     private void setStatusLayoutForStatus(String tripStatus) {
         String status = tripStatus.split("\\_")[0];
-        if(null == status) return;
-        status =status.toLowerCase();
+        if (null == status) return;
+        status = status.toLowerCase();
         switch (status) {
             case "awaiting":
-                statusLayout.setVisibility(View.INVISIBLE);
+                statusLayout.setVisibility(View.GONE);
+                arrivedAtLocation.setVisibility(View.GONE);
+                cancel_button.setTag("0");
                 break;
             case "scheduled":
+                statusLayout.setVisibility(View.GONE);
+                statusLayout.setBackgroundColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.separator_color));
+                loading.setVisibility(View.GONE);
+                inprogress.setVisibility(View.GONE);
+                unloading.setVisibility(View.GONE);
+                arrivedAtLocation.setVisibility(View.GONE);
+                cancel_button.setTag("0");
+                break;
+            case "arrived":
                 statusLayout.setVisibility(View.VISIBLE);
                 statusLayout.setBackgroundColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.separator_color));
                 loading.setVisibility(View.GONE);
                 inprogress.setVisibility(View.GONE);
                 unloading.setVisibility(View.GONE);
                 arrivedAtLocation.setVisibility(View.VISIBLE);
-                break;
-            case "arrived":
+                cancel_button.setTag("1");
                 break;
             case "loading":
                 statusLayout.setVisibility(View.VISIBLE);
@@ -293,6 +297,7 @@ public class ScehuledTripDetailsActivity extends MapActivity {
                 loading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.white));
                 inprogress.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
                 unloading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                cancel_button.setTag("1");
                 break;
             case "inprogress":
                 statusLayout.setVisibility(View.VISIBLE);
@@ -304,6 +309,7 @@ public class ScehuledTripDetailsActivity extends MapActivity {
                 loading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
                 inprogress.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.white));
                 unloading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                cancel_button.setTag("1");
                 break;
             case "unloading":
                 statusLayout.setVisibility(View.VISIBLE);
@@ -315,10 +321,29 @@ public class ScehuledTripDetailsActivity extends MapActivity {
                 loading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
                 inprogress.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
                 unloading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.white));
+                cancel_button.setTag("1");
+                break;
+            case "paydue":
+                statusLayout.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.GONE);
+                inprogress.setVisibility(View.GONE);
+                unloading.setVisibility(View.GONE);
+                arrivedAtLocation.setVisibility(View.VISIBLE);
+                arrivedAtLocation.setText("WAITING FOR PAYMENT");
+                statusLayout.setBackgroundColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.black));
+                // loading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                // inprogress.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, R.color.status_message_color));
+                // unloading.setTextColor(ContextCompat.getColor(ScehuledTripDetailsActivity.this, android.R.color.white));
+                cancel_button.setTag("1");
                 break;
             case "completed":
                 receiverDetailsView.setVisibility(View.GONE);
                 finish();
+                break;
+            case "cancelled":
+                //TODO here also cross check if current trip is removed or not.
+                finish();
+                break;
             default:
                 statusLayout.setVisibility(View.INVISIBLE);
                 break;

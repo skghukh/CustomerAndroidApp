@@ -38,7 +38,13 @@ public class VehicleRequestResponse {
     }
 
     public void setDistance(String distance) {
-        this.distance = distance;
+        if(null != distance){
+             double dist = Double.parseDouble(distance);
+             dist = dist / 1000;
+            this.distance = dist+"KM";
+        }else{
+            this.distance = distance+"KM";
+        }
     }
 
     public String getFareEstimate() {

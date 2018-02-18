@@ -9,6 +9,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.rodafleets.rodacustomer.model.FBVehicleRequestResponse;
+
 import java.util.List;
 
 /**
@@ -17,11 +19,11 @@ import java.util.List;
 
 public class DriversResponseAdapter extends BaseAdapter {
     Context context;
-    List<VehicleRequestResponse> driverResponseList;
+    List<FBVehicleRequestResponse> driverResponseList;
     RadioGroup radioGroup;
     private static LayoutInflater inflater = null;
 
-    public DriversResponseAdapter(Context context, List<VehicleRequestResponse> data) {
+    public DriversResponseAdapter(Context context, List<FBVehicleRequestResponse> data) {
         this.context = context;
         this.driverResponseList = data;
         inflater = (LayoutInflater) context
@@ -49,21 +51,21 @@ public class DriversResponseAdapter extends BaseAdapter {
         if (vi == null)
             vi = inflater.inflate(R.layout.vehicle_request_response_list_item, null);
         //get all views
-        TextView driverName = (TextView) vi.findViewById(R.id.driverName);
-        TextView driverRating = (TextView) vi.findViewById(R.id.driverRating);
-        TextView distance = (TextView) vi.findViewById(R.id.distance);
-        TextView fare = (TextView) vi.findViewById(R.id.fare);
-        RadioButton radioButton = (RadioButton) vi.findViewById(R.id.radioButton);
+        TextView driverName = vi.findViewById(R.id.driverName);
+        TextView driverRating = vi.findViewById(R.id.driverRating);
+        TextView distance = vi.findViewById(R.id.distance);
+        TextView fare = vi.findViewById(R.id.fare);
+        RadioButton radioButton = vi.findViewById(R.id.radioButton);
 
 
         //check response
-        VehicleRequestResponse vehicleRequestResponse = driverResponseList.get(position);
+        FBVehicleRequestResponse vehicleRequestResponse = driverResponseList.get(position);
 
         //set views values based on response
         driverName.setText(vehicleRequestResponse.getName());
-        driverRating.setText(vehicleRequestResponse.getDriverRating());
+        driverRating.setText(vehicleRequestResponse.getRating());
         distance.setText(vehicleRequestResponse.getDistance());
-        fare.setText(vehicleRequestResponse.getFareEstimate());
+        fare.setText(vehicleRequestResponse.getOfferedFare());
         radioButton.setTag(position);
         return vi;
     }

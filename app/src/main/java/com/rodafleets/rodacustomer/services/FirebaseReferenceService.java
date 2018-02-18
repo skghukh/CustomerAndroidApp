@@ -1,5 +1,6 @@
 package com.rodafleets.rodacustomer.services;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rodafleets.rodacustomer.database.FavouriteReceiver;
+import com.rodafleets.rodacustomer.utils.ApplicationSettings;
 import com.rodafleets.rodacustomer.utils.Customer;
 
 import java.util.concurrent.ExecutorService;
@@ -129,6 +131,7 @@ public class FirebaseReferenceService {
         });
     }
 
+
     public static DatabaseReference getLocationReference() {
         return Utils.getFBInstance().getReference("locations");
     }
@@ -144,4 +147,28 @@ public class FirebaseReferenceService {
     }
 
 
+    public static void cancelCurrentTrip(final String custId, final String tripId, final String driverId) {
+        final Task<Void> removeCurrentTrip = Utils.getFBInstance().getReference("customers/" + custId).child("currentTrip").removeValue();
+        firebaseOperationThreadPool.submit(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "Removed current trip " + tripId);
+                removeCurrentTrip.getResult();
+            }
+        });
+        final Task<Void> cancelTrip = getTripReference(custId, tripId).child("status").setValue("cancelled_" + driverId);
+        firebaseOperationThreadPool.submit(new Runnable() {
+            @Override
+            public void run() {
+                cancelTrip.getResult();
+                Log.d(TAG, "Expired trip : " + tripId);
+            }
+        });
+    }
+
+    public static void logout(Context context){
+        ApplicationSettings.setLoggedIn(context,false);
+        FirebaseAuth.getInstance().signOut();
+
+    }
 }

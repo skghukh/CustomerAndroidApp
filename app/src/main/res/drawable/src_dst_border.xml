@@ -15,7 +15,6 @@
     <!--<gradient android:startColor="@android:color/transparent"
         android:endColor="@android:color/transparent"
         android:angle="90"/>-->
-
     <solid android:color="#f5f5f5"/>
 
 </shape>
